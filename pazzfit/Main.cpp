@@ -6,8 +6,7 @@ void Main(){
 
 	const Font font(30);
 
-	while (System::Update())
-	{
+	while (System::Update()){
 		control.exe();
 	}
 }
