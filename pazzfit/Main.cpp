@@ -1,5 +1,4 @@
-﻿
-#include "common.h"
+﻿#include "common.h"
 #include "Control.h"
 
 void Main(){
