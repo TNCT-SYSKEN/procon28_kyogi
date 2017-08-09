@@ -1,6 +1,6 @@
 ﻿
-# include "common.h"
-# include "Control.h"
+#include "common.h"
+#include "Control.h"
 
 void Main()
 {
