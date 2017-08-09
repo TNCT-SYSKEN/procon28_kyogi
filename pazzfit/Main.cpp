@@ -2,8 +2,7 @@
 #include "common.h"
 #include "Control.h"
 
-void Main()
-{
+void Main(){
 	Control control;
 
 	const Font font(30);
