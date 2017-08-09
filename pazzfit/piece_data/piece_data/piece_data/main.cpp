@@ -2,8 +2,7 @@
 #include <opencv2/highgui.hpp>
 #include <iostream>
 
-int main(int argc, const char* argv[])
-{
+int main(int argc, const char* argv[]){
 	// 幅320px、高さ240pxで赤色の画像データを生成
 	cv::Mat redImg(cv::Size(320, 240), CV_8UC3, cv::Scalar(0, 0, 255));
 
