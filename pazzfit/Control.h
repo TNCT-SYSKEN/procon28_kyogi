@@ -1,6 +1,6 @@
 #pragma once
-# include "Piece.h"
-# include "common.h"
+#include "Piece.h"
+#include "common.h"
 class Control {
 public:
 	//コンストラクタ
