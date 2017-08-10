@@ -11,6 +11,7 @@ public:
 	//配置情報を使ってピースの値をpieceに格納する(セッターじゃないよー)
 	void set_piece();
 	//この部分にアルゴリズムを書き込んでく
+	void exec_argolithm();
 
 	//ピースの情報
 	vector<Piece> piece;

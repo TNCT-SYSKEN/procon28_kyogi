@@ -1,9 +1,10 @@
-# include "opencv2\opencv.hpp"
-# include <opencv2/core/core.hpp>
-# include <opencv2/highgui/highgui.hpp>
-# include <opencv2/imgproc/imgproc.hpp>
-# include <opencv/cvaux.h>
+#include "opencv2\opencv.hpp"
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv/cvaux.h>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 using namespace cv;
@@ -12,6 +13,8 @@ int main(int argc, const char* argv[]){
 	Mat test;
 	Mat gray_test;
 	Mat bin_test;
+	//—ÖŠs‚Ì’¸“_À•W
+	vector<vector<Point> > contours;
 	test = imread("img/test001.bmp", 1);
 	if (test.data == NULL) {
 		return -1;
@@ -20,8 +23,42 @@ int main(int argc, const char* argv[]){
 	cvtColor(test, gray_test, CV_BGR2GRAY);
 	//2’l‰»
 	//illigal instruction‚Íopencv3‚ğ“±“ü‚·‚é‚±‚Æ‚Å‰ğŒˆ(Œ´ˆö•s–¾)
-	threshold(gray_test, bin_test, 0, 255, THRESH_BINARY | THRESH_OTSU);
-	
+	threshold(gray_test, bin_test, 80, 255, THRESH_TOZERO);
+	//bitwise_not(bin_test, bin_test);
+	threshold(bin_test, bin_test, 100, 255, THRESH_BINARY);
+	//ƒmƒCƒYœ‹
+	//GaussianBlur(bin_test, bin_test, cv::Size(5, 5), 3);
+	//—ÖŠs‚Ìæ“¾
+	findContours(bin_test, contours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
+	//—ÖŠsü‚Ì•`‰æ
+	for (auto contour = contours.begin(); contour != contours.end(); contour++) {
+		cv::polylines(test, *contour, true, cv::Scalar(0, 255, 0), 5);
+	}
+
+	for (auto contour = contours.begin(); contour != contours.end(); contour++) {
+		std::vector< cv::Point > approx;
+
+		//—ÖŠs‚ğ’¼ü‹ß—‚·‚é
+		cv::approxPolyDP(cv::Mat(*contour), approx, 0.003 * cv::arcLength(*contour, true), true);
+
+		// ‹ß—‚Ì–ÊÏ‚ªˆê’èˆÈã‚È‚çæ“¾
+		double area = cv::contourArea(approx);
+
+		if (area > 1000.0) {
+			cout << approx.size() << endl;
+			cout << approx << endl;
+			cout << area << endl;
+			//Â‚ÅˆÍ‚Şê‡            
+			cv::polylines(test, approx, true, cv::Scalar(255, 0, 0), 10);
+			std::stringstream sst;
+			sst << "area : " << area;
+			cv::putText(test, sst.str(), approx[0], CV_FONT_HERSHEY_PLAIN, 1.0, cv::Scalar(0, 128, 0));
+
+			//“ü—Í‰æ‘œ‚É•\¦‚·‚éê‡
+			//cv::drawContours(imgIn, contours, i, CV_RGB(0, 0, 255), 4);
+
+		}
+	}
 	//k¬‚µ‚Ä•\¦
 	resize(test, test, Size(), 0.2, 0.2);
 	resize(gray_test, gray_test, Size(), 0.2, 0.2);
@@ -29,6 +66,8 @@ int main(int argc, const char* argv[]){
 	imshow("hoge", test);
 	imshow("fuga", gray_test);
 	imshow("piyo", bin_test);
+
+	cout << contours.size() << endl;
 
 	waitKey(0);
 
