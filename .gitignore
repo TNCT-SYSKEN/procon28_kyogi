@@ -259,5 +259,5 @@ paket-files/
 __pycache__/
 *.pyc
 
-# NuGet Packages
-*.nupkg
+# test images
+*.bmp
