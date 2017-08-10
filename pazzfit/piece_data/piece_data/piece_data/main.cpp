@@ -1,22 +1,36 @@
-#include <opencv2/core.hpp>
-#include <opencv2/highgui.hpp>
+# include "opencv2\opencv.hpp"
+# include <opencv2/core/core.hpp>
+# include <opencv2/highgui/highgui.hpp>
+# include <opencv2/imgproc/imgproc.hpp>
+# include <opencv/cvaux.h>
 #include <iostream>
 
+using namespace std;
+using namespace cv;
+
 int main(int argc, const char* argv[]){
-	// 幅320px、高さ240pxで赤色の画像データを生成
-	cv::Mat redImg(cv::Size(320, 240), CV_8UC3, cv::Scalar(0, 0, 255));
+	Mat test;
+	Mat gray_test;
+	Mat bin_test;
+	test = imread("img/test001.bmp", 1);
+	if (test.data == NULL) {
+		return -1;
+	}
+	//グレースケールに変換
+	cvtColor(test, gray_test, CV_BGR2GRAY);
+	//2値化
+	//illigal instructionはopencv3を導入することで解決(原因不明)
+	threshold(gray_test, bin_test, 0, 255, THRESH_BINARY | THRESH_OTSU);
+	
+	//縮小して表示
+	resize(test, test, Size(), 0.2, 0.2);
+	resize(gray_test, gray_test, Size(), 0.2, 0.2);
+	resize(bin_test, bin_test, Size(), 0.2, 0.2);
+	imshow("hoge", test);
+	imshow("fuga", gray_test);
+	imshow("piyo", bin_test);
 
-	// 画像表示用のウィンドウを生成
-	cv::namedWindow("red", cv::WINDOW_AUTOSIZE);
-
-	// ウィンドウに画像を表示
-	cv::imshow("red", redImg);
-
-	// キー入力を待機
-	cv::waitKey(0);
-
-	// 作成したウィンドウを全て破棄
-	cv::destroyAllWindows();
+	waitKey(0);
 
 	return 0;
 }
