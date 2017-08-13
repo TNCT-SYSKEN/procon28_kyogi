@@ -70,6 +70,4 @@ int main(int argc, const char* argv[]){
 	cout << contours.size() << endl;
 
 	waitKey(0);
-
-	return 0;
 }
