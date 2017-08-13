@@ -6,10 +6,32 @@
 #include <iostream>
 #include <vector>
 
+#include "decodeqr.h"
+#pragma comment(lib, "WS2_32.LIB")
+#pragma comment(lib, "libdecodeqr.lib")
+
 using namespace std;
 using namespace cv;
 
+int piece();
+
+void qr_read();
+
 int main(int argc, const char* argv[]){
+	//piece();
+
+	qr_read();
+
+	Mat test;
+	test = imread("img/test001.bmp", 1);
+	imshow("hoge", test);
+
+	waitKey(0);
+
+	return 0;
+}
+
+int piece() {
 	Mat test;
 	Mat gray_test;
 	Mat bin_test;
@@ -70,4 +92,52 @@ int main(int argc, const char* argv[]){
 	cout << contours.size() << endl;
 
 	waitKey(0);
+}
+
+void qr_read() {
+	//画像を保持する変数
+	IplImage* qr;
+	//libdecodeqrを使うためのハンドル
+	QrDecoderHandle decoder = qr_decoder_open();
+	//画像のロード
+	qr = cvLoadImage("img/fgo_test.png", CV_LOAD_IMAGE_ANYDEPTH | CV_LOAD_IMAGE_ANYCOLOR);
+	qr_decoder_set_image_buffer(decoder, qr); // 画像をセット
+	if (!qr_decoder_is_busy(decoder)){
+		int adaptive_th_size = 25;
+		int adaptive_th_delta = 10;
+		short stat = qr_decoder_decode(decoder, adaptive_th_size, adaptive_th_delta);
+
+		for (adaptive_th_size = 25, stat = 0; (adaptive_th_size >= 3) && ((stat & QR_IMAGEREADER_DECODED) == 0); adaptive_th_size -= 2) {
+			stat = qr_decoder_decode(decoder, adaptive_th_size, adaptive_th_delta);
+		}
+	}
+
+	int text_size = 0;
+	unsigned char* text = new unsigned char[text_size];
+	QrCodeHeader header;
+	// デコード
+	if (qr_decoder_get_header(decoder, &header)){
+		if (text_size < header.byte_size + 1){
+			if (text) delete[] text;
+			text_size = header.byte_size + 1;
+			text = new unsigned char[text_size];
+		}
+		qr_decoder_get_body(decoder, text, text_size); // ここでtextにデコード結果が保存される
+	}
+	/*//qrの画像をハンドルにセット
+	qr_decoder_set_image_buffer(decoder, qr);
+	//デコードする
+	qr_decoder_get_header(decoder, &header);
+	//必要な配列の数の取得
+	if (text_size < header.byte_size + 1) {
+		text_size = header.byte_size + 1;
+	}
+	//配列の確保
+	text = new unsigned char[text_size];*/
+	//デコード結果出力
+	qr_decoder_get_body(decoder, text, text_size);
+	cout << text << endl;
+	cout << text_size << endl;
+	//終了、メモリ開放
+	qr_decoder_close(decoder);
 }
