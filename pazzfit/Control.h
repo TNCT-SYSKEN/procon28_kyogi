@@ -1,6 +1,5 @@
 #pragma once
 #include "Piece.h"
-#include "common.h"
 class Control {
 public:
 	//コンストラクタ
@@ -12,6 +11,11 @@ public:
 	void set_piece();
 	//この部分にアルゴリズムを書き込んでく
 	void exec_argolithm();
+
+	void set_shape_data();
+
+	void make_point();
+	void make_line();
 
 	//ピースの情報
 	vector<Piece> piece;

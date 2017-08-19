@@ -18,13 +18,14 @@ int piece();
 void qr_read();
 
 int main(int argc, const char* argv[]){
-	//piece();
 
 	qr_read();
 
-	Mat test;
-	test = imread("img/test001.bmp", 1);
-	imshow("hoge", test);
+	cv::Mat redImg(cv::Size(320, 240), CV_8UC3, cv::Scalar(0, 0, 255));
+
+	cv::namedWindow("red", cv::WINDOW_AUTOSIZE);
+
+	cv::imshow("red", redImg);
 
 	waitKey(0);
 
@@ -100,7 +101,7 @@ void qr_read() {
 	//libdecodeqrを使うためのハンドル
 	QrDecoderHandle decoder = qr_decoder_open();
 	//画像のロード
-	qr = cvLoadImage("img/fgo_test.png", CV_LOAD_IMAGE_ANYDEPTH | CV_LOAD_IMAGE_ANYCOLOR);
+	qr = cvLoadImage("img/qrcode007.bmp", CV_LOAD_IMAGE_ANYDEPTH | CV_LOAD_IMAGE_ANYCOLOR);
 	qr_decoder_set_image_buffer(decoder, qr); // 画像をセット
 	if (!qr_decoder_is_busy(decoder)){
 		int adaptive_th_size = 25;
@@ -124,16 +125,6 @@ void qr_read() {
 		}
 		qr_decoder_get_body(decoder, text, text_size); // ここでtextにデコード結果が保存される
 	}
-	/*//qrの画像をハンドルにセット
-	qr_decoder_set_image_buffer(decoder, qr);
-	//デコードする
-	qr_decoder_get_header(decoder, &header);
-	//必要な配列の数の取得
-	if (text_size < header.byte_size + 1) {
-		text_size = header.byte_size + 1;
-	}
-	//配列の確保
-	text = new unsigned char[text_size];*/
 	//デコード結果出力
 	qr_decoder_get_body(decoder, text, text_size);
 	cout << text << endl;
