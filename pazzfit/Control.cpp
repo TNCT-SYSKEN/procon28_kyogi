@@ -15,40 +15,7 @@ void Control::set_piece() {
 }
 
 void Control::fit_piece() {
-	clone_piece = piece;
 
-	//ピース嵌めるアルゴリズムをまとめる
-	//枠の基準となる頂点を決定
-	for (int i = 0; i < clone_piece.back().point.size();i++) {
-		//ピースを一つ決定
-		for (int n = 0; n < (clone_piece.size() - 1); ++n) {
-			//ピースの角を一つ決定
-			for (int k = 0; k < clone_piece[n].angle.size(); ++k) {
-				if (/*枠とピースの角度を比較*/) {
-					//piece[n].evalution[k].push_back(1);
-					if (/*その両端の辺も比較*/) {
-						//評価点を追加
-					}
-				}
-				else {
-					//評価点に0を追加
-				}
-			}
-		}
-		if (/*評価点が高いピースがあるなら正*/) {
-			//評価点が高いピースを枠の情報に追加
-			//新たな枠の角度と辺を算出して上書き？
-			//嵌めたピースの削除
-		}
-		else {
-			break;
-		}
-		if (/*残りピースが0ならば正*/) {
-			//ans_pointへ追加
-			break;
-		}
-		//再帰でsort();を呼び出す(更新した枠の情報を引数として渡す)     
-	}
 }
 
 void Control::spin_piece() {
@@ -65,15 +32,17 @@ bool Control::check_collision(int n) {
 	double f_slope, p_slope;
 	int f_intercept, p_intercept;
 	int count_x = 0, count_y = 0;
-	//枠・ピースの頂点を受け取る
-	//ピースを配置した時に枠の中に収まっているか判定
-
-	for (int k = 0; k < clone_piece[n].point.size; k++) {
-		for (int i = 0; i < clone_piece.back().point.size(); i++) {
+	/*
+	枠・ピースの頂点を受け取る
+	ピースを配置した時に枠の中に収まっているか判定
+	n-ピースの番号,k-ピースの各頂点,i-枠の各頂点
+	*/
+	for (int k = 0; k < int(clone_piece[n].point.size()); k++) {
+		for (int i = 0; i < int(clone_piece.back().point.size()); i++) {
 
 			//枠の二つの頂点の直線の一次関数を求める
 			//ループの最後になったのなら要素の最後と最初を使用する
-			if ((clone_piece.back().point.size - 1) == i) {
+			if ((int(clone_piece.back().point.size()) - 1) == i) {
 				f_slope = (clone_piece.back().point[i].second - clone_piece.back().point[0].second) /
 					(clone_piece.back().point[i].first - clone_piece.back().point[0].first);
 				f_intercept = clone_piece.back().point[i].second - f_slope * clone_piece.back().point[i].first;
@@ -83,7 +52,8 @@ bool Control::check_collision(int n) {
 					(clone_piece.back().point[i].first - clone_piece.back().point[i + 1].first);
 				f_intercept = clone_piece.back().point[i].second - f_slope * clone_piece.back().point[i].first;
 			}
-			if ((clone_piece[n].point.size - 1) == k) {
+			//ピースの二つの頂点の一次関数を求める
+			if ((int(clone_piece[n].point.size()) - 1) == k) {
 				p_slope = (clone_piece[n].point[k].second - clone_piece[n].point[0].second) /
 					(clone_piece[n].point[k].first - clone_piece[n].point[0].first);
 				p_intercept = clone_piece[n].point[k].second - f_slope * clone_piece[n].point[k].first;
@@ -97,7 +67,7 @@ bool Control::check_collision(int n) {
 			//ピースの頂点から伸ばした平行線,垂線と枠の各辺とが交わった回数をカウント
 			if ((clone_piece[n].point[k].second - f_slope * clone_piece[n].point[k].first - f_intercept) *
 				(clone_piece[n].point[k].second - f_slope * 120 - f_intercept) < 0) {
-				if ((clone_piece.back().point.size - 1) == i) {
+				if ((int(clone_piece.back().point.size()) - 1) == i) {
 					if ((clone_piece.back().point[i].second - p_slope * clone_piece.back().point[i].first - p_intercept) *
 						(clone_piece.back().point[0].second - p_slope * clone_piece.back().point[0].first - p_intercept) < 0) {
 						count_x++;
@@ -112,7 +82,7 @@ bool Control::check_collision(int n) {
 			}
 			if ((clone_piece[n].point[k].second - f_slope * clone_piece[n].point[k].first - f_intercept) *
 				(120 - f_slope * clone_piece[n].point[k].second - f_intercept) < 0) {
-				if ((clone_piece.back().point.size - 1) == i) {
+				if ((int(clone_piece.back().point.size()) - 1) == i) {
 					if ((clone_piece.back().point[i].second - p_slope * clone_piece.back().point[i].first - p_intercept) *
 						(clone_piece.back().point[0].second - p_slope * clone_piece.back().point[0].first - p_intercept) < 0) {
 						count_y++;
@@ -149,13 +119,13 @@ void Control::update_frame() {
 }
 
 bool Control::equal_angle(int i,int k) {
-
+	return true;
 }
 
 bool Control::equal_line(int i, int k) {
-
+	return true;
 }
 
 bool Control::equal_point(int frame_point, int piece_point) {
-
+	return true;
 }
