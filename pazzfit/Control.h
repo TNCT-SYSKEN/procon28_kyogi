@@ -14,10 +14,14 @@ public:
 	void fit_piece();
 	void spin_piece();
 	void turn_piece();
-	void check_collision();
+	bool check_collision(int);
 	void evaluation();
 	void union_piece();
 	void update_frame();
+	bool equal_angle(int,int);
+	bool equal_line(int,int);
+	bool equal_point(int,int);
 	//ÉsÅ[ÉXÇÃèÓïÒ
 	vector<Piece> piece;
+	vector<Piece> clone_piece;
 };
