@@ -13,7 +13,7 @@ public:
 	//‚±‚Ì•”•ª‚ÉƒAƒ‹ƒSƒŠƒYƒ€‚ğ‘‚«‚ñ‚Å‚­
 	void fit_piece();
 	void spin_piece();
-	void turn_piece();
+	void turn_piece(int);
 	bool check_collision(int);
 	void evaluation();
 	void union_piece();

@@ -22,10 +22,38 @@ void Control::spin_piece() {
 	//ピースを90度回転させる
 }
 
-void Control::turn_piece() {
-	//ピースの頂点情報を受け取る
-	//ピースを反転させ、頂点情報を更新
+void Control::turn_piece(int n) {
+	/*
+	ピースの番号を受け取る
+	ピースを反転させ、頂点情報を更新
+	axis一番X座標の小さい値が入ってる要素数
+	*/
+	int mini_point_x = 100, axis;
+	int minus = 0;
 
+	//基準となる座標の決定
+	for (int i = 0; i < int(clone_piece[n].point.size()); i++) {
+		if (mini_point_x > clone_piece[n].point[i].first) {
+			mini_point_x = clone_piece[n].point[i].first;
+			axis = i;
+		}
+	}
+
+	//反転
+	for (int i = 0; i < int(clone_piece[n].point.size()); i++) {
+		clone_piece[n].point[i].first = clone_piece[n].point[axis].first -
+		(clone_piece[n].point[i].first - clone_piece[n].point[axis].first);
+	}
+	
+	//マイナス座標の修正
+	for (int i = 0; i < int(clone_piece[n].point.size()); i++) {
+		if (abs((clone_piece[n].point[i].first - clone_piece[n].point[axis].first)) > minus) {
+			minus = abs((clone_piece[n].point[i].first - clone_piece[n].point[axis].first));
+		}
+	}
+	for (int i = 0; i < int(clone_piece[n].point.size()); i++) {
+		clone_piece[n].point[i].first += minus;
+	}
 }
 
 bool Control::check_collision(int n) {
