@@ -156,7 +156,7 @@ void Algorithm::update_frame() {
 	//評価点を元にピースの形状情報を枠の形状情報に挿入
 }
 
-bool Algorithm::equal_angle(int first_angle, int second_angle) {
+bool Algorithm::equal_angle(double first_angle, double second_angle) {
 	/*
 	枠とピースの角度の情報を受け取る
 	もし誤差の範囲内で等しいならばTrue
