@@ -14,7 +14,7 @@ public :
 	void evaluation();
 	void union_piece();
 	void update_frame();
-	bool equal_angle(int, int);
+	bool equal_angle(double, double);
 	bool equal_line(double, double);
 	bool equal_point(int, int);
 };
