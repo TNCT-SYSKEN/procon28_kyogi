@@ -156,14 +156,43 @@ void Algorithm::update_frame() {
 	//評価点を元にピースの形状情報を枠の形状情報に挿入
 }
 
-bool Algorithm::equal_angle(int i, int k) {
+bool Algorithm::equal_angle(int first_angle, int second_angle) {
+	/*
+	枠とピースの角度の情報を受け取る
+	もし誤差の範囲内で等しいならばTrue
+	*/
+	if (fabs(first_angle - second_angle) <= 0.50) {
+		return true;
+	}
+	else {
+		return true;
+	}
 	return true;
 }
 
-bool Algorithm::equal_line(int i, int k) {
-	return true;
+bool Algorithm::equal_line(double first_line, double second_line) {
+	/*
+	枠とピースの辺情報を受け取る
+	もし誤差の範囲内で等しいならばTrue
+	*/ 
+	
+	if (fabs(first_line - second_line) <= 0.50) {
+		return true;
+	}
+	else {
+		return true;
+	}
 }
 
-bool Algorithm::equal_point(int frame_point, int piece_point) {
-	return true;
+bool Algorithm::equal_point(int first_point, int second_point) {
+	/*
+	枠とピ―スの頂点座標を受け取る
+	もし頂点座標が同じならばTrueを返す
+	*/
+	if (first_point == second_point) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
