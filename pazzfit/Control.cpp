@@ -14,13 +14,14 @@ void Control::set_piece() {
 }
 
 void Control::output_piece() {
+		Graphics::SetBackground(Palette::White);
 		for (int i = 0; i < piece.size(); i++) {
 				for (int j = 0; j < piece[i].ans_point.size(); j++) {
 						if (j != piece[i].ans_point.size()) {
-								Line(piece[i].ans_point[j].first * 5, piece[i].ans_point[j].second * 5, piece[i].ans_point[j+1].first * 5, piece[i].ans_point[j+1].second * 5).draw();
+								Line(piece[i].ans_point[j].first * 5, piece[i].ans_point[j].second * 5, piece[i].ans_point[j + 1].first * 5, piece[i].ans_point[j + 1].second * 5).draw(Color(i + 4, i + 4, i + 4));
 						}
 						else {
-								Line(piece[i].ans_point[j].first * 5, piece[i].ans_point[j].second * 5, piece[i].ans_point[0].first * 5, piece[i].ans_point[0].second * 5).draw();
+								Line(piece[i].ans_point[j].first * 5, piece[i].ans_point[j].second * 5, piece[i].ans_point[0].first * 5, piece[i].ans_point[0].second * 5).draw(Color(i + 4, i + 4, i + 4));
 						}
 				}
 		}
