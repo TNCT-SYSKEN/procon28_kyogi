@@ -25,4 +25,8 @@ void Control::output_piece() {
 						}
 				}
 		}
+		if (Input::AnyKeyClicked() == true)
+		{
+				ScreenCapture::Save();
+		}
 }
