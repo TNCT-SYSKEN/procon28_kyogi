@@ -14,6 +14,7 @@ void Control::set_piece() {
 }
 
 void Control::output_piece() {
+		bool screen = false;
 		Graphics::SetBackground(Palette::White);
 		for (int i = 0; i < piece.size(); i++) {
 				for (int j = 0; j < piece[i].ans_point.size(); j++) {
@@ -25,8 +26,10 @@ void Control::output_piece() {
 						}
 				}
 		}
-		if (Input::AnyKeyClicked() == true)
+		screen = true;
+		if (screen)
 		{
 				ScreenCapture::Save();
+				screen = false;
 		}
 }
