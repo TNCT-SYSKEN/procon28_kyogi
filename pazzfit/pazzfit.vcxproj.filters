@@ -87,12 +87,9 @@
     <ClCompile Include="Piece.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-<<<<<<< HEAD
-=======
     <ClCompile Include="Algorithm.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
->>>>>>> ef7d7becb0de95cb163e73442f987b667314c6a3
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc">
@@ -417,11 +414,8 @@
     <ClInclude Include="common.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-<<<<<<< HEAD
-=======
     <ClInclude Include="Algorithm.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
->>>>>>> ef7d7becb0de95cb163e73442f987b667314c6a3
   </ItemGroup>
 </Project>
