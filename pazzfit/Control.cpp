@@ -1,13 +1,11 @@
 #include "Control.h"
 
 Control::Control() {
-	//‚±‚±‚Å‰æ‘œˆ—‚ÌÀs
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Å‰æ‘œï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½s
 }
 
 void Control::exe() {
 	set_piece();
-<<<<<<< HEAD
-	
 	use_position();
 }
 
@@ -15,7 +13,6 @@ void Control::set_piece() {
 }
 
 void Control::output_piece() {
-		bool screen = false;
 		Graphics::SetBackground(Palette::White);
 		for (int i = 0; i < piece.size(); i++) {
 				for (int j = 0; j < piece[i].ans_point.size(); j++) {
@@ -27,12 +24,7 @@ void Control::output_piece() {
 						}
 				}
 		}
-		screen = true;
-		if (screen)
-		{
 				ScreenCapture::Save();
-				screen = false;
-		}
 }
 
 void Control::use_position() {
@@ -98,14 +90,3 @@ void Control::make_point_position() {
 		}
 		cout << piece[0].point[1].first << endl;
 }
-
-=======
-
-}
-
-void Control::set_piece() {
-	int hoge = 10;
-	//ƒeƒLƒXƒg‚ğ“Ç‚İ‚İØ‚è•ª‚¯‚Ä‚»‚ê‚¼‚êpush_back‚·‚é
-	const Rect rect(hoge, hoge, 200, 100);
-}
->>>>>>> ef7d7becb0de95cb163e73442f987b667314c6a3
