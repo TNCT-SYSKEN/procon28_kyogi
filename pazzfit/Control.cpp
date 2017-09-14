@@ -1,7 +1,7 @@
 #include "Control.h"
 
 Control::Control() {
-	//�����ŉ摜�����̎��s
+	//ここで画像処理の実行
 }
 
 void Control::exe() {
