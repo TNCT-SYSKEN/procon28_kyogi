@@ -12,7 +12,9 @@ public:
 	void set_piece();
 	//この部分にアルゴリズムを書き込んでく
 	void output_piece();
-	void output_frame();
+	void use_position();
+
+	void make_point_position();
 
 	//ピースの情報
 	vector<Piece> piece;
