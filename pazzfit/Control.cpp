@@ -6,6 +6,7 @@ Control::Control() {
 
 void Control::exe() {
 	set_piece();
+<<<<<<< HEAD
 	
 	use_position();
 }
@@ -98,3 +99,13 @@ void Control::make_point_position() {
 		cout << piece[0].point[1].first << endl;
 }
 
+=======
+
+}
+
+void Control::set_piece() {
+	int hoge = 10;
+	//テキストを読み込み切り分けてそれぞれpush_backする
+	const Rect rect(hoge, hoge, 200, 100);
+}
+>>>>>>> ef7d7becb0de95cb163e73442f987b667314c6a3

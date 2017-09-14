@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> ef7d7becb0de95cb163e73442f987b667314c6a3
 #pragma once
 #include "common.h"
 
