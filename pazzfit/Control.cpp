@@ -6,6 +6,7 @@ Control::Control() {
 
 void Control::exe() {
 	set_piece();
+
 }
 
 void Control::set_piece() {

@@ -1,128 +1,168 @@
 #include "Algorithm.h"
 
+Algorithm::Algorithm() {
+	clone_piece = cont.piece;
+	flag = -1;
+}
+
+void Algorithm::init() {
+	//clear.evalution;
+}
+
 void Algorithm::fit_piece() {
-
-}
-
-void Algorithm::spin90_piece(int n) {
-	/*
-	ピースを90度左回転させる
-	*/
-	for (int i = 0; i < int(cont.clone_piece[n].point.size()); i++) {
-		cont.clone_piece[n].point[i].first = cont.piece[n].point[i].first * (-1);
-	}
-}
-
-void Algorithm::spin180_piece(int n) {
-	/*
-	ピースを180度左回転させる
-	*/
-	for (int i = 0; i < int(cont.clone_piece[n].point.size()); i++) {
-		cont.clone_piece[n].point[i].first = cont.piece[n].point[i].first * (-1);
-		cont.clone_piece[n].point[i].second = cont.piece[n].point[i].second * (-1);
-	}
-}
-
-void Algorithm::spin270_piece(int n) {
-	/*
-	ピースを270度左回転させる
-	*/
-	for (int i = 0; i < int(cont.clone_piece[n].point.size()); i++) {
-		cont.clone_piece[n].point[i].second = cont.piece[n].point[i].second * (-1);
-	}
-}
-
-void Algorithm::turn_piece(int n) {
-	/*
-	ピースの番号を受け取る
-	ピースを反転させ、頂点情報を更新
-	axis一番X座標の小さい値が入ってる要素数
-	*/
-	int mini_point_x = 100, axis;
-	int minus = 0;
-
-	//基準となる座標の決定
-	for (int i = 0; i < int(cont.clone_piece[n].point.size()); i++) {
-		if (mini_point_x > cont.clone_piece[n].point[i].first) {
-			mini_point_x = cont.clone_piece[n].point[i].first;
-			axis = i;
+	flag++;
+	//ピース嵌めるアルゴリズムをまとめる
+	//枠の基準となる頂点を決定
+	for (int i = 0; i < clone_piece.back().point.size(); i++) {
+		evaluation(i);
+		select_piece();
+		/*枠のvectorが0ならば正*/
+		if (1) {
+			//スクリーンショットを保存
+			break;
+		}
+		if (flag == 1) {
+			init();
 		}
 	}
+}
 
-	//反転
-	for (int i = 0; i < int(cont.clone_piece[n].point.size()); i++) {
-		cont.clone_piece[n].point[i].first = cont.clone_piece[n].point[axis].first -
-			(cont.clone_piece[n].point[i].first - cont.clone_piece[n].point[axis].first);
-	}
-
-	//マイナス座標の修正
-	for (int i = 0; i < int(cont.clone_piece[n].point.size()); i++) {
-		if (abs((cont.clone_piece[n].point[i].first - cont.clone_piece[n].point[axis].first)) > minus) {
-			minus = abs((cont.clone_piece[n].point[i].first - cont.clone_piece[n].point[axis].first));
+void Algorithm::evaluation(int i) {
+	//枠・ピースの頂点・角度・辺の長さを受け取る
+	//ピースと枠の評価点を作成
+	//ピースを一つ決定
+	for (int n = 0; n < (clone_piece.size()); n++) {
+		//ピースの角(頂点)を一つ決定
+		for (int k = 0; k < clone_piece[n].angle.size(); k++) {
+			//枠とピースの角度を比較
+			one_evalution.push_back(0);
+			if (equal_angle(clone_piece.back().angle[i], clone_piece[n].angle[k])) {
+				one_evalution[k] = 1;
+				//その両端の辺も比較
+				if (k == 0) {
+					if (equal_line(clone_piece.back().line[i], clone_piece[n].line.back())) {
+						one_evalution[k] += 1;
+					}
+					else if(equal_line(clone_piece.back().line[i], clone_piece[n].line[k])){
+						one_evalution[k] += 1;
+					}
+					if (equal_line(clone_piece.back().line.back(), clone_piece[n].line.back())) {
+						one_evalution[k] += 1;
+					}
+					else if (equal_line(clone_piece.back().line[i], clone_piece[n].line[k])) {
+						one_evalution[k] += 1;
+					}
+				}
+				else {
+					if (equal_line(clone_piece.back().line[i], clone_piece[n].line[k - 1])) {
+						one_evalution[k] += 1;
+					}
+					else if (equal_line(clone_piece.back().line[i], clone_piece[n].line[k])) {
+						one_evalution[k] += 1;
+					}
+					if (equal_line(clone_piece.back().line.back(), clone_piece[n].line[k - 1])) {
+						one_evalution[k] += 1;
+					}
+					else if (equal_line(clone_piece.back().line[i], clone_piece[n].line[k])) {
+						one_evalution[k] += 1;
+					}
+				}
+			}
+			else {
+				one_evalution[k] = 0;
+			}
+			two_evalution.push_back(one_evalution);
 		}
 	}
-	for (int i = 0; i < int(cont.clone_piece[n].point.size()); i++) {
-		cont.clone_piece[n].point[i].first += minus;
+	three_evalution.push_back(two_evalution);
+}
+
+void Algorithm::union_piece() {
+	//二つのピースの角度・辺を受け取る
+	//ピース同士の評価点を作成
+	//評価点を元にピースを結合
+}
+
+void Algorithm::update_frame(int n) {
+	//評価点を元にピースの形状情報を枠の形状情報に挿入
+	//評価点が高いピースを枠の情報に追加
+	//新たな枠の角度と辺を算出して上書き？
+	//嵌めたピースの削除
+}
+
+void Algorithm::select_piece() {
+	//評価点が高いピースがあるならupdate_piece()へ
+	/*評価点が高いピースがあるなら正*/
+	//ピースの番号を決定
+	for (int n = 0; n < (clone_piece.size()); n++) {
+		//ピースの角(頂点)決定
+		for (int k = 0; k < clone_piece[n].angle.size(); k++) {
+			if (three_evalution[flag][n][k] == 3) {
+				//ピースの番号を引数
+				update_frame(n);
+				fit_piece();
+			}
+		}
 	}
 }
 
 bool Algorithm::check_collision(int n) {
-	double f_slope, p_slope;
-	int f_intercept, p_intercept;
+	double f_slope =  0, p_slope = 0;
+	int f_intercept = 0, p_intercept = 0;
 	int count_x = 0, count_y = 0;
 	/*
 	枠・ピースの頂点を受け取る
 	ピースを配置した時に枠の中に収まっているか判定
 	n-ピースの番号,k-ピースの各頂点,i-枠の各頂点
 	*/
-	for (int k = 0; k < int(cont.clone_piece[n].point.size()); k++) {
-		for (int i = 0; i < int(cont.clone_piece.back().point.size()); i++) {
+	for (int k = 0; k < clone_piece[n].point.size(); k++) {
+		for (int i = 0; i < clone_piece.back().point.size(); i++) {
 
 			//枠の二つの頂点の直線の一次関数を求める
 			//ループの最後になったのなら要素の最後と最初を使用する
-			if ((int(cont.clone_piece.back().point.size()) - 1) == i) {
-				f_slope = (cont.clone_piece.back().point[i].second - cont.clone_piece.back().point[0].second) /
-					(cont.clone_piece.back().point[i].first - cont.clone_piece.back().point[0].first);
-				f_intercept = cont.clone_piece.back().point[i].second - f_slope * cont.clone_piece.back().point[i].first;
+			if ((int(clone_piece.back().point.size()) - 1) == i) {
+				f_slope = (clone_piece.back().point[i].second - clone_piece.back().point[0].second) /
+					(clone_piece.back().point[i].first - clone_piece.back().point[0].first);
+				f_intercept = clone_piece.back().point[i].second - f_slope * clone_piece.back().point[i].first;
 			}
 			else {
-				f_slope = (cont.clone_piece.back().point[i].second - cont.clone_piece.back().point[i + 1].second) /
-					(cont.clone_piece.back().point[i].first - cont.clone_piece.back().point[i + 1].first);
-				f_intercept = cont.clone_piece.back().point[i].second - f_slope * cont.clone_piece.back().point[i].first;
+				f_slope = (clone_piece.back().point[i].second - clone_piece.back().point[i + 1].second) /
+					(clone_piece.back().point[i].first - clone_piece.back().point[i + 1].first);
+				f_intercept = clone_piece.back().point[i].second - f_slope * clone_piece.back().point[i].first;
 			}
 			//ピースの二つの頂点の一次関数を求める
-			if ((int(cont.clone_piece[n].point.size()) - 1) == k) {
-				p_slope = (cont.clone_piece[n].point[k].second - cont.clone_piece[n].point[0].second) /
-					(cont.clone_piece[n].point[k].first - cont.clone_piece[n].point[0].first);
-				p_intercept = cont.clone_piece[n].point[k].second - f_slope * cont.clone_piece[n].point[k].first;
+			if ((int(clone_piece[n].point.size()) - 1) == k) {
+				p_slope = (clone_piece[n].point[k].second - clone_piece[n].point[0].second) /
+					(clone_piece[n].point[k].first - clone_piece[n].point[0].first);
+				p_intercept = clone_piece[n].point[k].second - f_slope * clone_piece[n].point[k].first;
 			}
 			else if (i == 0) {
-				p_slope = (cont.clone_piece[n].point[k].second - cont.clone_piece[n].point[k + 1].second) /
-					(cont.clone_piece[n].point[k].first - cont.clone_piece[n].point[k + 1].first);
-				p_intercept = cont.clone_piece[n].point[k].second - f_slope * cont.clone_piece[n].point[k].first;
+				p_slope = (clone_piece[n].point[k].second - clone_piece[n].point[k + 1].second) /
+					(clone_piece[n].point[k].first - clone_piece[n].point[k + 1].first);
+				p_intercept = clone_piece[n].point[k].second - f_slope * clone_piece[n].point[k].first;
 			}
 
 			//ピースの頂点から伸ばした平行線,垂線と枠の各辺とが交わった回数をカウント
-			if ((cont.clone_piece[n].point[k].second - f_slope * cont.clone_piece[n].point[k].first - f_intercept) *
-				(cont.clone_piece[n].point[k].second - f_slope * 120 - f_intercept) < 0) {
-				if ((int(cont.clone_piece.back().point.size()) - 1) == i) {
-					if ((cont.clone_piece.back().point[i].second - p_slope * cont.clone_piece.back().point[i].first - p_intercept) *
-						(cont.clone_piece.back().point[0].second - p_slope * cont.clone_piece.back().point[0].first - p_intercept) < 0) {
+			if ((clone_piece[n].point[k].second - f_slope * clone_piece[n].point[k].first - f_intercept) *
+				(clone_piece[n].point[k].second - f_slope * 120 - f_intercept) < 0) {
+				if ((int(clone_piece.back().point.size()) - 1) == i) {
+					if ((clone_piece.back().point[i].second - p_slope * clone_piece.back().point[i].first - p_intercept) *
+						(clone_piece.back().point[0].second - p_slope * clone_piece.back().point[0].first - p_intercept) < 0) {
 						count_x++;
 					}
 				}
 				else {
-					if ((cont.clone_piece.back().point[i].second - p_slope * cont.clone_piece.back().point[i].first - p_intercept) *
-						(cont.clone_piece.back().point[i + 1].second - p_slope * cont.clone_piece.back().point[i + 1].first - p_intercept) < 0) {
+					if ((clone_piece.back().point[i].second - p_slope * clone_piece.back().point[i].first - p_intercept) *
+						(clone_piece.back().point[i + 1].second - p_slope * clone_piece.back().point[i + 1].first - p_intercept) < 0) {
 						count_x++;
 					}
 				}
 			}
-			if ((cont.clone_piece[n].point[k].second - f_slope * cont.clone_piece[n].point[k].first - f_intercept) *
-				(120 - f_slope * cont.clone_piece[n].point[k].second - f_intercept) < 0) {
-				if ((int(cont.clone_piece.back().point.size()) - 1) == i) {
-					if ((cont.clone_piece.back().point[i].second - p_slope * cont.clone_piece.back().point[i].first - p_intercept) *
-						(cont.clone_piece.back().point[0].second - p_slope * cont.clone_piece.back().point[0].first - p_intercept) < 0) {
+			if ((clone_piece[n].point[k].second - f_slope * clone_piece[n].point[k].first - f_intercept) *
+				(120 - f_slope * clone_piece[n].point[k].second - f_intercept) < 0) {
+				if ((int(clone_piece.back().point.size()) - 1) == i) {
+					if ((clone_piece.back().point[i].second - p_slope * clone_piece.back().point[i].first - p_intercept) *
+						(clone_piece.back().point[0].second - p_slope * clone_piece.back().point[0].first - p_intercept) < 0) {
 						count_y++;
 					}
 				}
@@ -139,21 +179,66 @@ bool Algorithm::check_collision(int n) {
 	}
 }
 
-void Algorithm::evaluation() {
-	//枠・ピースの頂点・角度・辺の長さを受け取る
-	//ピースと枠の評価点を作成
+void Algorithm::turn_piece(int n) {
+	/*
+	ピースの番号を受け取る
+	ピースを反転させ、頂点情報を更新
+	axis一番X座標の小さい値が入ってる要素数
+	*/
+	int mini_point_x = 100, axis = 0;
+	int minus = 0;
 
+	//基準となる座標の決定
+	for (int i = 0; i < int(clone_piece[n].point.size()); i++) {
+		if (mini_point_x > clone_piece[n].point[i].first) {
+			mini_point_x = clone_piece[n].point[i].first;
+			axis = i;
+		}
+	}
+
+	//反転
+	for (int i = 0; i < int(clone_piece[n].point.size()); i++) {
+		clone_piece[n].point[i].first = clone_piece[n].point[axis].first -
+			(clone_piece[n].point[i].first - clone_piece[n].point[axis].first);
+	}
+
+	//マイナス座標の修正
+	for (int i = 0; i < int(clone_piece[n].point.size()); i++) {
+		if (abs((clone_piece[n].point[i].first - clone_piece[n].point[axis].first)) > minus) {
+			minus = abs((clone_piece[n].point[i].first - clone_piece[n].point[axis].first));
+		}
+	}
+	for (int i = 0; i < int(clone_piece[n].point.size()); i++) {
+		clone_piece[n].point[i].first += minus;
+	}
 }
 
-void Algorithm::union_piece() {
-	//二つのピースの角度・辺を受け取る
-	//ピース同士の評価点を作成
-	//評価点を元にピースを結合
+void Algorithm::spin90_piece(int n) {
+	/*
+	ピースを90度左回転させる
+	*/
+	for (int i = 0; i < int(clone_piece[n].point.size()); i++) {
+		clone_piece[n].point[i].first = cont.piece[n].point[i].first * (-1);
+	}
 }
 
-void Algorithm::update_frame() {
-	//枠・ピースの頂点を受け取る
-	//評価点を元にピースの形状情報を枠の形状情報に挿入
+void Algorithm::spin180_piece(int n) {
+	/*
+	ピースを180度左回転させる
+	*/
+	for (int i = 0; i < int(clone_piece[n].point.size()); i++) {
+		clone_piece[n].point[i].first = cont.piece[n].point[i].first * (-1);
+		clone_piece[n].point[i].second = cont.piece[n].point[i].second * (-1);
+	}
+}
+
+void Algorithm::spin270_piece(int n) {
+	/*
+	ピースを270度左回転させる
+	*/
+	for (int i = 0; i < int(clone_piece[n].point.size()); i++) {
+		clone_piece[n].point[i].second = cont.piece[n].point[i].second * (-1);
+	}
 }
 
 bool Algorithm::equal_angle(double first_angle, double second_angle) {
@@ -167,7 +252,6 @@ bool Algorithm::equal_angle(double first_angle, double second_angle) {
 	else {
 		return true;
 	}
-	return true;
 }
 
 bool Algorithm::equal_line(double first_line, double second_line) {

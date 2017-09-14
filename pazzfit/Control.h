@@ -14,5 +14,4 @@ public:
 
 	//ƒs[ƒX‚Ìî•ñ
 	vector<Piece> piece;
-	vector<Piece> clone_piece;
 };
