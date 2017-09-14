@@ -2,11 +2,12 @@
 
 Algorithm::Algorithm() {
 	clone_piece = cont.piece;
-	flag = -1;
+	init();
 }
 
 void Algorithm::init() {
-	//clear.evalution;
+	flag = -1;
+	three_evalution.clear();
 }
 
 void Algorithm::fit_piece() {
@@ -16,15 +17,12 @@ void Algorithm::fit_piece() {
 	for (int i = 0; i < clone_piece.back().point.size(); i++) {
 		evaluation(i);
 		select_piece();
-		/*枠のvectorが0ならば正*/
-		if (1) {
-			//スクリーンショットを保存
-			break;
-		}
-		if (flag == 1) {
+		if (flag == 0) {
 			init();
 		}
 	}
+	//更新した枠で嵌まらなかった場合、ピース・枠を一つ再帰前のものを代入する
+	flag--;
 }
 
 void Algorithm::evaluation(int i) {
@@ -84,10 +82,15 @@ void Algorithm::union_piece() {
 }
 
 void Algorithm::update_frame(int n) {
-	//評価点を元にピースの形状情報を枠の形状情報に挿入
-	//評価点が高いピースを枠の情報に追加
-	//新たな枠の角度と辺を算出して上書き？
+	//ピースの番号を受け取る
+	//回転,反転,あたり判定によって当てはまるか判定
+	//ピースの頂点情報を枠の頂点情報に挿入
+	//枠の形状情報の更新
+	//嵌めたピースの削除の前にreturn_pieceにpush_back
+	//枠に関してもreturn_frameにpush_back
 	//嵌めたピースの削除
+	//ピースが嵌まった場合、fit_piece()を呼び出し再帰
+	//ピースが全て埋まったのならスクショを保存する
 }
 
 void Algorithm::select_piece() {
@@ -100,7 +103,6 @@ void Algorithm::select_piece() {
 			if (three_evalution[flag][n][k] == 3) {
 				//ピースの番号を引数
 				update_frame(n);
-				fit_piece();
 			}
 		}
 	}

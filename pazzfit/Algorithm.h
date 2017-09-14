@@ -23,6 +23,7 @@ public :
 	bool equal_point(int, int);
 private:
 	int flag;
+	vector<Piece> return_frame;
 	vector<Piece> return_piece;
 	vector<Piece> clone_piece;
 	vector<vector<vector<int>>> three_evalution;
