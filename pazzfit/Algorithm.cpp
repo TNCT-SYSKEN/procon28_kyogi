@@ -81,10 +81,11 @@ void Algorithm::union_piece() {
 	//評価点を元にピースを結合
 }
 
-void Algorithm::update_frame(int n) {
+bool Algorithm::update_frame(int n) {
 	//ピースの番号を受け取る
 	//回転,反転,あたり判定によって当てはまるか判定
 	//ピースの頂点情報を枠の頂点情報に挿入
+
 	//枠の形状情報の更新
 	//嵌めたピースの削除の前にreturn_pieceにpush_back
 	//枠に関してもreturn_frameにpush_back

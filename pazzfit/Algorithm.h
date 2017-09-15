@@ -10,7 +10,7 @@ public :
 	void fit_piece();
 	void evaluation(int);
 	void union_piece();
-	void update_frame(int);
+	bool update_frame(int);
 	void select_piece();
 	bool check_collision(int);
 
