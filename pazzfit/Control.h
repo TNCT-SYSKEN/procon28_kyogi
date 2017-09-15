@@ -18,6 +18,13 @@ public:
 	void make_line();
 	void make_angle();
 
+	void output_piece();
+	void use_position();
+
+	void make_point_position();
+
+
 	//ƒs[ƒX‚Ìî•ñ
 	vector<Piece> piece;
 };
+
