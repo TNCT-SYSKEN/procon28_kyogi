@@ -16,6 +16,7 @@ public:
 
 	void make_point();
 	void make_line();
+	void make_angle();
 
 	//ƒs[ƒX‚Ìî•ñ
 	vector<Piece> piece;

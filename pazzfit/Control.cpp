@@ -9,6 +9,7 @@ void Control::exe() {
 	//å`èÛèÓïÒäiî[
 	set_shape_data();
 	exec_argolithm();
+	
 }
 
 void Control::set_piece() {
@@ -21,8 +22,13 @@ void Control::exec_argolithm() {
 }
 
 void Control::set_shape_data() {
-	make_point();
-	make_line();
+	static bool flag = false;
+	if (!flag) {
+		make_point();
+		make_line();
+		make_angle();
+		flag = true;
+	}
 }
 
 void Control::make_point() {
@@ -114,4 +120,189 @@ void Control::make_line() {
 		}
 	}
 	cout << piece[0].point[0].first << endl;
+}
+
+void Control::make_angle() {
+	int x_point[8] = { 0,1,1,1,0,-1,-1,-1 };
+	int y_point[8] = { 1,1,0,-1,-1,-1,0,1 };
+	for (int i = 0; i < piece.size(); i++) {
+		for (int j = 0; j < piece[i].no_piece; j++) {
+			Polygon shape;shape.scaled(10).draw(); 
+			switch (piece[i].no_piece) {
+			case 3:
+			{
+				shape = { { piece[i].point[0].first,piece[i].point[0].second }, { piece[i].point[1].first,piece[i].point[1].second }, { piece[i].point[2].first,piece[i].point[2].second } };
+				break;
+			}
+			case 4:
+			{
+				shape = {
+					{ piece[i].point[0].first,piece[i].point[0].second },{ piece[i].point[1].first,piece[i].point[1].second },{ piece[i].point[2].first,piece[i].point[2].second },
+					{ piece[i].point[3].first,piece[i].point[3].second }
+				};
+				break;
+			}
+			case 5:
+			{
+				shape = {
+					{ piece[i].point[0].first,piece[i].point[0].second },{ piece[i].point[1].first,piece[i].point[1].second },{ piece[i].point[2].first,piece[i].point[2].second },
+					{ piece[i].point[3].first,piece[i].point[3].second },{ piece[i].point[4].first,piece[i].point[4].second }
+				};
+				break;
+			}
+			case 6:
+			{
+				shape = {
+					{ piece[i].point[0].first,piece[i].point[0].second },{ piece[i].point[1].first,piece[i].point[1].second },{ piece[i].point[2].first,piece[i].point[2].second },
+					{ piece[i].point[3].first,piece[i].point[3].second },{ piece[i].point[4].first,piece[i].point[4].second },{ piece[i].point[5].first,piece[i].point[5].second }
+				};
+				break;
+			}
+			case 7:
+			{
+				shape = {
+					{ piece[i].point[0].first,piece[i].point[0].second },{ piece[i].point[1].first,piece[i].point[1].second },{ piece[i].point[2].first,piece[i].point[2].second },
+					{ piece[i].point[3].first,piece[i].point[3].second },{ piece[i].point[4].first,piece[i].point[4].second },{ piece[i].point[5].first,piece[i].point[5].second },
+					{ piece[i].point[6].first,piece[i].point[6].second }
+				};
+				break;
+			}
+			case 8:
+			{
+				shape = {
+					{ piece[i].point[0].first,piece[i].point[0].second },{ piece[i].point[1].first,piece[i].point[1].second },{ piece[i].point[2].first,piece[i].point[2].second },
+					{ piece[i].point[3].first,piece[i].point[3].second },{ piece[i].point[4].first,piece[i].point[4].second },{ piece[i].point[5].first,piece[i].point[5].second },
+					{ piece[i].point[6].first,piece[i].point[6].second },{ piece[i].point[7].first,piece[i].point[7].second }
+				};
+				break;
+			}
+			case 9:
+			{
+				shape = {
+					{ piece[i].point[0].first,piece[i].point[0].second },{ piece[i].point[1].first,piece[i].point[1].second },{ piece[i].point[2].first,piece[i].point[2].second },
+					{ piece[i].point[3].first,piece[i].point[3].second },{ piece[i].point[4].first,piece[i].point[4].second },{ piece[i].point[5].first,piece[i].point[5].second },
+					{ piece[i].point[6].first,piece[i].point[6].second },{ piece[i].point[7].first,piece[i].point[7].second },{ piece[i].point[8].first,piece[i].point[8].second }
+				};
+				break;
+			}
+			case 10:
+			{
+				shape = {
+					{ piece[i].point[0].first,piece[i].point[0].second },{ piece[i].point[1].first,piece[i].point[1].second },{ piece[i].point[2].first,piece[i].point[2].second },
+					{ piece[i].point[3].first,piece[i].point[3].second },{ piece[i].point[4].first,piece[i].point[4].second },{ piece[i].point[5].first,piece[i].point[5].second },
+					{ piece[i].point[6].first,piece[i].point[6].second },{ piece[i].point[7].first,piece[i].point[7].second },{ piece[i].point[8].first,piece[i].point[8].second },
+					{ piece[i].point[9].first,piece[i].point[9].second }
+				};
+				break;
+			}
+			case 11:
+			{
+				shape = {
+					{ piece[i].point[0].first,piece[i].point[0].second },{ piece[i].point[1].first,piece[i].point[1].second },{ piece[i].point[2].first,piece[i].point[2].second },
+					{ piece[i].point[3].first,piece[i].point[3].second },{ piece[i].point[4].first,piece[i].point[4].second },{ piece[i].point[5].first,piece[i].point[5].second },
+					{ piece[i].point[6].first,piece[i].point[6].second },{ piece[i].point[7].first,piece[i].point[7].second },{ piece[i].point[8].first,piece[i].point[8].second },
+					{ piece[i].point[9].first,piece[i].point[9].second },{ piece[i].point[10].first,piece[i].point[10].second }
+				};
+				break;
+			}
+			case 12:
+			{
+				shape = {
+					{ piece[i].point[0].first,piece[i].point[0].second },{ piece[i].point[1].first,piece[i].point[1].second },{ piece[i].point[2].first,piece[i].point[2].second },
+					{ piece[i].point[3].first,piece[i].point[3].second },{ piece[i].point[4].first,piece[i].point[4].second },{ piece[i].point[5].first,piece[i].point[5].second },
+					{ piece[i].point[6].first,piece[i].point[6].second },{ piece[i].point[7].first,piece[i].point[7].second },{ piece[i].point[8].first,piece[i].point[8].second },
+					{ piece[i].point[9].first,piece[i].point[9].second },{ piece[i].point[10].first,piece[i].point[10].second },{ piece[i].point[11].first,piece[i].point[11].second }
+				};
+				break;
+			}
+			case 13:
+			{
+				shape = {
+					{ piece[i].point[0].first,piece[i].point[0].second },{ piece[i].point[1].first,piece[i].point[1].second },{ piece[i].point[2].first,piece[i].point[2].second },
+					{ piece[i].point[3].first,piece[i].point[3].second },{ piece[i].point[4].first,piece[i].point[4].second },{ piece[i].point[5].first,piece[i].point[5].second },
+					{ piece[i].point[6].first,piece[i].point[6].second },{ piece[i].point[7].first,piece[i].point[7].second },{ piece[i].point[8].first,piece[i].point[8].second },
+					{ piece[i].point[9].first,piece[i].point[9].second },{ piece[i].point[10].first,piece[i].point[10].second },{ piece[i].point[11].first,piece[i].point[11].second },
+					{ piece[i].point[12].first,piece[i].point[12].second }
+				};
+				break;
+			}
+			case 14:
+				{shape = {
+					{ piece[i].point[0].first,piece[i].point[0].second },{ piece[i].point[1].first,piece[i].point[1].second },{ piece[i].point[2].first,piece[i].point[2].second },
+					{ piece[i].point[3].first,piece[i].point[3].second },{ piece[i].point[4].first,piece[i].point[4].second },{ piece[i].point[5].first,piece[i].point[5].second },
+					{ piece[i].point[6].first,piece[i].point[6].second },{ piece[i].point[7].first,piece[i].point[7].second },{ piece[i].point[8].first,piece[i].point[8].second },
+					{ piece[i].point[9].first,piece[i].point[9].second },{ piece[i].point[10].first,piece[i].point[10].second },{ piece[i].point[11].first,piece[i].point[11].second },
+					{ piece[i].point[12].first,piece[i].point[12].second },{ piece[i].point[13].first,piece[i].point[13].second }
+				};
+				break;
+			}
+			case 15:
+			{
+				shape = {
+					{ piece[i].point[0].first,piece[i].point[0].second },{ piece[i].point[1].first,piece[i].point[1].second },{ piece[i].point[2].first,piece[i].point[2].second },
+					{ piece[i].point[3].first,piece[i].point[3].second },{ piece[i].point[4].first,piece[i].point[4].second },{ piece[i].point[5].first,piece[i].point[5].second },
+					{ piece[i].point[6].first,piece[i].point[6].second },{ piece[i].point[7].first,piece[i].point[7].second },{ piece[i].point[8].first,piece[i].point[8].second },
+					{ piece[i].point[9].first,piece[i].point[9].second },{ piece[i].point[10].first,piece[i].point[10].second },{ piece[i].point[11].first,piece[i].point[11].second },
+					{ piece[i].point[12].first,piece[i].point[12].second },{ piece[i].point[13].first,piece[i].point[13].second },{ piece[i].point[14].first,piece[i].point[14].second }
+				};
+				break;
+			}
+			case 16:
+			{
+				shape = {
+					{ piece[i].point[0].first,piece[i].point[0].second },{ piece[i].point[1].first,piece[i].point[1].second },{ piece[i].point[2].first,piece[i].point[2].second },
+					{ piece[i].point[3].first,piece[i].point[3].second },{ piece[i].point[4].first,piece[i].point[4].second },{ piece[i].point[5].first,piece[i].point[5].second },
+					{ piece[i].point[6].first,piece[i].point[6].second },{ piece[i].point[7].first,piece[i].point[7].second },{ piece[i].point[8].first,piece[i].point[8].second },
+					{ piece[i].point[9].first,piece[i].point[9].second },{ piece[i].point[10].first,piece[i].point[10].second },{ piece[i].point[11].first,piece[i].point[11].second },
+					{ piece[i].point[12].first,piece[i].point[12].second },{ piece[i].point[13].first,piece[i].point[13].second },{ piece[i].point[14].first,piece[i].point[14].second },
+					{ piece[i].point[15].first,piece[i].point[15].second }
+				};
+				break;
+			}
+			}
+			int angle = 0;
+			for (int k = 0; k < 8; k++) {
+				if (bool hoge = Point(piece[i].point[j].first + x_point[k], piece[i].point[j].second + y_point[k]).intersects(shape)) {
+					angle++;
+				}
+			}
+			//âöäpÇ≈Ç†ÇÈ
+			if (angle >= 5) {
+				double a1, a2, b1, b2;
+				double a, b, c, d;
+				double kaku;
+				a1 = piece[i].point[(j + 1) % piece[i].no_piece].first - piece[i].point[j].first;
+				a2 = piece[i].point[(j + 1) % piece[i].no_piece].second - piece[i].point[j].second;
+				b1 = piece[i].point[(j + piece[i].no_piece - 1) % piece[i].no_piece].first - piece[i].point[j].first;
+				b2 = piece[i].point[(j + piece[i].no_piece - 1) % piece[i].no_piece].second - piece[i].point[j].second;
+				a = a1 * b1;
+				b = a2 * b2;
+				c = sqrt(pow(a1, 2) + pow(a2, 2));
+				d = sqrt(pow(b1, 2) + pow(b2, 2));
+				kaku = (a + b) / (c * d);
+				kaku = acos(kaku);
+				kaku = kaku * 180 / Pi;
+				kaku = 360 - kaku;
+				piece[i].angle.push_back(kaku);
+			}
+			//ì äpÇ≈Ç†ÇÈ
+			else {
+				double a1, a2, b1, b2;
+				double a, b, c, d;
+				double kaku;
+				a1 = piece[i].point[(j + 1) % piece[i].no_piece].first - piece[i].point[j].first;
+				a2 = piece[i].point[(j + 1) % piece[i].no_piece].second - piece[i].point[j].second;
+				b1 = piece[i].point[(j + piece[i].no_piece - 1) % piece[i].no_piece].first - piece[i].point[j].first;
+				b2 = piece[i].point[(j + piece[i].no_piece - 1) % piece[i].no_piece].second - piece[i].point[j].second;
+				a = a1 * b1;
+				b = a2 * b2;
+				c = sqrt(pow(a1, 2) + pow(a2, 2));
+				d = sqrt(pow(b1, 2) + pow(b2, 2));
+				kaku = (a + b) / (c * d);
+				kaku = acos(kaku);
+				kaku = kaku * 180 / Pi;
+				piece[i].angle.push_back(kaku);
+			}
+		}
+	}
 }
