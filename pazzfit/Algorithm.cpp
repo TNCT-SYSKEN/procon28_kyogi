@@ -82,40 +82,83 @@ void Algorithm::union_piece() {
 }
 
 bool Algorithm::update_frame(int n ,int i) {
-	vector<Piece> give_piece;
-	int symbol;
+	vector<Piece> give_piece = clone_piece;
+	int piece_symbol = 0;
+	int frame_symbol = 0;
+	int se_count = 0;
 	//ピースの番号を受け取る
 	//回転,反転,あたり判定によって当てはまるか判定
 	//ピースの頂点情報を枠の頂点情報に挿入
-
-	//枠の形状情報の更新
-	//嵌めたピースの削除
-	//ピースが嵌まった場合、fit_piece()を呼び出し再帰
-	//ピースが全て埋まったのならスクショを保存する
-	//return_piece = clone_piece[n];
-	give_piece = clone_piece;
+	
 	//ans_pointへの代入
 	clone_piece[n].ans_point = clone_piece[n].point;
 	//基準を求める
 	for (int k = 0; k < clone_piece[n].angle.size(); k++) {
 		if (clone_piece.back().point[i].first == clone_piece[n].point[k].first && clone_piece.back().point[i].second == clone_piece[n].point[k].second) {
-			symbol = k;
-			break;
+			piece_symbol = k;
 		}
 	}
+	//右回りに頂点が等しい&その角度が等しい場合除外
 	for (int t = 0; t < (clone_piece.back().point.size() / 2); t++) {
-		//頂点が等しい&その角度が等しい場合除外
-		if (symbol + t > clone_piece[n].point.size()) {
-			symbol = -t;
+		if (piece_symbol + t > clone_piece[n].point.size()) {
+			break;
 		}
-		if (clone_piece.back().point[t].first == clone_piece[n].point[symbol + t].first && clone_piece.back().point[t].second == clone_piece[n].point[symbol + t].second) {
-			if (clone_piece.back().angle[t] == clone_piece[n].angle[symbol + t]) {
+		if (clone_piece.back().point[i + t].first == clone_piece[n].point[piece_symbol + t].first && clone_piece.back().point[i + t].second == clone_piece[n].point[piece_symbol + t].second) {
+			if (clone_piece.back().angle[t] == clone_piece[n].angle[piece_symbol + t]) {
 				//頂点を削除
-				give_piece[n].point.erase(give_piece[n].point.begin() + symbol + t);
+				give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol + t);
+				give_piece.back().point.erase(give_piece[n].point.begin() + i + t);
+			}
+			else {
+				give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol + t);
 			}
 		}
 	}
-
+	//左回りに頂点が等しい&その角度が等しい場合除外
+	for (int t = 0; t < (clone_piece.back().point.size() / 2); t++) {
+		if (piece_symbol - t > clone_piece[n].point.size()) {
+			break;
+		}
+		if (clone_piece.back().point[i - t].first == clone_piece[n].point[piece_symbol - t].first && clone_piece.back().point[i - t].second == clone_piece[n].point[piece_symbol - t].second) {
+			if (clone_piece.back().angle[t] == clone_piece[n].angle[piece_symbol + t]) {
+				//頂点を削除
+				give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol + t);
+				give_piece.back().point.erase(give_piece[n].point.begin() + i - t);
+				frame_symbol -= 1;
+			}
+			else {
+				give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol + t);
+			}
+		}
+	}
+	//最初に入れる方を挿入
+	for (int t = 0; t < clone_piece[n].angle.size(); t++) {
+		Circle circle(give_piece[n].point[t].first, give_piece[n].point[t].second, 1);
+		for (int k = 0; k < clone_piece.back().angle.size(); k++) {
+			if (k != clone_piece.back().angle.size() - 1) {
+				Line line(clone_piece.back().point[k].first, clone_piece.back().point[k].second, clone_piece.back().point.front().first, clone_piece.back().point.front().second);
+				if (line.intersects(circle)) {
+					give_piece.back().point.insert(give_piece.back().point.begin() + i + frame_symbol, give_piece[n].point[t]);
+					frame_symbol += 1;
+					break;
+					se_count++;
+				}
+			}
+			else {
+				Line line(clone_piece.back().point[k].first, clone_piece.back().point[k].second, clone_piece.back().point[k + 1].first, clone_piece.back().point[k + 1].second);
+				if (line.intersects(circle)) {
+					give_piece.back().point.insert(give_piece.back().point.begin() + i + frame_symbol , give_piece[n].point[t]);
+					frame_symbol += 1;
+					break;
+					se_count++;
+				}
+			}
+		}
+	}
+	//ピースの残りの頂点を判定向きに挿入していく
+	for (int k = clone_piece[n].angle.size(); k > 0; k--) {
+		
+	}
 	return true;
 }
 
