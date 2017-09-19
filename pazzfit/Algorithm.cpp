@@ -141,7 +141,7 @@ bool Algorithm::update_frame(int n ,int i) {
 					give_piece.back().point.insert(give_piece.back().point.begin() + i + frame_symbol, give_piece[n].point[t]);
 					frame_symbol += 1;
 					break;
-					se_count++;
+					se_count = se_count + 1;
 				}
 			}
 			else {
@@ -150,14 +150,19 @@ bool Algorithm::update_frame(int n ,int i) {
 					give_piece.back().point.insert(give_piece.back().point.begin() + i + frame_symbol , give_piece[n].point[t]);
 					frame_symbol += 1;
 					break;
-					se_count++;
+					se_count = se_count + 1;
 				}
 			}
 		}
 	}
 	//ピースの残りの頂点を判定向きに挿入していく
 	for (int k = clone_piece[n].angle.size(); k > 0; k--) {
-		
+		if (se_count == 2) {
+			give_piece.back().point.insert(give_piece.back().point.begin() + i + frame_symbol - 1, give_piece[n].point[k]);
+		}
+		else {
+			give_piece.back().point.insert(give_piece.back().point.begin() + i + frame_symbol, give_piece[n].point[k]);
+		}
 	}
 	return true;
 }
