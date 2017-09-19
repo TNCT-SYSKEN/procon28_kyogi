@@ -257,6 +257,13 @@ paket-files/
 
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
+<<<<<<< HEAD
+*.pyc
+
+# test images
+*.bmp
+=======
 *.pyc
 
 *.html
+>>>>>>> e591ed285ce1da17b2e3df898fe8ee9e72cf6082

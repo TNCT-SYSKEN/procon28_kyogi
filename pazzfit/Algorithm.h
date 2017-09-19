@@ -10,8 +10,8 @@ public :
 	void fit_piece();
 	void evaluation(int);
 	void union_piece();
-	bool update_frame(int);
-	void select_piece();
+	bool update_frame(int,int);
+	void select_piece(int);
 	bool check_collision(int);
 
 	void turn_piece(int);

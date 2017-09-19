@@ -16,7 +16,7 @@ void Algorithm::fit_piece() {
 	//枠の基準となる頂点を決定
 	for (int i = 0; i < clone_piece.back().point.size(); i++) {
 		evaluation(i);
-		select_piece();
+		select_piece(i);
 		if (flag == 0) {
 			init();
 		}
@@ -81,7 +81,7 @@ void Algorithm::union_piece() {
 	//評価点を元にピースを結合
 }
 
-bool Algorithm::update_frame(int n) {
+bool Algorithm::update_frame(int n ,int i) {
 	//ピースの番号を受け取る
 	//回転,反転,あたり判定によって当てはまるか判定
 	//ピースの頂点情報を枠の頂点情報に挿入
@@ -92,9 +92,16 @@ bool Algorithm::update_frame(int n) {
 	//嵌めたピースの削除
 	//ピースが嵌まった場合、fit_piece()を呼び出し再帰
 	//ピースが全て埋まったのならスクショを保存する
+	//return_piece = clone_piece[n];
+	for (int k = 0; k < clone_piece[n].angle.size(); k++) {
+		if (clone_piece.back().point[i].first == clone_piece[n].point[k].first && clone_piece.back().point[i].first == clone_piece[n].point[k].first) {
+
+		}
+	}
+	return true;
 }
 
-void Algorithm::select_piece() {
+void Algorithm::select_piece(int i) {
 	//評価点が高いピースがあるならupdate_piece()へ
 	/*評価点が高いピースがあるなら正*/
 	//ピースの番号を決定
@@ -102,8 +109,8 @@ void Algorithm::select_piece() {
 		//ピースの角(頂点)決定
 		for (int k = 0; k < clone_piece[n].angle.size(); k++) {
 			if (three_evalution[flag][n][k] == 3) {
-				//ピースの番号を引数
-				update_frame(n);
+				//ピースの番号,枠の頂点を引数
+				update_frame(n,i);
 			}
 		}
 	}
