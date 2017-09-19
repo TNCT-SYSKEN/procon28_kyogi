@@ -83,6 +83,7 @@ void Algorithm::union_piece() {
 
 bool Algorithm::update_frame(int n ,int i) {
 	vector<Piece> give_piece = clone_piece;
+	vector<pair<int, int> > new_frame = clone_piece.back().point;
 	int piece_symbol = 0;
 	int frame_symbol = 0;
 	int se_count = 0;
@@ -155,7 +156,7 @@ bool Algorithm::update_frame(int n ,int i) {
 			}
 		}
 	}
-	//ピースの残りの頂点を判定向きに挿入していく
+	//ピースの残りの頂点を反対向きに挿入していく
 	for (int k = clone_piece[n].angle.size(); k > 0; k--) {
 		if (se_count == 2) {
 			give_piece.back().point.insert(give_piece.back().point.begin() + i + frame_symbol - 1, give_piece[n].point[k]);
@@ -164,6 +165,13 @@ bool Algorithm::update_frame(int n ,int i) {
 			give_piece.back().point.insert(give_piece.back().point.begin() + i + frame_symbol, give_piece[n].point[k]);
 		}
 	}
+	//更新した情報の共有
+	new_frame = give_piece.back().point;
+	give_piece = clone_piece;
+	give_piece.back().point = new_frame;
+	give_piece.erase(give_piece.begin() + n);
+	//再帰
+	//fit_piece(give_piece);
 	return true;
 }
 
