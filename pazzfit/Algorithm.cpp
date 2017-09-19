@@ -82,22 +82,40 @@ void Algorithm::union_piece() {
 }
 
 bool Algorithm::update_frame(int n ,int i) {
+	vector<Piece> give_piece;
+	int symbol;
 	//ピースの番号を受け取る
 	//回転,反転,あたり判定によって当てはまるか判定
 	//ピースの頂点情報を枠の頂点情報に挿入
 
 	//枠の形状情報の更新
-	//嵌めたピースの削除の前にreturn_pieceにpush_back
-	//枠に関してもreturn_frameにpush_back
 	//嵌めたピースの削除
 	//ピースが嵌まった場合、fit_piece()を呼び出し再帰
 	//ピースが全て埋まったのならスクショを保存する
 	//return_piece = clone_piece[n];
+	give_piece = clone_piece;
+	//ans_pointへの代入
+	clone_piece[n].ans_point = clone_piece[n].point;
+	//基準を求める
 	for (int k = 0; k < clone_piece[n].angle.size(); k++) {
-		if (clone_piece.back().point[i].first == clone_piece[n].point[k].first && clone_piece.back().point[i].first == clone_piece[n].point[k].first) {
-
+		if (clone_piece.back().point[i].first == clone_piece[n].point[k].first && clone_piece.back().point[i].second == clone_piece[n].point[k].second) {
+			symbol = k;
+			break;
 		}
 	}
+	for (int t = 0; t < (clone_piece.back().point.size() / 2); t++) {
+		//頂点が等しい&その角度が等しい場合除外
+		if (symbol + t > clone_piece[n].point.size()) {
+			symbol = -t;
+		}
+		if (clone_piece.back().point[t].first == clone_piece[n].point[symbol + t].first && clone_piece.back().point[t].second == clone_piece[n].point[symbol + t].second) {
+			if (clone_piece.back().angle[t] == clone_piece[n].angle[symbol + t]) {
+				//頂点を削除
+				give_piece[n].point.erase(give_piece[n].point.begin() + symbol + t);
+			}
+		}
+	}
+
 	return true;
 }
 
