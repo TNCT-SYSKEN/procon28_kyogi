@@ -11,14 +11,14 @@ void Algorithm::init() {
 
 void Algorithm::fit_piece(vector<Piece> clone_piece) {
 	flag++;
+	if (flag == 0) {
+		piece = clone_piece;
+	}
 	//ピース嵌めるアルゴリズムをまとめる
 	//枠の基準となる頂点を決定
 	for (int i = 0; i < clone_piece.back().point.size(); i++) {
 		evaluation(i, clone_piece);
 		select_piece(i,clone_piece);
-		if (flag == 0) {
-			init();
-		}
 	}
 	flag--;
 }
@@ -27,39 +27,36 @@ void Algorithm::evaluation(int i,vector<Piece> &clone_piece) {
 	//枠・ピースの頂点・角度・辺の長さを受け取る
 	//ピースと枠の評価点を作成
 	//ピースを一つ決定
-	for (int n = 0; n < (clone_piece.size()); n++) {
+	for (int n = 0; n < (clone_piece.size() - 1); n++) {
 		//ピースの角(頂点)を一つ決定
 		for (int k = 0; k < clone_piece[n].angle.size(); k++) {
 			//枠とピースの角度を比較
 			one_evalution.push_back(0);
+
 			if (equal_angle(clone_piece.back().angle[i], clone_piece[n].angle[k])) {
 				one_evalution[k] = 1;
 				//その両端の辺も比較
-				if (k == 0) {
-					if (equal_line(clone_piece.back().line[i], clone_piece[n].line.back())) {
-						one_evalution[k] += 1;
-					}
-					else if(equal_line(clone_piece.back().line[i], clone_piece[n].line[k])){
+				if (i == 0 && k == 0) {
+					if (equal_line(clone_piece.back().line[i], clone_piece[n].line[k])) {
 						one_evalution[k] += 1;
 					}
 					if (equal_line(clone_piece.back().line.back(), clone_piece[n].line.back())) {
 						one_evalution[k] += 1;
 					}
-					else if (equal_line(clone_piece.back().line[i], clone_piece[n].line[k])) {
+				}
+				else if (i == 0 && k != 0) {
+					if (equal_line(clone_piece.back().line[i], clone_piece[n].line[k])) {
+						one_evalution[k] += 1;
+					}
+					if(equal_line(clone_piece.back().line.back(), clone_piece[n].line[k - 1])){
 						one_evalution[k] += 1;
 					}
 				}
-				else {
-					if (equal_line(clone_piece.back().line[i], clone_piece[n].line[k - 1])) {
+				else if (i != 0 && k != 0) {
+					if (equal_line(clone_piece.back().line[i], clone_piece[n].line[k])) {
 						one_evalution[k] += 1;
 					}
-					else if (equal_line(clone_piece.back().line[i], clone_piece[n].line[k])) {
-						one_evalution[k] += 1;
-					}
-					if (equal_line(clone_piece.back().line.back(), clone_piece[n].line[k - 1])) {
-						one_evalution[k] += 1;
-					}
-					else if (equal_line(clone_piece.back().line[i], clone_piece[n].line[k])) {
+					if (equal_line(clone_piece.back().line[i -1], clone_piece[n].line[k - 1])) {
 						one_evalution[k] += 1;
 					}
 				}
@@ -67,8 +64,9 @@ void Algorithm::evaluation(int i,vector<Piece> &clone_piece) {
 			else {
 				one_evalution[k] = 0;
 			}
-			two_evalution.push_back(one_evalution);
 		}
+		two_evalution.push_back(one_evalution);
+		one_evalution.clear();
 	}
 	three_evalution.push_back(two_evalution);
 }
@@ -176,18 +174,20 @@ bool Algorithm::update_frame(int n ,int i, vector<Piece> &clone_piece) {
 		//再帰
 		fit_piece(give_piece);
 	}
+	return true;
 }
 
 void Algorithm::select_piece(int i, vector<Piece> &clone_piece) {
 	//評価点が高いピースがあるならupdate_piece()へ
 	/*評価点が高いピースがあるなら正*/
 	//ピースの番号を決定
-	for (int n = 0; n < (clone_piece.size()); n++) {
+	for (int n = 0; n < (clone_piece.size() - 1); n++) {
 		//ピースの角(頂点)決定
 		for (int k = 0; k < clone_piece[n].angle.size(); k++) {
+
 			if (three_evalution[flag][n][k] == 3) {
 				//ピースの番号,枠の頂点を引数
-				update_frame(n,i,clone_piece);
+				//update_frame(n,i,clone_piece);
 			}
 		}
 	}
@@ -305,7 +305,7 @@ void Algorithm::spin90_piece(int n,vector<Piece> &clone_piece) {
 	ピースを90度左回転させる
 	*/
 	for (int i = 0; i < int(clone_piece[n].point.size()); i++) {
-		clone_piece[n].point[i].first = cont.piece[n].point[i].first * (-1);
+		clone_piece[n].point[i].first = piece[n].point[i].first * (-1);
 	}
 }
 
@@ -314,8 +314,8 @@ void Algorithm::spin180_piece(int n,vector<Piece> &clone_piece) {
 	ピースを180度左回転させる
 	*/
 	for (int i = 0; i < int(clone_piece[n].point.size()); i++) {
-		clone_piece[n].point[i].first = cont.piece[n].point[i].first * (-1);
-		clone_piece[n].point[i].second = cont.piece[n].point[i].second * (-1);
+		clone_piece[n].point[i].first = piece[n].point[i].first * (-1);
+		clone_piece[n].point[i].second = piece[n].point[i].second * (-1);
 	}
 }
 
@@ -324,7 +324,7 @@ void Algorithm::spin270_piece(int n,vector<Piece> &clone_piece) {
 	ピースを270度左回転させる
 	*/
 	for (int i = 0; i < int(clone_piece[n].point.size()); i++) {
-		clone_piece[n].point[i].second = cont.piece[n].point[i].second * (-1);
+		clone_piece[n].point[i].second = piece[n].point[i].second * (-1);
 	}
 }
 
@@ -337,7 +337,7 @@ bool Algorithm::equal_angle(double first_angle, double second_angle) {
 		return true;
 	}
 	else {
-		return true;
+		return false;
 	}
 }
 
@@ -347,11 +347,11 @@ bool Algorithm::equal_line(double first_line, double second_line) {
 	もし誤差の範囲内で等しいならばTrue
 	*/ 
 	
-	if (fabs(first_line - second_line) <= 0.50) {
+	if (fabs(first_line - second_line) <= 0.10) {
 		return true;
 	}
 	else {
-		return true;
+		return false;
 	}
 }
 

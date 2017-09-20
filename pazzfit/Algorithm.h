@@ -3,7 +3,6 @@
 
 class Algorithm {
 public :
-	Control cont;
 	Algorithm();
 
 	void init();
@@ -23,6 +22,7 @@ public :
 	bool equal_point(int, int);
 private:
 	int flag;
+	vector<Piece> piece;
 	vector<vector<vector<int>>> three_evalution;
 	vector<vector<int>> two_evalution;
 	vector<int> one_evalution;

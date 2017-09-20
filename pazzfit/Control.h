@@ -1,5 +1,6 @@
 #pragma once
 #include "Piece.h"
+#include "Algorithm.h"
 class Control {
 public:
 	//コンストラクタ
