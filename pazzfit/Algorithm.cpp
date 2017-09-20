@@ -1,7 +1,6 @@
 #include "Algorithm.h"
 
 Algorithm::Algorithm() {
-	clone_piece = cont.piece;
 	init();
 }
 
@@ -10,22 +9,21 @@ void Algorithm::init() {
 	three_evalution.clear();
 }
 
-void Algorithm::fit_piece() {
+void Algorithm::fit_piece(vector<Piece> clone_piece) {
 	flag++;
 	//ピース嵌めるアルゴリズムをまとめる
 	//枠の基準となる頂点を決定
 	for (int i = 0; i < clone_piece.back().point.size(); i++) {
-		evaluation(i);
-		select_piece(i);
+		evaluation(i, clone_piece);
+		select_piece(i,clone_piece);
 		if (flag == 0) {
 			init();
 		}
 	}
-	//更新した枠で嵌まらなかった場合、ピース・枠を一つ再帰前のものを代入する
 	flag--;
 }
 
-void Algorithm::evaluation(int i) {
+void Algorithm::evaluation(int i,vector<Piece> &clone_piece) {
 	//枠・ピースの頂点・角度・辺の長さを受け取る
 	//ピースと枠の評価点を作成
 	//ピースを一つ決定
@@ -81,7 +79,7 @@ void Algorithm::union_piece() {
 	//評価点を元にピースを結合
 }
 
-bool Algorithm::update_frame(int n ,int i) {
+bool Algorithm::update_frame(int n ,int i, vector<Piece> &clone_piece) {
 	vector<Piece> give_piece = clone_piece;
 	vector<pair<int, int> > new_frame = clone_piece.back().point;
 	int piece_symbol = 0;
@@ -170,12 +168,17 @@ bool Algorithm::update_frame(int n ,int i) {
 	give_piece = clone_piece;
 	give_piece.back().point = new_frame;
 	give_piece.erase(give_piece.begin() + n);
-	//再帰
-	//fit_piece(give_piece);
-	return true;
+	//スクショの保存
+	if (give_piece.back().point.size() == 0) {
+
+	}
+	else {
+		//再帰
+		fit_piece(give_piece);
+	}
 }
 
-void Algorithm::select_piece(int i) {
+void Algorithm::select_piece(int i, vector<Piece> &clone_piece) {
 	//評価点が高いピースがあるならupdate_piece()へ
 	/*評価点が高いピースがあるなら正*/
 	//ピースの番号を決定
@@ -184,13 +187,13 @@ void Algorithm::select_piece(int i) {
 		for (int k = 0; k < clone_piece[n].angle.size(); k++) {
 			if (three_evalution[flag][n][k] == 3) {
 				//ピースの番号,枠の頂点を引数
-				update_frame(n,i);
+				update_frame(n,i,clone_piece);
 			}
 		}
 	}
 }
 
-bool Algorithm::check_collision(int n) {
+bool Algorithm::check_collision(int n,vector<Piece> &clone_piece) {
 	double f_slope =  0, p_slope = 0;
 	int f_intercept = 0, p_intercept = 0;
 	int count_x = 0, count_y = 0;
@@ -263,7 +266,7 @@ bool Algorithm::check_collision(int n) {
 	}
 }
 
-void Algorithm::turn_piece(int n) {
+void Algorithm::turn_piece(int n, vector<Piece> &clone_piece) {
 	/*
 	ピースの番号を受け取る
 	ピースを反転させ、頂点情報を更新
@@ -297,7 +300,7 @@ void Algorithm::turn_piece(int n) {
 	}
 }
 
-void Algorithm::spin90_piece(int n) {
+void Algorithm::spin90_piece(int n,vector<Piece> &clone_piece) {
 	/*
 	ピースを90度左回転させる
 	*/
@@ -306,7 +309,7 @@ void Algorithm::spin90_piece(int n) {
 	}
 }
 
-void Algorithm::spin180_piece(int n) {
+void Algorithm::spin180_piece(int n,vector<Piece> &clone_piece) {
 	/*
 	ピースを180度左回転させる
 	*/
@@ -316,7 +319,7 @@ void Algorithm::spin180_piece(int n) {
 	}
 }
 
-void Algorithm::spin270_piece(int n) {
+void Algorithm::spin270_piece(int n,vector<Piece> &clone_piece) {
 	/*
 	ピースを270度左回転させる
 	*/
