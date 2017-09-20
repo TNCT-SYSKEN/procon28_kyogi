@@ -81,6 +81,7 @@ bool Algorithm::update_frame(int n ,int i, vector<Piece> &clone_piece) {
 	vector<Piece> give_piece = clone_piece;
 	vector<pair<int, int> > new_frame = clone_piece.back().point;
 	int piece_symbol = 0;
+	int frame = 0;
 	int frame_symbol = 0;
 	int se_count = 0;
 	//ピースの番号を受け取る
@@ -96,24 +97,33 @@ bool Algorithm::update_frame(int n ,int i, vector<Piece> &clone_piece) {
 		}
 	}
 	//右回りに頂点が等しい&その角度が等しい場合除外
-	for (int t = 0; t < (clone_piece.back().point.size() / 2); t++) {
-		if (piece_symbol + t > clone_piece[n].point.size()) {
+	for (int t = 0; t < (clone_piece[n].point.size() / 2); t++) {
+		if (piece_symbol + t > clone_piece[n].point.size() / 2) {
+			break;
+		}
+		if (i + t > clone_piece.back().point.size() / 2) {
 			break;
 		}
 		if (clone_piece.back().point[i + t].first == clone_piece[n].point[piece_symbol + t].first && clone_piece.back().point[i + t].second == clone_piece[n].point[piece_symbol + t].second) {
-			if (clone_piece.back().angle[t] == clone_piece[n].angle[piece_symbol + t]) {
+			if (clone_piece.back().angle[i + t] == clone_piece[n].angle[piece_symbol + t]) {
 				//頂点を削除
 				give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol + t);
-				give_piece.back().point.erase(give_piece[n].point.begin() + i + t);
+				give_piece.back().point.erase(give_piece.back().point.begin() + i + t);
 			}
 			else {
 				give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol + t);
 			}
 		}
+		else {
+			break;
+		}
 	}
 	//左回りに頂点が等しい&その角度が等しい場合除外
 	for (int t = 0; t < (clone_piece.back().point.size() / 2); t++) {
-		if (piece_symbol - t > clone_piece[n].point.size()) {
+		if (piece_symbol - t < 0) {
+			break;
+		}
+		if (i - t < 0) {
 			break;
 		}
 		if (clone_piece.back().point[i - t].first == clone_piece[n].point[piece_symbol - t].first && clone_piece.back().point[i - t].second == clone_piece[n].point[piece_symbol - t].second) {
@@ -127,11 +137,14 @@ bool Algorithm::update_frame(int n ,int i, vector<Piece> &clone_piece) {
 				give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol + t);
 			}
 		}
+		else {
+			break;
+		}
 	}
 	//最初に入れる方を挿入
-	for (int t = 0; t < clone_piece[n].angle.size(); t++) {
+	for (int t = 0; t < clone_piece[n].point.size() / 2; t++) {
 		Circle circle(give_piece[n].point[t].first, give_piece[n].point[t].second, 1);
-		for (int k = 0; k < clone_piece.back().angle.size(); k++) {
+		for (int k = 0; k < clone_piece.back().point.size() / 2; k++) {
 			if (k != clone_piece.back().angle.size() - 1) {
 				Line line(clone_piece.back().point[k].first, clone_piece.back().point[k].second, clone_piece.back().point.front().first, clone_piece.back().point.front().second);
 				if (line.intersects(circle)) {
@@ -152,6 +165,7 @@ bool Algorithm::update_frame(int n ,int i, vector<Piece> &clone_piece) {
 			}
 		}
 	}
+
 	//ピースの残りの頂点を反対向きに挿入していく
 	for (int k = clone_piece[n].angle.size(); k > 0; k--) {
 		if (se_count == 2) {
@@ -185,10 +199,10 @@ void Algorithm::select_piece(int i, vector<Piece> &clone_piece) {
 		//ピースの角(頂点)決定
 		for (int k = 0; k < clone_piece[n].angle.size(); k++) {
 
-			if (three_evalution[flag][n][k] == 3) {
+			//if (three_evalution[flag][n][k] == 3) {
 				//ピースの番号,枠の頂点を引数
-				//update_frame(n,i,clone_piece);
-			}
+				update_frame(n,i,clone_piece);
+			//}
 		}
 	}
 }
