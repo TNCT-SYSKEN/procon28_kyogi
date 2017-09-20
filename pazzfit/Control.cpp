@@ -9,13 +9,35 @@ void Control::exe() {
 	//形状情報格納
 	set_shape_data();
 	exec_argolithm();
-	set_piece();
 	//use_position();
 }
 
-void Control::set_piece() {
-	//テキストを読み込み切り分けてそれぞれpush_backする
-
+void read_qr() {
+	int count;
+	for (count = 1;; count++) {
+		ostringstream oss;
+		oss << "qr_img\\qr_data00" << count << ".bmp";
+		Image img(Widen(oss.str().c_str()));
+		if (!img) {
+			break;
+		}
+	}
+	//QRコードを読み取る関数
+	for (int i = 1;i < count; i++) {
+		//cmdを起動してqrコード読み取り(ゴリ押し)
+		ostringstream oss;
+		//oss << "cd C:\\ & dir > hoge.txt";
+		oss << "cd C:\\Program Files (x86)\\ZBar && zbarvars.bat && zbarimg --raw C:\\Users\\syken-admin\\Desktop\\procon28_kyogi\\pazzfit\\qr_img\\qr_data00" << i << ".bmp > C:\\Users\\syken-admin\\Desktop\\procon28_kyogi\\pazzfit\\shape_data\\qr_data00" << i << ".txt";
+		system(oss.str().c_str());
+		//テキストが生成されてるかチェック
+		ostringstream check;
+		check << "shape_data\\qr_data00" << i << ".txt";
+		ifstream qr(check.str());
+		//されてなければループ終わり
+		if (qr.fail()) {
+			break;
+		}
+	}
 }
 
 void Control::exec_argolithm() {
@@ -25,6 +47,7 @@ void Control::exec_argolithm() {
 void Control::set_shape_data() {
 	static bool flag = false;
 	if (!flag) {
+		read_qr();
 		make_point();
 		make_line();
 		make_angle();

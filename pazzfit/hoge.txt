@@ -1,0 +1,35 @@
+ ドライブ C のボリューム ラベルは Windows です
+ ボリューム シリアル番号は E8F6-6690 です
+
+ C:\Users\syken-admin\Desktop\procon28_kyogi\pazzfit のディレクトリ
+
+2017/09/20  14:19    <DIR>          .
+2017/09/20  14:19    <DIR>          ..
+2017/09/15  17:01             8,709 Algorithm.cpp
+2017/09/15  17:01               662 Algorithm.h
+2017/09/15  17:01                60 ClassDiagram.cd
+2017/09/15  17:09               180 common.h
+2017/09/20  14:19            16,249 Control.cpp
+2017/09/15  17:09               508 Control.h
+2017/08/13  11:24    <DIR>          Engine
+2017/08/13  11:24    <DIR>          Example
+2017/09/15  17:01                70 hoge.c
+2017/09/20  14:19                 0 hoge.txt
+2017/08/13  11:24            30,918 Icon.ico
+2017/08/13  11:24               161 Main.cpp
+2017/08/13  11:24             1,295 pazzfit.sln
+2017/09/19  17:40        17,596,416 pazzfit.VC.db
+2017/09/15  17:01            14,798 pazzfit.vcxproj
+2017/09/15  17:01            19,336 pazzfit.vcxproj.filters
+2017/09/20  14:19                 0 pazzfit_log.html
+2017/08/13  11:24                 0 Piece.cpp
+2017/08/16  17:41               196 Piece.h
+2017/09/19  16:25    <DIR>          piece_data
+2017/09/15  17:09    <DIR>          piece_position
+2017/09/19  17:01    <DIR>          qr_img
+2017/08/13  11:24             2,641 Resource.rc
+2017/09/19  17:30    <DIR>          shape_data
+2017/09/19  17:13                 0 Userssyken-adminDesktopprocon28_kyogipazzfitshape_dataqr_data001.txt
+2017/08/15  12:52    <DIR>          x64
+              19 個のファイル          17,692,199 バイト
+               9 個のディレクトリ  51,131,809,792 バイトの空き領域
