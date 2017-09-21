@@ -15,6 +15,7 @@ void Control::set_piece() {
 
 void Control::exec_argolithm() {
 	Algorithm algo;
+	algo.algo_make_angle(piece);
 	algo.fit_piece(piece);
 }
 

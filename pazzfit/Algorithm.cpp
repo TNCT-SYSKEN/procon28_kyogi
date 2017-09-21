@@ -220,7 +220,6 @@ bool Algorithm::check_collision(int n,vector<Piece> &clone_piece) {
 	*/
 	for (int k = 0; k < clone_piece[n].point.size(); k++) {
 		for (int i = 0; i < clone_piece.back().point.size(); i++) {
-
 			//ògÇÃìÒÇ¬ÇÃí∏ì_ÇÃíºê¸ÇÃàÍéüä÷êîÇãÅÇﬂÇÈ
 			//ÉãÅ[ÉvÇÃç≈å„Ç…Ç»Ç¡ÇΩÇÃÇ»ÇÁóvëfÇÃç≈å„Ç∆ç≈èâÇégópÇ∑ÇÈ
 			if ((int(clone_piece.back().point.size()) - 1) == i) {
@@ -312,7 +311,77 @@ void Algorithm::algo_make_line(vector<Piece> &give_piece) {
 }
 
 void Algorithm::algo_make_angle(vector<Piece> &give_piece) {
+	//å≥ÇÃäpìxÇÃçÌèú
+	give_piece.back().angle.clear();
+	int x_point[8] = { 0,1,1,1,0,-1,-1,-1 };
+	int y_point[8] = { 1,1,0,-1,-1,-1,0,1 };
+	double f_slope = 0;
+	int f_intercept = 0;
+	int count_x = 0, count_y = 0;
 
+	for (int j = 0; j < give_piece.back().point.size(); j++) {
+		int check_angle = 0;
+		for (int k = 0; k < 8; k++) {
+			count_x = 0;
+			count_y = 0;
+			Line y_line(give_piece.back().point[j].first + x_point[k], give_piece.back().point[j].second + y_point[k], give_piece.back().point[j].first,200);
+			Line x_line(give_piece.back().point[j].first + x_point[k], give_piece.back().point[j].second + y_point[k], 200, give_piece.back().point[j].second);
+			for (int i = 0; i < give_piece.back().point.size(); i++) {
+				if (i == give_piece.back().point.size() - 1) {
+					Line f_line(give_piece.back().point[i].first,give_piece.back().point[i].second,give_piece.back().point.front().first,give_piece.back().point.front().second);
+					if (x_line.intersects(f_line)) {
+						count_x += 1;
+					}
+					if (y_line.intersects(f_line)) {
+						count_y += 1;
+					}
+				}
+				else {
+					Line f_line(give_piece.back().point[i].first, give_piece.back().point[i].second, give_piece.back().point[i + 1].first, give_piece.back().point[i + 1].second);
+					if (x_line.intersects(f_line)) {
+						count_x += 1;
+					}
+					if (y_line.intersects(f_line)) {
+						count_y += 1;
+					}
+				}
+			}
+			if (count_x % 2 == 1 && count_y % 2 == 1) {
+				check_angle += 1;
+			}
+		}
+		//ïKóvÇ»ïœêîÇÃêÈåæ
+		double a1, a2, b1, b2;
+		double a, b, c, d;
+		double angle;
+		a1 = give_piece.back().point[(j + 1) % give_piece.back().point.size()].first - give_piece.back().point[j].first;
+		a2 = give_piece.back().point[(j + 1) % give_piece.back().point.size()].second - give_piece.back().point[j].second;
+		b1 = give_piece.back().point[(j + give_piece.back().point.size() - 1) % give_piece.back().point.size()].first - give_piece.back().point[j].first;
+		b2 = give_piece.back().point[(j + give_piece.back().point.size() - 1) % give_piece.back().point.size()].second - give_piece.back().point[j].second;
+		//âöäpÇ≈Ç†ÇÈ
+		if (check_angle >= 5) {
+			a = a1 * b1;
+			b = a2 * b2;
+			c = sqrt(pow(a1, 2) + pow(a2, 2));
+			d = sqrt(pow(b1, 2) + pow(b2, 2));
+			angle = (a + b) / (c * d);
+			angle = acos(angle);
+			angle = angle * 180 / Pi;
+			angle = 360 - angle;
+			give_piece.back().angle.push_back(angle);
+		}
+		//ì äpÇ≈Ç†ÇÈ
+		else {
+			a = a1 * b1;
+			b = a2 * b2;
+			c = sqrt(pow(a1, 2) + pow(a2, 2));
+			d = sqrt(pow(b1, 2) + pow(b2, 2));
+			angle = (a + b) / (c * d);
+			angle = acos(angle);
+			angle = angle * 180 / Pi;
+			give_piece.back().angle.push_back(angle);
+		}
+	}
 }
 
 void Algorithm::turn_piece(int n, vector<Piece> &clone_piece) {
