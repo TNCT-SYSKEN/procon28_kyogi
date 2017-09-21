@@ -3,6 +3,7 @@
 Algorithm::Algorithm() {
 	clone_piece = cont.piece;
 	flag = -1;
+	collision_no = 0;
 }
 
 void Algorithm::init() {
@@ -15,7 +16,7 @@ void Algorithm::fit_piece() {
 	//枠の基準となる頂点を決定
 	for (int i = 0; i < clone_piece.back().point.size(); i++) {
 		evaluation(i);
-		select_piece();
+		select_piece(i);
 		/*枠のvectorが0ならば正*/
 		if (1) {
 			//スクリーンショットを保存
@@ -83,14 +84,20 @@ void Algorithm::union_piece() {
 	//評価点を元にピースを結合
 }
 
-void Algorithm::update_frame(int n) {
-	//評価点を元にピースの形状情報を枠の形状情報に挿入
-	//評価点が高いピースを枠の情報に追加
-	//新たな枠の角度と辺を算出して上書き？
-	//嵌めたピースの削除
+bool Algorithm::update_frame(int n,int i) {
+		//ピースの番号を受け取る
+		collision_checker(n,i);
+		//ピースの頂点情報を枠の頂点情報に挿入
+
+		//枠の形状情報の更新
+		//嵌めたピースの削除の前にreturn_pieceにpush_back
+		//枠に関してもreturn_frameにpush_back
+		//嵌めたピースの削除
+		//ピースが嵌まった場合、fit_piece()を呼び出し再帰
+		//ピースが全て埋まったのならスクショを保存する
 }
 
-void Algorithm::select_piece() {
+void Algorithm::select_piece(int i) {
 	//評価点が高いピースがあるならupdate_piece()へ
 	/*評価点が高いピースがあるなら正*/
 	//ピースの番号を決定
@@ -99,7 +106,7 @@ void Algorithm::select_piece() {
 		for (int k = 0; k < clone_piece[n].angle.size(); k++) {
 			if (three_evalution[flag][n][k] == 3) {
 				//ピースの番号を引数
-				update_frame(n);
+				update_frame(n,i);
 				fit_piece();
 			}
 		}
@@ -279,4 +286,77 @@ bool Algorithm::equal_point(int first_point, int second_point) {
 	else {
 		return false;
 	}
+}
+
+bool Algorithm::collision_checker(int n,int i) {
+		//回転,反転,あたり判定によって当てはまるか判定
+		bool collision = true;
+		Piece set = cont.piece[n];
+		int set_x;
+		int set_y;
+
+		set_x = set.point[i].first;
+		set_y = set.point[i].second;
+
+		for (int j=0; j < set.point.size(); j++) {
+				clone_piece[n].point[j].first -= set_x;
+				clone_piece[n].point[j].second -= set_y;
+		}
+
+		if (collision == true && collision_no == 0) {
+				collision = check_collision(n);
+				collision_no++;
+		}
+		if (collision == true && collision_no == 1) {
+				spin90_piece(n);
+				collision = check_collision(n);
+				collision_no++;
+		}
+		if (collision == true && collision_no == 2) {
+				clone_piece[n] = set;
+				spin180_piece(n);
+				collision = check_collision(n);
+				collision_no++;
+		}
+		if (collision == true && collision_no == 3) {
+				clone_piece[n] = set;
+				spin270_piece(n);
+				collision = check_collision(n);
+				collision_no++;
+		}
+		if (collision == true && collision_no == 4) {
+				clone_piece[n] = set;
+				turn_piece(n);
+				collision = check_collision(n);
+				collision_no++;
+		}
+		if (collision == true && collision_no == 5) {
+				clone_piece[n] = set;
+				turn_piece(n);
+				spin90_piece(n);
+				collision = check_collision(n);
+				collision_no++;
+		}
+		if (collision == true && collision_no == 6) {
+				clone_piece[n] = set;
+				turn_piece(n);
+				spin180_piece(n);
+				collision = check_collision(n);
+				collision_no++;
+		}
+		if (collision == true && collision_no == 7) {
+				clone_piece[n] = set;
+				turn_piece(n);
+				spin270_piece(n);
+				collision = check_collision(n);
+				collision_no = 0;
+		}
+		if (collision == true) {
+				clone_piece[n] = set;
+				return false;
+		}
+		if (collision == false) {
+				return true;
+		}
+
 }

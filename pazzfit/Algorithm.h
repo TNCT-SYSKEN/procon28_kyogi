@@ -10,8 +10,8 @@ public :
 	void fit_piece();
 	void evaluation(int);
 	void union_piece();
-	void update_frame(int);
-	void select_piece();
+	bool update_frame(int,int);
+	void select_piece(int);
 	bool check_collision(int);
 
 	void turn_piece(int);
@@ -21,8 +21,10 @@ public :
 	bool equal_angle(double, double);
 	bool equal_line(double, double);
 	bool equal_point(int, int);
+	bool collision_checker(int,int);
 private:
 	int flag;
+	int collision_no;
 	vector<Piece> return_piece;
 	vector<Piece> clone_piece;
 	vector<vector<vector<int>>> three_evalution;
