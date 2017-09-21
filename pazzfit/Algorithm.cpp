@@ -210,14 +210,58 @@ void Algorithm::select_piece(int i, vector<Piece> &clone_piece) {
 }
 
 bool Algorithm::check_collision(int n,vector<Piece> &clone_piece) {
-	double f_slope =  0, p_slope = 0;
-	int f_intercept = 0, p_intercept = 0;
-	int count_x = 0, count_y = 0;
+	//ピースの番号を受け取り枠の外にあるならTrueを返す
+	int count_x, count_y;
+	for (int j = 0; j < clone_piece[n].point.size(); j++) {
+		count_x = 0;
+		count_y = 0;
+		//y軸へ延長した線分
+		//x軸へ延長した線分
+		Line y_line(clone_piece[n].point[j].first, clone_piece[n].point[j].second, clone_piece[n].point[j].first, 200);
+		Line x_line(clone_piece[n].point[j].first, clone_piece[n].point[j].second, 200, clone_piece[n].point[j].second);
+		for (int i = 0; i < clone_piece.back().point.size(); i++) {
+			//枠の各辺との交わりをカウント
+			if (i == clone_piece.back().point.size() - 1) {
+				Line f_line(clone_piece.back().point[i].first, clone_piece.back().point[i].second, clone_piece.back().point.front().first, clone_piece.back().point.front().second);
+				if (clone_piece[n].point[j].first == clone_piece.back().point[i].first || clone_piece[n].point.front().first == clone_piece.back().point.front().first) {
+					//hoge
+				}
+				else if (x_line.intersects(f_line)) {
+					count_x += 1;
+				}
+				if (clone_piece[n].point[j].second == clone_piece.back().point[i].second || clone_piece[n].point.front().second == clone_piece.back().point.front().second) {
+					//hoge
+				}else if (y_line.intersects(f_line)) {
+					count_y += 1;
+				}
+			}
+			else {
+				Line f_line(clone_piece.back().point[i].first, clone_piece.back().point[i].second, clone_piece.back().point[i + 1].first, clone_piece.back().point[i + 1].second);
+				if (clone_piece[n].point[j].first == clone_piece.back().point[i].first || clone_piece[n].point[i + 1].first == clone_piece.back().point[i + 1].first) {
+					//hoge
+				}
+				else if (x_line.intersects(f_line)) {
+					count_x += 1;
+				}
+				if (clone_piece[n].point[j].second == clone_piece.back().point[i].second || clone_piece[n].point[i + 1].second == clone_piece.back().point[i + 1].second) {
+					//hoge
+				}
+				else if (y_line.intersects(f_line)) {
+					count_y += 1;
+				}
+			}
+		}
+		//偶数なら枠の外側の頂点
+		if (count_x % 2 == 0 && count_y % 2 == 0) {
+			return true;
+		}
+ 	}
+	return false;
 	/*
 	枠・ピースの頂点を受け取る
 	ピースを配置した時に枠の中に収まっているか判定
 	n-ピースの番号,k-ピースの各頂点,i-枠の各頂点
-	*/
+	
 	for (int k = 0; k < clone_piece[n].point.size(); k++) {
 		for (int i = 0; i < clone_piece.back().point.size(); i++) {
 			//枠の二つの頂点の直線の一次関数を求める
@@ -279,6 +323,7 @@ bool Algorithm::check_collision(int n,vector<Piece> &clone_piece) {
 		//枠の内側にピースが存在するならfalseを返す
 		return false;
 	}
+	*/
 }
 
 void Algorithm::sort_frame(vector<Piece> &give_piece) {
@@ -324,6 +369,8 @@ void Algorithm::algo_make_angle(vector<Piece> &give_piece) {
 		for (int k = 0; k < 8; k++) {
 			count_x = 0;
 			count_y = 0;
+			//y軸へ延長した線分
+			//x軸へ延長した線分
 			Line y_line(give_piece.back().point[j].first + x_point[k], give_piece.back().point[j].second + y_point[k], give_piece.back().point[j].first,200);
 			Line x_line(give_piece.back().point[j].first + x_point[k], give_piece.back().point[j].second + y_point[k], 200, give_piece.back().point[j].second);
 			for (int i = 0; i < give_piece.back().point.size(); i++) {
@@ -352,10 +399,11 @@ void Algorithm::algo_make_angle(vector<Piece> &give_piece) {
 				check_angle += 1;
 			}
 		}
-		//必要な変数の宣言
+		//必要な変数
 		double a1, a2, b1, b2;
 		double a, b, c, d;
 		double angle;
+		//基準の頂点からのベクトル成分
 		a1 = give_piece.back().point[(j + 1) % give_piece.back().point.size()].first - give_piece.back().point[j].first;
 		a2 = give_piece.back().point[(j + 1) % give_piece.back().point.size()].second - give_piece.back().point[j].second;
 		b1 = give_piece.back().point[(j + give_piece.back().point.size() - 1) % give_piece.back().point.size()].first - give_piece.back().point[j].first;
