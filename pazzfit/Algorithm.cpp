@@ -313,11 +313,11 @@ void Algorithm::algo_make_line(vector<Piece> &give_piece) {
 void Algorithm::algo_make_angle(vector<Piece> &give_piece) {
 	//元の角度の削除
 	give_piece.back().angle.clear();
+	//八方を参照するための配列
 	int x_point[8] = { 0,1,1,1,0,-1,-1,-1 };
 	int y_point[8] = { 1,1,0,-1,-1,-1,0,1 };
-	double f_slope = 0;
-	int f_intercept = 0;
-	int count_x = 0, count_y = 0;
+	//交わった辺をカウントするための変数
+	int count_x, count_y;
 
 	for (int j = 0; j < give_piece.back().point.size(); j++) {
 		int check_angle = 0;
@@ -327,6 +327,7 @@ void Algorithm::algo_make_angle(vector<Piece> &give_piece) {
 			Line y_line(give_piece.back().point[j].first + x_point[k], give_piece.back().point[j].second + y_point[k], give_piece.back().point[j].first,200);
 			Line x_line(give_piece.back().point[j].first + x_point[k], give_piece.back().point[j].second + y_point[k], 200, give_piece.back().point[j].second);
 			for (int i = 0; i < give_piece.back().point.size(); i++) {
+				//枠の各辺との交わりをカウント
 				if (i == give_piece.back().point.size() - 1) {
 					Line f_line(give_piece.back().point[i].first,give_piece.back().point[i].second,give_piece.back().point.front().first,give_piece.back().point.front().second);
 					if (x_line.intersects(f_line)) {
@@ -346,6 +347,7 @@ void Algorithm::algo_make_angle(vector<Piece> &give_piece) {
 					}
 				}
 			}
+			//奇数なら枠の内側の頂点
 			if (count_x % 2 == 1 && count_y % 2 == 1) {
 				check_angle += 1;
 			}
@@ -358,27 +360,21 @@ void Algorithm::algo_make_angle(vector<Piece> &give_piece) {
 		a2 = give_piece.back().point[(j + 1) % give_piece.back().point.size()].second - give_piece.back().point[j].second;
 		b1 = give_piece.back().point[(j + give_piece.back().point.size() - 1) % give_piece.back().point.size()].first - give_piece.back().point[j].first;
 		b2 = give_piece.back().point[(j + give_piece.back().point.size() - 1) % give_piece.back().point.size()].second - give_piece.back().point[j].second;
+		//ベクトルの内積
+		a = a1 * b1;
+		b = a2 * b2;
+		c = sqrt(pow(a1, 2) + pow(a2, 2));
+		d = sqrt(pow(b1, 2) + pow(b2, 2));
+		angle = (a + b) / (c * d);
+		angle = acos(angle);
+		angle = angle * 180 / Pi;
 		//凹角である
 		if (check_angle >= 5) {
-			a = a1 * b1;
-			b = a2 * b2;
-			c = sqrt(pow(a1, 2) + pow(a2, 2));
-			d = sqrt(pow(b1, 2) + pow(b2, 2));
-			angle = (a + b) / (c * d);
-			angle = acos(angle);
-			angle = angle * 180 / Pi;
 			angle = 360 - angle;
 			give_piece.back().angle.push_back(angle);
 		}
 		//凸角である
 		else {
-			a = a1 * b1;
-			b = a2 * b2;
-			c = sqrt(pow(a1, 2) + pow(a2, 2));
-			d = sqrt(pow(b1, 2) + pow(b2, 2));
-			angle = (a + b) / (c * d);
-			angle = acos(angle);
-			angle = angle * 180 / Pi;
 			give_piece.back().angle.push_back(angle);
 		}
 	}
