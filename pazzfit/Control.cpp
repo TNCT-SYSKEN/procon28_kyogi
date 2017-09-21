@@ -15,7 +15,7 @@ void Control::set_piece() {
 
 void Control::exec_argolithm() {
 	Algorithm algo;
-	bool hoge = algo.check_collision(0, piece);
+	bool hoge =algo.check_collision(0,piece);
 	algo.fit_piece(piece);
 }
 
