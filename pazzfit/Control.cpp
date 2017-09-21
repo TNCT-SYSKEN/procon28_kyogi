@@ -7,14 +7,13 @@ Control::Control() {
 void Control::exe() {
 	set_shape_data();
 	exec_argolithm();
-	//use_position();
 }
 
 void Control::set_piece() {
+
 }
 
 void Control::exec_argolithm() {
-	//‚±‚±‚ÉƒAƒ‹ƒSƒŠƒYƒ€‚ğ‘‚¢‚Ä‚­
 	Algorithm algo;
 	algo.fit_piece(piece);
 }
@@ -304,7 +303,6 @@ void Control::make_angle() {
 			}
 		}
 	}
-
 }
 
 void Control::output_piece() {
@@ -319,7 +317,7 @@ void Control::output_piece() {
 						}
 				}
 		}
-				ScreenCapture::Save();
+		ScreenCapture::Save();
 }
 
 void Control::use_position() {

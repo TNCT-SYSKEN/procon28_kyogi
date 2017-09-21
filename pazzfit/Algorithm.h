@@ -12,6 +12,9 @@ public :
 	bool update_frame(int,int,vector<Piece> &clone_piece);
 	void select_piece(int,vector<Piece> &clone_piece);
 	bool check_collision(int, vector<Piece> &clone_piece);
+	void sort_frame(vector<Piece> &give_frame);
+	void algo_make_line(vector<Piece> &give_frame);
+	void algo_make_angle(vector<Piece> &give_frame);
 
 	void turn_piece(int, vector<Piece> &clone_piece);
 	void spin90_piece(int, vector<Piece> &clone_piece);
