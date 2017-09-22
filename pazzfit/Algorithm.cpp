@@ -6,7 +6,6 @@ Algorithm::Algorithm() {
 
 void Algorithm::init() {
 	flag = -1;
-	three_evalution.clear();
 }
 
 void Algorithm::fit_piece(vector<Piece> clone_piece) {
@@ -19,6 +18,7 @@ void Algorithm::fit_piece(vector<Piece> clone_piece) {
 	for (int i = 0; i < clone_piece.back().point.size(); i++) {
 		evaluation(i, clone_piece);
 		select_piece(i,clone_piece);
+		three_evalution[flag].clear();
 	}
 	flag--;
 }
