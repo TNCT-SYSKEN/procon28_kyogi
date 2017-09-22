@@ -15,7 +15,7 @@ void Control::set_piece() {
 
 void Control::exec_argolithm() {
 	Algorithm algo;
-	//algo.fit_piece(piece);
+	algo.fit_piece(piece);
 }
 
 void Control::set_shape_data() {

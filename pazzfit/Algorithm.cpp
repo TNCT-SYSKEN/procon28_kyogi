@@ -10,7 +10,7 @@ void Algorithm::init() {
 }
 
 void Algorithm::fit_piece(vector<Piece> clone_piece) {
-	flag++;
+	flag += 1;
 	if (flag == 0) {
 		piece = clone_piece;
 	}
@@ -19,9 +19,9 @@ void Algorithm::fit_piece(vector<Piece> clone_piece) {
 	for (int i = 0; i < clone_piece.back().point.size(); i++) {
 		evaluation(i, clone_piece);
 		select_piece(i,clone_piece);
-		three_evalution[flag].clear();
+		three_evalution.pop_back();
 	}
-	flag--;
+	flag += 1;
 }
 
 void Algorithm::evaluation(int i,vector<Piece> &clone_piece) {
@@ -70,6 +70,7 @@ void Algorithm::evaluation(int i,vector<Piece> &clone_piece) {
 		one_evalution.clear();
 	}
 	three_evalution.push_back(two_evalution);
+	two_evalution.clear();
 }
 
 void Algorithm::union_piece() {
@@ -85,10 +86,10 @@ bool Algorithm::update_frame(int n ,int i, vector<Piece> &clone_piece) {
 	int frame = 0;
 	int frame_symbol = 0;
 	int se_count = 0;
+	bool hoge = collision_checker(n, i,clone_piece);
 	//ピースの番号を受け取る
 	//回転,反転,あたり判定によって当てはまるか判定
 	//ピースの頂点情報を枠の頂点情報に挿入
-	
 	//ans_pointへの代入;
 	clone_piece[n].ans_point = clone_piece[n].point;
 	//基準を求める
@@ -200,12 +201,11 @@ void Algorithm::select_piece(int i, vector<Piece> &clone_piece) {
 	//ピースの番号を決定
 	for (int n = 0; n < (clone_piece.size() - 1); n++) {
 		//ピースの角(頂点)決定
-		for (int k = 0; k < clone_piece[n].angle.size(); k++) {
-
-			//if (three_evalution[flag][n][k] == 3) {
+		for (int k = 0; k < (clone_piece[n].point.size() - 1); k++) {
+			if (three_evalution[flag][n][k] == 3) {
 			//ピースの番号,枠の頂点を引数
 			update_frame(n, i, clone_piece);
-			//}
+			}
 		}
 	}
 }
