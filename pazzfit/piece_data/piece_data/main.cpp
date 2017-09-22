@@ -52,6 +52,11 @@ int piece() {
 		cv::polylines(test, *contour, true, cv::Scalar(0, 255, 0), 5);
 	}
 
+	vector<double> map;
+	vector<vector<Point>> app;
+	vector<Point> point;
+	double max_x = 0, max_y = 0;
+
 	for (auto contour = contours.begin(); contour != contours.end(); contour++) {
 		std::vector< cv::Point > approx;
 
@@ -62,20 +67,66 @@ int piece() {
 		double area = cv::contourArea(approx);
 
 		if (area > 1000.0) {
+			map.push_back(area);
+			app.push_back(approx);
 			cout << approx.size() << endl;
 			cout << approx << endl;
 			cout << area << endl;
 			//Â‚ÅˆÍ‚Þê‡            
-			cv::polylines(test, approx, true, cv::Scalar(255, 0, 0), 10);
+			cv::polylines(test, approx, true, cv::Scalar(0, 0, 255), 10);
 			std::stringstream sst;
 			sst << "area : " << area;
 			cv::putText(test, sst.str(), approx[0], CV_FONT_HERSHEY_PLAIN, 1.0, cv::Scalar(0, 128, 0));
 
 			//“ü—Í‰æ‘œ‚É•\Ž¦‚·‚éê‡
 			//cv::drawContours(imgIn, contours, i, CV_RGB(0, 0, 255), 4);
-
 		}
 	}
+
+	if (map.size() <= 2) {
+		//ˆê‚Â–Ú‚ª“à˜g
+		if (map[0] < map[1]) {
+			for (int i = 0; i < app[0].size(); i++) {
+				point.push_back(app[0][i]);
+			}
+		}
+		//“ñ‚Â–Ú‚ª“à˜g
+		else {
+			for (int i = 0; i < app[1].size(); i++) {
+				point.push_back(app[1][i]);
+			}
+		}
+	}
+
+	int x, y;
+	for (int i = 0; i < point.size(); i++) {
+		if (i == 0) {
+			x = point[0].x;
+			y = point[0].y;
+			point[0].x = 0;
+			point[0].y = 0;
+		}
+		else {
+			point[i].x -= x;
+			point[i].y -= y;
+		}
+	}
+	//ˆê”Ô‘å‚«‚¢x,y‚Ì’l‚ð’T‚·
+	for (int i = 0; i < point.size(); i++) {
+		if (point[i].x >= max_x) {
+			max_x = point[i].x;
+		}
+		if (point[i].y >= max_y) {
+			max_y = point[i].y;
+		}
+	}
+	max_x /= 64;
+	max_y /= 100;
+	for (int i = 0; i < point.size();i++) {
+		point[i].x /= max_x;
+		point[i].y /= max_y;
+	}
+	cout << point.size() << endl;
 	//k¬‚µ‚Ä•\Ž¦
 	resize(test, test, Size(), 0.2, 0.2);
 	resize(gray_test, gray_test, Size(), 0.2, 0.2);
