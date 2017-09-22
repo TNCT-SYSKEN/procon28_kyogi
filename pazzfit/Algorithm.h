@@ -23,9 +23,11 @@ public :
 	bool equal_angle(double, double);
 	bool equal_line(double, double);
 	bool equal_point(int, int);
+	bool collision_checker(int,int, vector<Piece> &clone_piece);
 private:
 	int flag;
 	vector<Piece> piece;
+	int collision_no;
 	vector<vector<vector<int>>> three_evalution;
 	vector<vector<int>> two_evalution;
 	vector<int> one_evalution;

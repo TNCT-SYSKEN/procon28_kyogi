@@ -6,6 +6,7 @@ Algorithm::Algorithm() {
 
 void Algorithm::init() {
 	flag = -1;
+	collision_no = 0;
 }
 
 void Algorithm::fit_piece(vector<Piece> clone_piece) {
@@ -202,8 +203,8 @@ void Algorithm::select_piece(int i, vector<Piece> &clone_piece) {
 		for (int k = 0; k < clone_piece[n].angle.size(); k++) {
 
 			//if (three_evalution[flag][n][k] == 3) {
-				//ƒs[ƒX‚Ì”Ô†,˜g‚Ì’¸“_‚ðˆø”
-				update_frame(n,i,clone_piece);
+			//ƒs[ƒX‚Ì”Ô†,˜g‚Ì’¸“_‚ðˆø”
+			update_frame(n, i, clone_piece);
 			//}
 		}
 	}
@@ -542,4 +543,78 @@ bool Algorithm::equal_point(int first_point, int second_point) {
 	else {
 		return false;
 	}
+}
+
+bool Algorithm::collision_checker(int n,int i,vector<Piece> &clone_piece) {
+		//‰ñ“],”½“],‚ ‚½‚è”»’è‚É‚æ‚Á‚Ä“–‚Ä‚Í‚Ü‚é‚©”»’è
+		bool collision = true;
+		Piece base = piece[n];
+		int set_x;
+		int set_y;
+
+		set_x = base.point[i].first;
+		set_y = base.point[i].second;
+
+		for (int j=0; j < base.point.size(); j++) {
+				clone_piece[n].point[j].first -= set_x;
+				clone_piece[n].point[j].second -= set_y;
+		}
+		Piece set = clone_piece[n];
+
+		if (collision == true && collision_no == 0) {
+				collision = check_collision(n, clone_piece);
+				collision_no++;
+		}
+		if (collision == true && collision_no == 1) {
+				spin90_piece(n, clone_piece);
+				collision = check_collision(n, clone_piece);
+				collision_no++;
+		}
+		if (collision == true && collision_no == 2) {
+				clone_piece[n] = set;
+				spin180_piece(n, clone_piece);
+				collision = check_collision(n, clone_piece);
+				collision_no++;
+		}
+		if (collision == true && collision_no == 3) {
+				clone_piece[n] = set;
+				spin270_piece(n, clone_piece);
+				collision = check_collision(n, clone_piece);
+				collision_no++;
+		}
+		if (collision == true && collision_no == 4) {
+				clone_piece[n] = set;
+				turn_piece(n, clone_piece);
+				collision = check_collision(n, clone_piece);
+				collision_no++;
+		}
+		if (collision == true && collision_no == 5) {
+				clone_piece[n] = set;
+				turn_piece(n, clone_piece);
+				spin90_piece(n, clone_piece);
+				collision = check_collision(n, clone_piece);
+				collision_no++;
+		}
+		if (collision == true && collision_no == 6) {
+				clone_piece[n] = set;
+				turn_piece(n, clone_piece);
+				spin180_piece(n, clone_piece);
+				collision = check_collision(n, clone_piece);
+				collision_no++;
+		}
+		if (collision == true && collision_no == 7) {
+				clone_piece[n] = set;
+				turn_piece(n, clone_piece);
+				spin270_piece(n, clone_piece);
+				collision = check_collision(n, clone_piece);
+				collision_no = 0;
+		}
+		if (collision == true) {
+				clone_piece[n] = set;
+				return false;
+		}
+		if (collision == false) {
+				return true;
+		}
+
 }
