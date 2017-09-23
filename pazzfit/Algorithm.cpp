@@ -79,7 +79,7 @@ void Algorithm::union_piece() {
 	//評価点を元にピースを結合
 }
 
-bool Algorithm::update_frame(int n ,int i, vector<Piece> &clone_piece) {
+bool Algorithm::update_frame(int n ,int i,int q, vector<Piece> &clone_piece) {
 	vector<Piece> give_piece = clone_piece;
 	vector<pair<int, int> > new_frame = clone_piece.back().point;
 	int piece_symbol = 0;
@@ -143,7 +143,7 @@ bool Algorithm::update_frame(int n ,int i, vector<Piece> &clone_piece) {
 				give_piece[n].angle.erase(give_piece[n].angle.begin() + piece_symbol - t);
 				give_piece.back().point.erase(give_piece.back().point.begin() + i - t);
 				give_piece.back().angle.erase(give_piece.back().angle.begin() + i - t);
-				frame_symbol -= 1;
+				frame_symbol += 1;
 			}
 			else {
 				give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol + t);
@@ -158,6 +158,11 @@ bool Algorithm::update_frame(int n ,int i, vector<Piece> &clone_piece) {
 			break;
 		}
 	}
+	//基準になった頂点の削除
+	give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol);
+	give_piece[n].angle.erase(give_piece[n].angle.begin() + piece_symbol);
+	give_piece.back().point.erase(give_piece.back().point.begin() + i);
+	give_piece.back().angle.erase(give_piece.back().angle.begin() + i);
 	//最初に入れる方を挿入
 	for (int t = 0; t < give_piece[n].point.size(); t++) {
 		Circle circle(give_piece[n].point[t].first, give_piece[n].point[t].second, 5);
@@ -219,7 +224,7 @@ void Algorithm::select_piece(int i, vector<Piece> &clone_piece) {
 		for (int k = 0; k < (clone_piece[n].point.size() - 1); k++) {
 			if (three_evalution[flag][n][k] == 3) {
 			//ピースの番号,枠の頂点を引数
-			update_frame(n, i, clone_piece);
+			update_frame(n, i, k,clone_piece);
 			}
 		}
 	}
