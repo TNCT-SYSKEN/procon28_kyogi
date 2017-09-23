@@ -528,14 +528,24 @@ void Algorithm::algo_make_angle(vector<Piece> &give_piece) {
 	//元の角度の削除
 	give_piece.back().angle.clear();
 	//八方を参照するための配列
+	/*
 	int x_point[8] = { 0,1,1,1,0,-1,-1,-1 };
 	int y_point[8] = { 1,1,0,-1,-1,-1,0,1 };
+	
+	double x_point[16] = {0,0.5,1,1,1,1,1,0.5,0,-0.5,-1,-1,-1,-1,-1,-0.5};
+	double y_point[16] = {-1,-1,-1,-0.5,0,0.5,1,1,1,1,1,0.5,0,-0.5,-1,-1};
+	
+	double x_point[8] = {0.5,1,1,0.5,-0.5,-1,-1,-0.5};
+	double y_point[8] = {-1,-0.5,0.5,1,1,0.5,-0.5,-1};
+	*/
+	double x_point[16] = { 0,0.25,0.5,0.5,0.5,0.5,0.5,0.25,0,-0.25,-0.5,-0.5,-0.5,-0.5,-0.5,-0.25 };
+	double y_point[16] = { -0.5,-0.5,-0.5,-0.25,0,0.25,0.5,0.5,0.5,0.5,0.5,0.25,0,-0.25,-0.5,-0.5 };
 	//交わった辺をカウントするための変数
 	int count_x, count_y;
 
 	for (int j = 0; j < give_piece.back().point.size(); j++) {
 		int check_angle = 0;
-		for (int k = 0; k < 8; k++) {
+		for (int k = 0; k < 16; k++) {
 			count_x = 0;
 			count_y = 0;
 			//y軸へ延長した線分
@@ -547,14 +557,14 @@ void Algorithm::algo_make_angle(vector<Piece> &give_piece) {
 				if (i == give_piece.back().point.size() - 1) {
 					Line f_line(give_piece.back().point[i].first, give_piece.back().point[i].second, give_piece.back().point.front().first, give_piece.back().point.front().second);
 					if (give_piece.back().point[j].second + y_point[k] == give_piece.back().point[i].second || give_piece.back().point[j].second + y_point[k] == give_piece.back().point.front().second) {
-							//hoge
-						}
+
+					}
 					else if (x_line.intersects(f_line)) {
-							count_x += 1;
-						}
+						count_x += 1;
+					}
 					if (give_piece.back().point[j].first + x_point[k] == give_piece.back().point[i].first || give_piece.back().point[j].first + x_point[k] == give_piece.back().point.front().first) {
-							//hoge
-						}
+
+					}
 					else if (y_line.intersects(f_line)) {
 						count_y += 1;
 					}
@@ -562,21 +572,23 @@ void Algorithm::algo_make_angle(vector<Piece> &give_piece) {
 				else {
 					Line f_line(give_piece.back().point[i].first, give_piece.back().point[i].second, give_piece.back().point[i + 1].first, give_piece.back().point[i + 1].second);
 					if (give_piece.back().point[j].second + y_point[k] == give_piece.back().point[i].second || give_piece.back().point[j].second + y_point[k] == give_piece.back().point[i + 1].second) {
-						//hoge
+
 					}
 					else if (x_line.intersects(f_line)) {
 						count_x += 1;
 					}
 					if (give_piece.back().point[j].first + x_point[k] == give_piece.back().point[i].first || give_piece.back().point[j].first + x_point[k] == give_piece.back().point[i + 1].first) {
-						//hoge
+
 					}
 					else if (y_line.intersects(f_line)) {
 						count_y += 1;
 					}
 				}
+				count_x;
+				count_y;
 			}
 			//奇数なら枠の内側の頂点
-			if (count_x % 2 == 1 && count_y % 2 == 1) {
+			if (count_x % 2 == 1 || count_y % 2 == 1) {
 				check_angle += 1;
 			}
 		}
@@ -598,7 +610,7 @@ void Algorithm::algo_make_angle(vector<Piece> &give_piece) {
 		angle = acos(angle);
 		angle = angle * 180 / Pi;
 		//凹角である
-		if (check_angle >= 5) {
+		if (check_angle >= 9) {
 			angle = 360 - angle;
 			give_piece.back().angle.push_back(angle);
 		}
