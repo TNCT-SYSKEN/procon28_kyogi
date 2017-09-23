@@ -337,7 +337,7 @@ bool Algorithm::update_frame(int n ,int i,int q, vector<Piece> &clone_piece) {
 	}
 	else {
 		//再帰
-		fit_piece(give_piece);
+		//fit_piece(give_piece);
 	}
 	return true;
 }
@@ -363,7 +363,8 @@ void Algorithm::select_piece(int i, vector<Piece> &clone_piece) {
 				update_frame(n, i, k, clone_piece);
 			}
 		}
-	}	for (int n = 0; n < (clone_piece.size() - 1); n++) {
+	}
+	for (int n = 0; n < (clone_piece.size() - 1); n++) {
 		//ピースの角(頂点)決定
 		for (int k = 0; k < (clone_piece[n].point.size() - 1); k++) {
 			if (three_evalution[flag][n][k] == 1) {
