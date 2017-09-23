@@ -305,15 +305,15 @@ void Control::make_angle() {
 	}
 }
 
-void Control::output_piece() {
+void Control::output_piece(vector<Piece> &rec_piece) {
 		Graphics::SetBackground(Palette::White);
-		for (int i = 0; i < piece.size(); i++) {
-				for (int j = 0; j < piece[i].ans_point.size(); j++) {
-						if (j != piece[i].ans_point.size()) {
-								Line(piece[i].ans_point[j].first * 5, piece[i].ans_point[j].second * 5, piece[i].ans_point[j + 1].first * 5, piece[i].ans_point[j + 1].second * 5).draw(Color(i + 1, i + 2, i + 3));
+		for (int i = 0; i < rec_piece.size(); i++) {
+				for (int j = 0; j < rec_piece[i].ans_point.size(); j++) {
+						if (j != rec_piece[i].ans_point.size() - 1) {
+								Line(rec_piece[i].ans_point[j].first * 5, rec_piece[i].ans_point[j].second * 5, rec_piece[i].ans_point[j + 1].first * 5, rec_piece[i].ans_point[j + 1].second * 5).draw(Color(i + 1, i + 2, i + 3));
 						}
 						else {
-								Line(piece[i].ans_point[j].first * 5, piece[i].ans_point[j].second * 5, piece[i].ans_point[0].first * 5, piece[i].ans_point[0].second * 5).draw(Color(i + 1, i + 2, i + 3));
+								Line(rec_piece[i].ans_point[j].first * 5, rec_piece[i].ans_point[j].second * 5, rec_piece[i].ans_point[0].first * 5, rec_piece[i].ans_point[0].second * 5).draw(Color(i + 1, i + 2, i + 3));
 						}
 				}
 		}
@@ -322,7 +322,7 @@ void Control::output_piece() {
 
 void Control::use_position() {
 		make_point_position();
-		output_piece();
+		output_piece(piece);
 }
 
 void Control::make_point_position() {

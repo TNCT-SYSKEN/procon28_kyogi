@@ -79,7 +79,7 @@ void Algorithm::union_piece() {
 	//評価点を元にピースを結合
 }
 
-bool Algorithm::update_frame(int n ,int i,int q, vector<Piece> &clone_piece) {
+bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 	vector<Piece> give_piece = clone_piece;
 	vector<pair<int, int> > new_frame = clone_piece.back().point;
 	int piece_symbol = 0;
@@ -87,9 +87,9 @@ bool Algorithm::update_frame(int n ,int i,int q, vector<Piece> &clone_piece) {
 	int f_erase_count = 0;
 	int se_count = 0;
 	int incert_count = 0;
-
-	//ピースの頂点情報を枠の頂点情報に挿入
-	collision_checker(n, i, clone_piece);
+	if (!(collision_checker(n, i, q, clone_piece))) {
+		return false;
+	}
 	//ans_pointへの代入;
 	clone_piece[n].ans_point = clone_piece[n].point;
 	//基準を求める
@@ -177,7 +177,7 @@ bool Algorithm::update_frame(int n ,int i,int q, vector<Piece> &clone_piece) {
 						if (se_count == 0) {
 							give_piece.back().point.insert(give_piece.back().point.end(), give_piece[n].point[t]);
 							give_piece[n].point.erase(give_piece[n].point.begin() + t);
-							se_count++;
+							se_count += 1;
 							incert_count = 1;
 							break;
 						}
@@ -191,14 +191,14 @@ bool Algorithm::update_frame(int n ,int i,int q, vector<Piece> &clone_piece) {
 							if (a > b) {
 								give_piece.back().point.insert(give_piece.back().point.end() - 1, give_piece[n].point[t]);
 								give_piece[n].point.erase(give_piece[n].point.begin() + t);
-								se_count = 1;
+								se_count += 1;
 								incert_count = 1;
 								break;
 							}
 							else {
 								give_piece.back().point.insert(give_piece.back().point.end() - 2, give_piece[n].point[t]);
 								give_piece[n].point.erase(give_piece[n].point.begin() + t);
-								se_count = 1;
+								se_count += 1;
 								incert_count = 1;
 								break;
 							}
@@ -208,7 +208,7 @@ bool Algorithm::update_frame(int n ,int i,int q, vector<Piece> &clone_piece) {
 						if (se_count == 0) {
 							give_piece.back().point.insert(give_piece.back().point.begin() + i - f_erase_count - 1, give_piece[n].point[t]);
 							give_piece[n].point.erase(give_piece[n].point.begin() + t);
-							se_count = 1;
+							se_count += 1;
 							incert_count = 1;
 							break;
 						}
@@ -221,14 +221,14 @@ bool Algorithm::update_frame(int n ,int i,int q, vector<Piece> &clone_piece) {
 							if (a > b) {
 								give_piece.back().point.insert(give_piece.back().point.begin() + i - f_erase_count, give_piece[n].point[t]);
 								give_piece[n].point.erase(give_piece[n].point.begin() + t);
-								se_count = 1;
+								se_count += 1;
 								incert_count = 1;
 								break;
 							}
 							else {
 								give_piece.back().point.insert(give_piece.back().point.begin() + i - f_erase_count - 1, give_piece[n].point[t]);
 								give_piece[n].point.erase(give_piece[n].point.begin() + t);
-								se_count = 1;
+								se_count += 1;
 								incert_count = 1;
 								break;
 							}
@@ -243,7 +243,7 @@ bool Algorithm::update_frame(int n ,int i,int q, vector<Piece> &clone_piece) {
 						if (se_count == 0) {
 							give_piece.back().point.insert(give_piece.back().point.end(), give_piece[n].point[t]);
 							give_piece[n].point.erase(give_piece[n].point.begin() + t);
-							se_count = 2;
+							se_count += 1;
 							incert_count = 1;
 							break;
 						}
@@ -257,14 +257,14 @@ bool Algorithm::update_frame(int n ,int i,int q, vector<Piece> &clone_piece) {
 							if (a > b) {
 								give_piece.back().point.insert(give_piece.back().point.end() - 1, give_piece[n].point[t]);
 								give_piece[n].point.erase(give_piece[n].point.begin() + t);
-								se_count = 2;
+								se_count += 1;
 								incert_count = 1;
 								break;
 							}
 							else {
 								give_piece.back().point.insert(give_piece.back().point.end() - 2, give_piece[n].point[t]);
 								give_piece[n].point.erase(give_piece[n].point.begin() + t);
-								se_count = 2;
+								se_count += 1;
 								incert_count = 1;
 								break;
 							}
@@ -274,7 +274,7 @@ bool Algorithm::update_frame(int n ,int i,int q, vector<Piece> &clone_piece) {
 						if (se_count == 0) {
 							give_piece.back().point.insert(give_piece.back().point.begin() + i - f_erase_count - 1, give_piece[n].point[t]);
 							give_piece[n].point.erase(give_piece[n].point.begin() + t);
-							se_count = 2;
+							se_count += 1;
 							incert_count = 1;
 							break;
 						}
@@ -287,14 +287,14 @@ bool Algorithm::update_frame(int n ,int i,int q, vector<Piece> &clone_piece) {
 							if (a > b) {
 								give_piece.back().point.insert(give_piece.back().point.begin() + i - f_erase_count, give_piece[n].point[t]);
 								give_piece[n].point.erase(give_piece[n].point.begin() + t);
-								se_count = 2;
+								se_count += 1;
 								incert_count = 1;
 								break;
 							}
 							else {
 								give_piece.back().point.insert(give_piece.back().point.begin() + i - f_erase_count - 1, give_piece[n].point[t]);
 								give_piece[n].point.erase(give_piece[n].point.begin() + t);
-								se_count = 2;
+								se_count += 1;
 								incert_count = 1;
 								break;
 							}
@@ -307,22 +307,23 @@ bool Algorithm::update_frame(int n ,int i,int q, vector<Piece> &clone_piece) {
 	//ピースの残りの頂点を反対向きに挿入していく
 	for (int k = give_piece[n].point.size() - 1; k >= 0; k--) {
 		if (incert_count == 1) {
-			if (se_count == 1) {
+			if (se_count == 1||se_count == 0) {
 				give_piece.back().point.insert(give_piece.back().point.end(), give_piece[n].point[k]);
 			}
-			else {
+			else if(se_count == 2){
 				give_piece.back().point.insert(give_piece.back().point.end() - 1, give_piece[n].point[k]);
 			}
 		}
 		else {
-			if (se_count == 1) {
+			if (se_count == 1 || se_count == 0) {
 				give_piece.back().point.insert(give_piece.back().point.end(), give_piece[n].point[k]);
 			}
-			else {
+			else if (se_count == 2) {
 				give_piece.back().point.insert(give_piece.back().point.end() - 1, give_piece[n].point[k]);
 			}
 		}
 	}
+
 	//更新した情報の共有
 	new_frame = give_piece.back().point;
 	give_piece = clone_piece;
@@ -333,11 +334,11 @@ bool Algorithm::update_frame(int n ,int i,int q, vector<Piece> &clone_piece) {
 	//スクショの保存
 	if (give_piece.back().point.size() == 0) {
 		Control cont;
-		cont.use_position();
+		cont.output_piece(clone_piece);
 	}
 	else {
 		//再帰
-		//fit_piece(give_piece);
+		fit_piece(give_piece);
 	}
 	return true;
 }
@@ -710,20 +711,41 @@ bool Algorithm::equal_point(int first_point, int second_point) {
 	}
 }
 
-bool Algorithm::collision_checker(int n,int i,vector<Piece> &clone_piece) {
+bool Algorithm::collision_checker(int n,int i,int q,vector<Piece> &clone_piece) {
 		//回転,反転,あたり判定によって当てはまるか判定
 		bool collision = true;
 		Piece base = piece[n];
 		int set_x;
 		int set_y;
 
-		set_x = base.point[i].first;
-		set_y = base.point[i].second;
+		set_x = piece[piece.size() - 1].point[i].first;
+		set_y = piece[piece.size() - 1].point[i].second;
 
-		for (int j=0; j < base.point.size(); j++) {
-				clone_piece[n].point[j].first -= set_x;
-				clone_piece[n].point[j].second -= set_y;
+		if (set_x < clone_piece[n].point[q].first) {
+				int p = clone_piece[n].point[q].first - set_x;
+				for (int j = 0; j < base.point.size(); j++) {
+						clone_piece[n].point[j].first -= p;
+				}
 		}
+		else if (set_x > clone_piece[n].point[q].first) {
+				int p = set_x - clone_piece[n].point[q].first;
+				for (int j = 0; j < base.point.size(); j++) {
+						clone_piece[n].point[j].first += p;
+				}
+		}
+		if (set_y < clone_piece[n].point[q].second) {
+				int p = clone_piece[n].point[q].second - set_y;
+				for (int j = 0; j < base.point.size(); j++) {
+						clone_piece[n].point[j].second -= p;
+				}
+		}
+		else if (set_y > clone_piece[n].point[q].second) {
+				int p = set_y - clone_piece[n].point[q].second;
+				for (int j = 0; j < base.point.size(); j++) {
+						clone_piece[n].point[j].second += p;
+				}
+		}
+
 		Piece set = clone_piece[n];
 
 		if (collision == true && collision_no == 0) {
