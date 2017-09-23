@@ -79,14 +79,14 @@ void Algorithm::union_piece() {
 	//評価点を元にピースを結合
 }
 
-bool Algorithm::update_frame(int n ,int i,int q, vector<Piece> &clone_piece) {
+bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 	vector<Piece> give_piece = clone_piece;
 	vector<pair<int, int> > new_frame = clone_piece.back().point;
 	int piece_symbol = 0;
 	int frame = 0;
 	int frame_symbol = 0;
 	int se_count = 0;
-	bool hoge = collision_checker(n, i,clone_piece);
+	bool hoge = collision_checker(n, i, q, clone_piece);
 	//ピースの番号を受け取る
 	//回転,反転,あたり判定によって当てはまるか判定
 	//ピースの頂点情報を枠の頂点情報に挿入
@@ -233,7 +233,7 @@ void Algorithm::select_piece(int i, vector<Piece> &clone_piece) {
 		for (int k = 0; k < (clone_piece[n].point.size() - 1); k++) {
 			if (three_evalution[flag][n][k] == 2) {
 				//ピースの番号,枠の頂点を引数
-				update_frame(n, i, clone_piece);
+					update_frame(n, i, k, clone_piece);
 			}
 		}
 	}	for (int n = 0; n < (clone_piece.size() - 1); n++) {
@@ -241,7 +241,7 @@ void Algorithm::select_piece(int i, vector<Piece> &clone_piece) {
 		for (int k = 0; k < (clone_piece[n].point.size() - 1); k++) {
 			if (three_evalution[flag][n][k] == 1) {
 				//ピースの番号,枠の頂点を引数
-				update_frame(n, i, clone_piece);
+					update_frame(n, i, k, clone_piece);
 			}
 		}
 	}
@@ -582,20 +582,41 @@ bool Algorithm::equal_point(int first_point, int second_point) {
 	}
 }
 
-bool Algorithm::collision_checker(int n,int i,vector<Piece> &clone_piece) {
+bool Algorithm::collision_checker(int n,int i,int q,vector<Piece> &clone_piece) {
 		//回転,反転,あたり判定によって当てはまるか判定
 		bool collision = true;
 		Piece base = piece[n];
 		int set_x;
 		int set_y;
 
-		set_x = base.point[i].first;
-		set_y = base.point[i].second;
+		set_x = piece[piece.size() - 1].point[i].first;
+		set_y = piece[piece.size() - 1].point[i].second;
 
-		for (int j=0; j < base.point.size(); j++) {
-				clone_piece[n].point[j].first -= set_x;
-				clone_piece[n].point[j].second -= set_y;
+		if (set_x < clone_piece[n].point[q].first) {
+				int p = clone_piece[n].point[q].first - set_x;
+				for (int j = 0; j < base.point.size(); j++) {
+						clone_piece[n].point[j].first -= p;
+				}
 		}
+		else if (set_x > clone_piece[n].point[q].first) {
+				int p = set_x - clone_piece[n].point[q].first;
+				for (int j = 0; j < base.point.size(); j++) {
+						clone_piece[n].point[j].first += p;
+				}
+		}
+		if (set_y < clone_piece[n].point[q].second) {
+				int p = clone_piece[n].point[q].second - set_y;
+				for (int j = 0; j < base.point.size(); j++) {
+						clone_piece[n].point[j].second -= p;
+				}
+		}
+		else if (set_y > clone_piece[n].point[q].second) {
+				int p = set_y - clone_piece[n].point[q].second;
+				for (int j = 0; j < base.point.size(); j++) {
+						clone_piece[n].point[j].second += p;
+				}
+		}
+
 		Piece set = clone_piece[n];
 
 		if (collision == true && collision_no == 0) {
