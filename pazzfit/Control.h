@@ -19,7 +19,7 @@ public:
 	void make_line();
 	void make_angle();
 
-	void output_piece();
+	void output_piece(vector<Piece> &piece);
 	void use_position();
 
 	void make_point_position();

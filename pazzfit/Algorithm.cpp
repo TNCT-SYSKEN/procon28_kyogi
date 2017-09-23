@@ -206,7 +206,7 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 	//スクショの保存
 	if (give_piece.back().point.size() == 0) {
 		Control cont;
-		cont.use_position();
+		cont.output_piece(give_piece);
 	}
 	else {
 		//再帰
