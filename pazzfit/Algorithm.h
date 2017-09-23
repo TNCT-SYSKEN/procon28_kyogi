@@ -9,7 +9,7 @@ public :
 	void fit_piece(vector<Piece>);
 	void evaluation(int,vector<Piece> &clone_piece);
 	void union_piece();
-	bool update_frame(int,int,vector<Piece> &clone_piece);
+	bool update_frame(int,int,int,vector<Piece> &clone_piece);
 	void select_piece(int,vector<Piece> &clone_piece);
 	bool check_collision(int, vector<Piece> &clone_piece);
 	void sort_frame(vector<Piece> &give_frame);
