@@ -37,27 +37,21 @@ void Algorithm::evaluation(int i,vector<Piece> &clone_piece) {
 			if (equal_angle(clone_piece.back().angle[i], clone_piece[n].angle[k])) {
 				one_evalution[k] = 1;
 				//その両端の辺も比較
+				if (equal_line(clone_piece.back().line[i], clone_piece[n].line[k])) {
+					one_evalution[k] += 1;
+				}
 				if (i == 0 && k == 0) {
-					if (equal_line(clone_piece.back().line[i], clone_piece[n].line[k])) {
-						one_evalution[k] += 1;
-					}
 					if (equal_line(clone_piece.back().line.back(), clone_piece[n].line.back())) {
 						one_evalution[k] += 1;
 					}
 				}
-				else if (i == 0 && k != 0) {
-					if (equal_line(clone_piece.back().line[i], clone_piece[n].line[k])) {
-						one_evalution[k] += 1;
-					}
-					if(equal_line(clone_piece.back().line.back(), clone_piece[n].line[k - 1])){
-						one_evalution[k] += 1;
+				else if (i != 0 && k == 0) {
+					if (equal_line(clone_piece.back().line[i - 1], clone_piece[n].line.back())) {
+							one_evalution[k] += 1;
 					}
 				}
-				else if (i != 0 && k != 0) {
-					if (equal_line(clone_piece.back().line[i], clone_piece[n].line[k])) {
-						one_evalution[k] += 1;
-					}
-					if (equal_line(clone_piece.back().line[i -1], clone_piece[n].line[k - 1])) {
+				else if (i == 0 && k != 0) {
+					if (equal_line(clone_piece.back().line.back(), clone_piece[n].line[k - 1])) {
 						one_evalution[k] += 1;
 					}
 				}
@@ -91,9 +85,9 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 		return false;
 	}
 	//ans_pointへの代入;
-	clone_piece[n].ans_point = clone_piece[n].point;
+	piece[n].ans_point = clone_piece[n].point;
 	//基準を求める
-	for (int k = 0; k < clone_piece[n].angle.size(); k++) {
+	for (int k = 0; k < clone_piece[n].point.size(); k++) {
 		if (clone_piece.back().point[i].first == clone_piece[n].point[k].first && clone_piece.back().point[i].second == clone_piece[n].point[k].second) {
 			piece_symbol = k;
 			break;
@@ -328,13 +322,14 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 	new_frame = give_piece.back().point;
 	give_piece = clone_piece;
 	give_piece.back().point = new_frame;
+	give_piece.back().ans_point = new_frame;
 	give_piece.erase(give_piece.begin() + n);
 	//枠の辺、角度の更新
 	sort_frame(give_piece);
 	//スクショの保存
-	if (give_piece.back().point.size() == 0) {
+	if (give_piece.back().point.size() != 0) {
 		Control cont;
-		cont.output_piece(clone_piece);
+		cont.output_piece(give_piece);
 	}
 	else {
 		//再帰
@@ -356,7 +351,7 @@ void Algorithm::select_piece(int i, vector<Piece> &clone_piece) {
 			}
 		}
 	}
-	for (int n = 0; n < (clone_piece.size() - 1); n++) {
+	for (int n = 0; n < (clone_piece.size()- 1); n++) {
 		//ピースの角(頂点)決定
 		for (int k = 0; k < (clone_piece[n].point.size() - 1); k++) {
 			if (three_evalution[flag][n][k] == 2) {
@@ -496,8 +491,8 @@ bool Algorithm::check_collision(int n,vector<Piece> &clone_piece) {
 }
 
 void Algorithm::sort_frame(vector<Piece> &give_piece) {
-	algo_make_line(give_piece);
 	algo_make_angle(give_piece);
+	algo_make_line(give_piece);
 }
 
 void Algorithm::algo_make_line(vector<Piece> &give_piece) {
@@ -608,6 +603,10 @@ void Algorithm::algo_make_angle(vector<Piece> &give_piece) {
 		else {
 			give_piece.back().angle.push_back(angle);
 		}
+		if (give_piece.back().angle.back() == 0) {
+			give_piece.back().angle.pop_back();
+			give_piece.back().point.erase(give_piece.back().point.begin() + j);
+		}
 	}
 }
 
@@ -621,7 +620,7 @@ void Algorithm::turn_piece(int n, vector<Piece> &clone_piece) {
 	int minus = 0;
 
 	//基準となる座標の決定
-	for (int i = 0; i < int(clone_piece[n].point.size()); i++) {
+	for (int i = 0; i < clone_piece[n].point.size(); i++) {
 		if (mini_point_x > clone_piece[n].point[i].first) {
 			mini_point_x = clone_piece[n].point[i].first;
 			axis = i;
@@ -629,28 +628,29 @@ void Algorithm::turn_piece(int n, vector<Piece> &clone_piece) {
 	}
 
 	//反転
-	for (int i = 0; i < int(clone_piece[n].point.size()); i++) {
+	for (int i = 0; i < clone_piece[n].point.size(); i++) {
 		clone_piece[n].point[i].first = clone_piece[n].point[axis].first -
 			(clone_piece[n].point[i].first - clone_piece[n].point[axis].first);
 	}
 
 	//マイナス座標の修正
-	for (int i = 0; i < int(clone_piece[n].point.size()); i++) {
+	for (int i = 0; i < clone_piece[n].point.size(); i++) {
 		if (abs((clone_piece[n].point[i].first - clone_piece[n].point[axis].first)) > minus) {
 			minus = abs((clone_piece[n].point[i].first - clone_piece[n].point[axis].first));
 		}
 	}
-	for (int i = 0; i < int(clone_piece[n].point.size()); i++) {
+	for (int i = 0; i < clone_piece[n].point.size(); i++) {
 		clone_piece[n].point[i].first += minus;
 	}
+
 }
 
 void Algorithm::spin90_piece(int n,vector<Piece> &clone_piece) {
 	/*
 	ピースを90度左回転させる
 	*/
-	for (int i = 0; i < int(clone_piece[n].point.size()); i++) {
-		clone_piece[n].point[i].first = piece[n].point[i].first * (-1);
+	for (int i = 0; i < clone_piece[n].point.size(); i++) {
+		clone_piece[n].point[i].first = clone_piece[n].point[i].first * (-1);
 	}
 }
 
@@ -658,9 +658,9 @@ void Algorithm::spin180_piece(int n,vector<Piece> &clone_piece) {
 	/*
 	ピースを180度左回転させる
 	*/
-	for (int i = 0; i < int(clone_piece[n].point.size()); i++) {
-		clone_piece[n].point[i].first = piece[n].point[i].first * (-1);
-		clone_piece[n].point[i].second = piece[n].point[i].second * (-1);
+	for (int i = 0; i < clone_piece[n].point.size(); i++) {
+		clone_piece[n].point[i].first = clone_piece[n].point[i].first * (-1);
+		clone_piece[n].point[i].second = clone_piece[n].point[i].second * (-1);
 	}
 }
 
@@ -668,8 +668,8 @@ void Algorithm::spin270_piece(int n,vector<Piece> &clone_piece) {
 	/*
 	ピースを270度左回転させる
 	*/
-	for (int i = 0; i < int(clone_piece[n].point.size()); i++) {
-		clone_piece[n].point[i].second = piece[n].point[i].second * (-1);
+	for (int i = 0; i < clone_piece[n].point.size(); i++) {
+		clone_piece[n].point[i].second = clone_piece[n].point[i].second * (-1);
 	}
 }
 
@@ -716,12 +716,12 @@ bool Algorithm::equal_point(int first_point, int second_point) {
 bool Algorithm::collision_checker(int n,int i,int q,vector<Piece> &clone_piece) {
 		//回転,反転,あたり判定によって当てはまるか判定
 		bool collision = true;
-		Piece base = piece[n];
+		Piece base = clone_piece[n];
 		int set_x;
 		int set_y;
 
-		set_x = piece[piece.size() - 1].point[i].first;
-		set_y = piece[piece.size() - 1].point[i].second;
+		set_x = clone_piece.back().point[i].first;
+		set_y = clone_piece.back().point[i].second;
 
 		if (set_x < clone_piece[n].point[q].first) {
 				int p = clone_piece[n].point[q].first - set_x;
