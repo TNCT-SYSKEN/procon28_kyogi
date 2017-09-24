@@ -309,6 +309,9 @@ void Control::output_piece(vector<Piece> &rec_piece) {
 		Graphics::SetBackground(Palette::White);
 		for (int i = 0; i < rec_piece.size(); i++) {
 				for (int j = 0; j < rec_piece[i].ans_point.size(); j++) {
+					if (rec_piece[i].ans_point.size() == 0) {
+						break;
+					}
 						if (j != rec_piece[i].ans_point.size() - 1) {
 								Line(rec_piece[i].ans_point[j].first * 5, rec_piece[i].ans_point[j].second * 5, rec_piece[i].ans_point[j + 1].first * 5, rec_piece[i].ans_point[j + 1].second * 5).draw(Color(i + 1, i + 2, i + 3));
 						}
