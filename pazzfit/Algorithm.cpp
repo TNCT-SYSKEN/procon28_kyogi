@@ -81,9 +81,21 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 	int f_erase_count = 0;
 	int se_count = 0;
 	int incert_count = 0;
+	int minus_sym = 0;
+	//回転チェック
 	if (!(collision_checker(n, i, q, clone_piece))) {
 		return false;
 	}
+	//マイナス座標なら除外
+	/*for (int j = 0; j < clone_piece[n].point.size(); j++) {
+		if (clone_piece[n].point[j].first * -1 > 0 || clone_piece[n].point[j].second * -1 > 0) {
+			minus_sym = 1;
+			break;
+		}
+	}
+	if (minus_sym) {
+		return false;
+	}*/
 	//ans_pointへの代入;
 	piece[n].ans_point = clone_piece[n].point;
 	//基準を求める
@@ -378,32 +390,34 @@ bool Algorithm::check_collision(int n,vector<Piece> &clone_piece) {
 	//ピースが枠から出てるならTrue
 	int count_x, count_y;
 	int count;
-	
+	//大きな四角形を作り
 	//頂点が外に出ているピースの判定
 	for (int j = 0; j < clone_piece[n].point.size(); j++) {
 		count_x = 0;
 		count_y = 0;
 		//y軸へ延長した線分
 		//x軸へ延長した線分
+		Circle circle(clone_piece[n].point[j].first, clone_piece[n].point[j].second,0.5);
 		Line y_line(clone_piece[n].point[j].first, clone_piece[n].point[j].second, clone_piece[n].point[j].first, 200);
 		Line x_line(clone_piece[n].point[j].first, clone_piece[n].point[j].second, 200, clone_piece[n].point[j].second);
 		for (int i = 0; i < clone_piece.back().point.size(); i++) {
 			//枠の各辺との交わりをカウント
 			if (i == clone_piece.back().point.size() - 1) {
 				Line f_line(clone_piece.back().point[i].first, clone_piece.back().point[i].second, clone_piece.back().point.front().first, clone_piece.back().point.front().second);
-				if (clone_piece[n].point[j].second == clone_piece.back().point[i].second && clone_piece[n].point[j].second == clone_piece.back().point.front().second) {
-					count_x += 1;
+				if (f_line.intersects(circle)) {
+					count_x = 1;
+					count_y = 1;
+					break;
 				}
-				else if (clone_piece[n].point[j].second == clone_piece.back().point[i].second || clone_piece[n].point[j].second == clone_piece.back().point.front().second) {
+				if (clone_piece[n].point[j].first == clone_piece.back().point[i].first) {
+					
+				}else if (clone_piece[n].point[j].second == clone_piece.back().point[i].second || clone_piece[n].point[j].second == clone_piece.back().point.front().second) {
 					//count_x += 1;
-					}
+				}
 				else if (x_line.intersects(f_line)) {
 						count_x += 1;
 					}
-				if (clone_piece[n].point[j].first == clone_piece.back().point[i].first && clone_piece[n].point[j].first == clone_piece.back().point.front().first) {
-					count_y += 1;
-				}
-				else if (clone_piece[n].point[j].first == clone_piece.back().point[i].first || clone_piece[n].point[j].first == clone_piece.back().point.front().first) {
+				if (clone_piece[n].point[j].first == clone_piece.back().point[i].first || clone_piece[n].point[j].first == clone_piece.back().point.front().first) {
 					//count_y += 1;
 					}
 				else if (y_line.intersects(f_line)) {
@@ -412,19 +426,18 @@ bool Algorithm::check_collision(int n,vector<Piece> &clone_piece) {
 			}
 			else {
 				Line f_line(clone_piece.back().point[i].first, clone_piece.back().point[i].second, clone_piece.back().point[i + 1].first, clone_piece.back().point[i + 1].second);
-				if (clone_piece[n].point[j].second == clone_piece.back().point[i].second && clone_piece[n].point[j].second == clone_piece.back().point[i + 1].second) {
-					count_x += 1;
+				if (f_line.intersects(circle)) {
+					count_x = 1;
+					count_y = 1;
+					break;
 				}
-				else if (clone_piece[n].point[j].second == clone_piece.back().point[i].second || clone_piece[n].point[j].second == clone_piece.back().point[i + 1].second) {
+				if (clone_piece[n].point[j].second == clone_piece.back().point[i].second || clone_piece[n].point[j].second == clone_piece.back().point[i + 1].second) {
 					//count_x += 1;
 				}
 				else if (x_line.intersects(f_line)) {
 					count_x += 1;
 				}
-				if (clone_piece[n].point[j].first == clone_piece.back().point[i].first && clone_piece[n].point[j].first == clone_piece.back().point[i + 1].first) {
-					count_y += 1;
-				}
-				else if (clone_piece[n].point[j].first == clone_piece.back().point[i].first || clone_piece[n].point[j].first == clone_piece.back().point[i + 1].first) {
+				if (clone_piece[n].point[j].first == clone_piece.back().point[i].first || clone_piece[n].point[j].first == clone_piece.back().point[i + 1].first) {
 					//count_y += 1;
 				}
 				else if (y_line.intersects(f_line)) {
@@ -438,14 +451,15 @@ bool Algorithm::check_collision(int n,vector<Piece> &clone_piece) {
 		}
  	}
 	//頂点が外に出ていないピースの判定
-	for (int j = 0; j < clone_piece[n].point.size(); j++) {
+/*	for (int j = 0; j < clone_piece[n].point.size(); j++) {
 		count = 0;
 		for (int i = 0; i < clone_piece.back().point.size(); i++) {
 			if (i == clone_piece.back().point.size() - 1) {
 				if (j == clone_piece[n].point.size() - 1) {
 					Line f_line(clone_piece.back().point[i].first, clone_piece.back().point[i].second, clone_piece.back().point.front().first, clone_piece.back().point.front().second);
 					Line p_line(clone_piece[n].point[j].first, clone_piece[n].point[j].second, clone_piece[n].point.front().first, clone_piece[n].point.front().second);
-					if (clone_piece[n].point[j].first == clone_piece.back().point[i].first || clone_piece[n].point.front().first == clone_piece.back().point.front().first) {
+					if (clone_piece[n].point[j].first == clone_piece.back().point[i].first 
+						|| clone_piece[n].point.front().first == clone_piece.back().point.front().first) {
 						//hoge
 					}
 					else if (f_line.intersects(p_line)) {
@@ -478,9 +492,9 @@ bool Algorithm::check_collision(int n,vector<Piece> &clone_piece) {
 					Line f_line(clone_piece.back().point[i].first, clone_piece.back().point[i].second, clone_piece.back().point[i + 1].first, clone_piece.back().point[i + 1].second);
 					Line p_line(clone_piece[n].point[j].first, clone_piece[n].point[j].second, clone_piece[n].point[j + 1].first, clone_piece[n].point[j + 1].second);
 					if (clone_piece[n].point[j].first == clone_piece.back().point[i].first || clone_piece[n].point[j + 1].first == clone_piece.back().point[i + 1].first) {
-						//hoge
+						//int hoge;
 					}
-					else if (f_line.intersects(p_line)) {
+					 if (f_line.intersects(p_line)) {
 						count += 1;
 					}
 				}
@@ -490,6 +504,7 @@ bool Algorithm::check_collision(int n,vector<Piece> &clone_piece) {
 			return true;
 		}
 	}
+	*/
 	return false;
 }
 
@@ -620,7 +635,6 @@ void Algorithm::turn_piece(int n, vector<Piece> &clone_piece) {
 	axis一番X座標の小さい値が入ってる要素数
 	*/
 	int mini_point_x = 100, axis = 0;
-	int minus = 0;
 
 	//基準となる座標の決定
 	for (int i = 0; i < clone_piece[n].point.size(); i++) {
