@@ -25,8 +25,10 @@ public :
 	bool equal_point(int, int);
 	bool collision_checker(int,int,int,vector<Piece> &clone_piece);
 private:
+	int system_end;
 	int flag;
 	vector<Piece> piece;
+	vector<Piece> ans_piece;
 	int collision_no;
 	vector<vector<vector<int>>> three_evalution;
 	vector<vector<int>> two_evalution;

@@ -7,12 +7,14 @@ Algorithm::Algorithm() {
 void Algorithm::init() {
 	flag = -1;
 	collision_no = 0;
+	system_end = 0;
 }
 
 void Algorithm::fit_piece(vector<Piece> clone_piece) {
 	flag += 1;
 	if (flag == 0) {
 		piece = clone_piece;
+		ans_piece = clone_piece;
 	}
 	//ピース嵌めるアルゴリズムをまとめる
 	//枠の基準となる頂点を決定
@@ -97,7 +99,7 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 		return false;
 	}*/
 	//ans_pointへの代入;
-	piece[n].ans_point = clone_piece[n].point;
+	ans_piece[flag].ans_point = clone_piece[n].point;
 	//基準を求める
 	for (int k = 0; k < clone_piece[n].point.size(); k++) {
 		if (clone_piece.back().point[i].first == clone_piece[n].point[k].first && clone_piece.back().point[i].second == clone_piece[n].point[k].second) {
@@ -329,22 +331,23 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 			}
 		}
 	}
-
 	//更新した情報の共有
 	new_frame = give_piece.back().point;
 	give_piece = clone_piece;
 	give_piece.back().point.clear();
 	give_piece.back().point = new_frame;
+	/*
 	give_piece.back().ans_point.clear();
 	give_piece.back().ans_point = new_frame;
+	*/
 	give_piece.erase(give_piece.begin() + n);
 	//枠の辺、角度の更新
 	sort_frame(give_piece);
 	//スクショの保存
 	if (give_piece.back().point.size() == 0) {
 		Control cont;
-		cont.output_piece(give_piece);
-
+		cont.output_piece(ans_piece);
+		system_end = 1;
 	}
 	else {
 		//再帰
