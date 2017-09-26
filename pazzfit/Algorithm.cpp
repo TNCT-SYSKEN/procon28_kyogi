@@ -21,7 +21,7 @@ void Algorithm::fit_piece(vector<Piece> clone_piece) {
 		select_piece(i,clone_piece);
 		three_evalution.pop_back();
 	}
-	flag += 1;
+	flag -= 1;
 }
 
 void Algorithm::evaluation(int i,vector<Piece> &clone_piece) {
@@ -390,14 +390,13 @@ bool Algorithm::check_collision(int n,vector<Piece> &clone_piece) {
 	//ピースが枠から出てるならTrue
 	int count_x, count_y;
 	int count;
-	//大きな四角形を作り
 	//頂点が外に出ているピースの判定
 	for (int j = 0; j < clone_piece[n].point.size(); j++) {
 		count_x = 0;
 		count_y = 0;
 		//y軸へ延長した線分
 		//x軸へ延長した線分
-		Circle circle(clone_piece[n].point[j].first, clone_piece[n].point[j].second,0.5);
+		Circle circle(clone_piece[n].point[j].first, clone_piece[n].point[j].second,0.1);
 		Line y_line(clone_piece[n].point[j].first, clone_piece[n].point[j].second, clone_piece[n].point[j].first, 200);
 		Line x_line(clone_piece[n].point[j].first, clone_piece[n].point[j].second, 200, clone_piece[n].point[j].second);
 		for (int i = 0; i < clone_piece.back().point.size(); i++) {
@@ -409,17 +408,23 @@ bool Algorithm::check_collision(int n,vector<Piece> &clone_piece) {
 					count_y = 1;
 					break;
 				}
-				if (clone_piece[n].point[j].first == clone_piece.back().point[i].first) {
-					
-				}else if (clone_piece[n].point[j].second == clone_piece.back().point[i].second || clone_piece[n].point[j].second == clone_piece.back().point.front().second) {
-					//count_x += 1;
+				//x軸に伸ばした線分
+				if (clone_piece[n].point[j].second == clone_piece.back().point[i].second && clone_piece[n].point[j].second == clone_piece.back().point.front().second) {
+
+				}
+				else if (clone_piece[n].point[j].second == clone_piece.back().point[i].second || clone_piece[n].point[j].second == clone_piece.back().point.front().second) {
+
 				}
 				else if (x_line.intersects(f_line)) {
 						count_x += 1;
-					}
-				if (clone_piece[n].point[j].first == clone_piece.back().point[i].first || clone_piece[n].point[j].first == clone_piece.back().point.front().first) {
-					//count_y += 1;
-					}
+				}
+				//y軸に伸ばした線分
+				if (clone_piece[n].point[j].first == clone_piece.back().point[i].first && clone_piece[n].point[j].first == clone_piece.back().point.front().first) {
+
+				}
+				else if (clone_piece[n].point[j].first == clone_piece.back().point[i].first || clone_piece[n].point[j].first == clone_piece.back().point.front().first) {
+
+				}
 				else if (y_line.intersects(f_line)) {
 					count_y += 1;
 				}
@@ -431,18 +436,26 @@ bool Algorithm::check_collision(int n,vector<Piece> &clone_piece) {
 					count_y = 1;
 					break;
 				}
-				if (clone_piece[n].point[j].second == clone_piece.back().point[i].second || clone_piece[n].point[j].second == clone_piece.back().point[i + 1].second) {
-					//count_x += 1;
-				}
+				//x軸に伸ばした線分
+				if (clone_piece[n].point[j].second == clone_piece.back().point[i].second && clone_piece[n].point[j].second == clone_piece.back().point[i + 1].second) {
+
+					}
+				else if (clone_piece[n].point[j].second == clone_piece.back().point[i].second || clone_piece[n].point[j].second == clone_piece.back().point[i + 1].second) {
+
+					}
 				else if (x_line.intersects(f_line)) {
-					count_x += 1;
-				}
-				if (clone_piece[n].point[j].first == clone_piece.back().point[i].first || clone_piece[n].point[j].first == clone_piece.back().point[i + 1].first) {
-					//count_y += 1;
-				}
+						count_x += 1;
+					}
+				//y軸に伸ばした線分
+				if (clone_piece[n].point[j].first == clone_piece.back().point[i].first && clone_piece[n].point[j].first == clone_piece.back().point[i + 1].first) {
+
+					}
+				else if (clone_piece[n].point[j].first == clone_piece.back().point[i].first || clone_piece[n].point[j].first == clone_piece.back().point[i + 1].first) {
+
+					}
 				else if (y_line.intersects(f_line)) {
-					count_y += 1;
-				}
+						count_y += 1;
+					}
 			}
 		}
 		//偶数なら枠の外側の頂点
@@ -451,6 +464,7 @@ bool Algorithm::check_collision(int n,vector<Piece> &clone_piece) {
 		}
  	}
 	//頂点が外に出ていないピースの判定
+	//例外があるため保留
 /*	for (int j = 0; j < clone_piece[n].point.size(); j++) {
 		count = 0;
 		for (int i = 0; i < clone_piece.back().point.size(); i++) {
