@@ -19,6 +19,9 @@ void Algorithm::fit_piece(vector<Piece> clone_piece) {
 	//ピース嵌めるアルゴリズムをまとめる
 	//枠の基準となる頂点を決定
 	for (int i = 0; i < clone_piece.back().point.size(); i++) {
+		if (system_end) {
+			break;
+		}
 		evaluation(i, clone_piece);
 		select_piece(i,clone_piece);
 		three_evalution.pop_back();
@@ -89,7 +92,7 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 		return false;
 	}
 	//マイナス座標なら除外
-	/*for (int j = 0; j < clone_piece[n].point.size(); j++) {
+	for (int j = 0; j < clone_piece[n].point.size(); j++) {
 		if (clone_piece[n].point[j].first * -1 > 0 || clone_piece[n].point[j].second * -1 > 0) {
 			minus_sym = 1;
 			break;
@@ -97,10 +100,24 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 	}
 	if (minus_sym) {
 		return false;
-	}*/
+	}
 	//ans_pointへの代入;
 	ans_piece[flag].ans_point = clone_piece[n].point;
 	//基準を求める
+	ans_piece[flag].ans_point;
+	clone_piece[n].point;
+	/*
+	Graphics::SetBackground(Palette::White);
+	for (int j = 0; j < ans_piece[flag].ans_point.size(); j++) {
+		if (j != ans_piece[i].ans_point.size() - 1) {
+			Line(ans_piece[flag].ans_point[j].first * 5, ans_piece[flag].ans_point[j].second * 5, ans_piece[flag].ans_point[j + 1].first * 5, ans_piece[flag].ans_point[j + 1].second * 5).draw(Pallete:);
+
+		}
+		else {
+			Line(ans_piece[flag].ans_point[j].first * 5, ans_piece[flag].ans_point[j].second * 5, ans_piece[flag].ans_point[0].first * 5, ans_piece[flag].ans_point[0].second * 5).draw(Color(i + 1, i + 2, i + 3));
+		}
+	}
+	*/
 	for (int k = 0; k < clone_piece[n].point.size(); k++) {
 		if (clone_piece.back().point[i].first == clone_piece[n].point[k].first && clone_piece.back().point[i].second == clone_piece[n].point[k].second) {
 			piece_symbol = k;
@@ -109,10 +126,11 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 	}
 	//右回りに頂点が等しい&その角度が等しい場合除外
 	for (int t = 1; t < clone_piece[n].point.size(); t++) {
-		if (piece_symbol + t > clone_piece[n].point.size() - 1) {
+		//例外防止
+		if (piece_symbol + t >= clone_piece[n].point.size()) {
 			break;
 		}
-		if (i + t > clone_piece.back().point.size() - 1) {
+		if (i + t >= clone_piece.back().point.size()) {
 			break;
 		}
 		if (clone_piece.back().point[i + t].first == clone_piece[n].point[piece_symbol + t].first && clone_piece.back().point[i + t].second == clone_piece[n].point[piece_symbol + t].second) {
@@ -336,10 +354,6 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 	give_piece = clone_piece;
 	give_piece.back().point.clear();
 	give_piece.back().point = new_frame;
-	/*
-	give_piece.back().ans_point.clear();
-	give_piece.back().ans_point = new_frame;
-	*/
 	give_piece.erase(give_piece.begin() + n);
 	//枠の辺、角度の更新
 	sort_frame(give_piece);
@@ -364,8 +378,11 @@ void Algorithm::select_piece(int i, vector<Piece> &clone_piece) {
 		//ピースの角(頂点)決定
 		for (int k = 0; k < (clone_piece[n].point.size() - 1); k++) {
 			if (three_evalution[flag][n][k] == 3) {
-			//ピースの番号,枠の頂点を引数
-			update_frame(n, i, k,clone_piece);
+				if (system_end) {
+					break;
+				}
+				//ピースの番号,枠の頂点を引数
+				update_frame(n, i, k,clone_piece);
 			}
 		}
 	}
@@ -373,6 +390,9 @@ void Algorithm::select_piece(int i, vector<Piece> &clone_piece) {
 		//ピースの角(頂点)決定
 		for (int k = 0; k < (clone_piece[n].point.size() - 1); k++) {
 			if (three_evalution[flag][n][k] == 2) {
+				if (system_end) {
+					break;
+				}
 				//ピースの番号,枠の頂点を引数
 				update_frame(n, i, k, clone_piece);
 			}
@@ -382,6 +402,9 @@ void Algorithm::select_piece(int i, vector<Piece> &clone_piece) {
 		//ピースの角(頂点)決定
 		for (int k = 0; k < (clone_piece[n].point.size() - 1); k++) {
 			if (three_evalution[flag][n][k] == 1) {
+				if (system_end) {
+					break;
+				}
 				//ピースの番号,枠の頂点を引数
 				update_frame(n, i,k, clone_piece);
 			}
@@ -712,7 +735,7 @@ bool Algorithm::equal_angle(double first_angle, double second_angle) {
 	枠とピースの角度の情報を受け取る
 	もし誤差の範囲内で等しいならばTrue
 	*/
-	if (fabs(first_angle - second_angle) <= 0.50) {
+	if (fabs(first_angle - second_angle) <= 1.0) {
 		return true;
 	}
 	else {
@@ -748,7 +771,7 @@ bool Algorithm::equal_point(int first_point, int second_point) {
 }
 
 bool Algorithm::collision_checker(int n,int i,int q,vector<Piece> &clone_piece) {
-		//回転,反転,あたり判定によって当てはまるか判定
+		//当てはまるならTrue
 		bool collision = true;
 		Piece base = clone_piece[n];
 		int set_x;
@@ -832,7 +855,7 @@ bool Algorithm::collision_checker(int n,int i,int q,vector<Piece> &clone_piece) 
 				collision = check_collision(n, clone_piece);
 		}
 		if (collision == true) {
-				clone_piece[n] = set;
+				clone_piece[n] = base;
 				collision_no = 0;
 				return false;
 		}
