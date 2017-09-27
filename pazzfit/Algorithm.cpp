@@ -86,14 +86,18 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 	int f_erase_count = 0;
 	int se_count = 0;
 	int incert_count = 0;
+	//マイナス座標の除外用
 	int minus_sym = 0;
+	//隣の辺の比較用
+	int line_cont = 0;
+
 	//回転チェック
-	if (!(collision_checker(n, i, q, clone_piece))) {
+	if (!(collision_checker(n, i, q, give_piece))) {
 		return false;
 	}
 	//マイナス座標なら除外
-	for (int j = 0; j < clone_piece[n].point.size(); j++) {
-		if (clone_piece[n].point[j].first * -1 > 0 || clone_piece[n].point[j].second * -1 > 0) {
+	for (int j = 0; j < give_piece[n].point.size(); j++) {
+		if (give_piece[n].point[j].first * -1 > 0 || give_piece[n].point[j].second * -1 > 0) {
 			minus_sym = 1;
 			break;
 		}
@@ -103,9 +107,6 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 	}
 	//ans_pointへの代入;
 	ans_piece[flag].ans_point = clone_piece[n].point;
-	//基準を求める
-	ans_piece[flag].ans_point;
-	clone_piece[n].point;
 	/*
 	Graphics::SetBackground(Palette::White);
 	for (int j = 0; j < ans_piece[flag].ans_point.size(); j++) {
@@ -118,6 +119,7 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 		}
 	}
 	*/
+	//基準を求める
 	for (int k = 0; k < clone_piece[n].point.size(); k++) {
 		if (clone_piece.back().point[i].first == clone_piece[n].point[k].first && clone_piece.back().point[i].second == clone_piece[n].point[k].second) {
 			piece_symbol = k;
@@ -188,10 +190,12 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 		}
 	}
 	//基準になった頂点の削除
-	give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol - p_erase_count);
-	give_piece[n].angle.erase(give_piece[n].angle.begin() + piece_symbol - p_erase_count);
-	give_piece.back().point.erase(give_piece.back().point.begin() + i - f_erase_count);
-	give_piece.back().angle.erase(give_piece.back().angle.begin() + i - f_erase_count);
+	if (1) {
+		give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol - p_erase_count);
+		give_piece[n].angle.erase(give_piece[n].angle.begin() + piece_symbol - p_erase_count);
+		give_piece.back().point.erase(give_piece.back().point.begin() + i - f_erase_count);
+		give_piece.back().angle.erase(give_piece.back().angle.begin() + i - f_erase_count);
+	}
 	//最初に入れる方を挿入
 	for (int t = 0; t < give_piece[n].point.size(); t++) {
 		Circle circle(give_piece[n].point[t].first, give_piece[n].point[t].second, 0.5);
@@ -277,7 +281,6 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 							//嵌めるピースが一つ前の頂点と近い方を判定
 							int a = hypot(fabs(clone_piece.back().point[clone_piece.back().point.size() - 2].first - give_piece[n].point[t].first),
 								fabs(clone_piece.back().point[clone_piece.back().point.size() - 2].second - give_piece[n].point[t].second));
-
 							int b = hypot(fabs(clone_piece.back().point[clone_piece.back().point.size() - 2].first - clone_piece.back().point[clone_piece.back().point.size() - 1].first),
 								fabs(clone_piece.back().point[clone_piece.back().point.size() - 2].second - clone_piece.back().point[clone_piece.back().point.size() - 1].second));
 							if (a > b) {
@@ -331,33 +334,123 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 		}
 	}
 	//ピースの残りの頂点を反対向きに挿入していく
+	int hoge = 1;
+	int a, b;
 	for (int k = give_piece[n].point.size() - 1; k >= 0; k--) {
 		if (incert_count == 1) {
-			if (se_count == 1||se_count == 0) {
-				give_piece.back().point.insert(give_piece.back().point.end(), give_piece[n].point[k]);
+			if (i - f_erase_count == 0) {
+				if (se_count == 1) {
+					if (hoge) {
+						a = hypot(fabs(give_piece.back().point.front().first - give_piece.back().point.back().first),
+							fabs(give_piece.back().point.front().second - give_piece.back().point.back().first));
+						b = hypot(fabs(give_piece.back().point[give_piece.back().point.size() - 2].first - give_piece.back().point.back().first),
+							fabs(give_piece.back().point[give_piece.back().point.size() - 2].second - give_piece.back().point.back().first));
+
+					}
+					if (a > b) {
+						give_piece.back().point.insert(give_piece.back().point.end(), give_piece[n].point[k]);
+					}
+					else {
+						give_piece.back().point.insert(give_piece.back().point.end() - 1, give_piece[n].point[k]);
+					}
+				}
+				else if (se_count == 2) {
+					give_piece.back().point.insert(give_piece.back().point.end() - 1, give_piece[n].point[k]);
+				}
 			}
-			else if(se_count == 2){
-				give_piece.back().point.insert(give_piece.back().point.end() - 1, give_piece[n].point[k]);
+			else {
+				if (se_count == 1) {
+					if (hoge) {
+						if (i - f_erase_count - 1 == 0) {
+							a = hypot(fabs(give_piece.back().point.back().first - give_piece.back().point[i - f_erase_count].first),
+								fabs(give_piece.back().point.back().second - give_piece.back().point[i - f_erase_count].first));
+							b = hypot(fabs(give_piece.back().point[i - f_erase_count + 1].first - give_piece.back().point[i - f_erase_count].first),
+								fabs(give_piece.back().point[i - f_erase_count + 1].second - give_piece.back().point[i - f_erase_count].first));
+						}
+						else {
+							a = hypot(fabs(give_piece.back().point[i - f_erase_count - 1].first - give_piece.back().point[i - f_erase_count].first),
+								fabs(give_piece.back().point[i - f_erase_count - 1].second - give_piece.back().point[i - f_erase_count].first));
+							b = hypot(fabs(give_piece.back().point[i - f_erase_count + 1].first - give_piece.back().point[i - f_erase_count].first),
+								fabs(give_piece.back().point[i - f_erase_count + 1].second - give_piece.back().point[i - f_erase_count].first));
+						}
+					}
+					if (a > b) {
+						give_piece.back().point.insert(give_piece.back().point.begin() + i - f_erase_count, give_piece[n].point[k]);
+					}
+					else {
+						give_piece.back().point.insert(give_piece.back().point.begin() + i - f_erase_count - 1, give_piece[n].point[k]);
+					}	
+				}
+				else if (se_count == 2) {
+					give_piece.back().point.insert(give_piece.back().point.begin() + i - f_erase_count + 1, give_piece[n].point[k]);
+				}
 			}
 		}
-		else {
-			if (se_count == 1 || se_count == 0) {
+		else if (incert_count == 0) {
+			if (i - f_erase_count == 0) {
 				give_piece.back().point.insert(give_piece.back().point.end(), give_piece[n].point[k]);
 			}
-			else if (se_count == 2) {
-				give_piece.back().point.insert(give_piece.back().point.end() - 1, give_piece[n].point[k]);
+			else {
+				give_piece.back().point.insert(give_piece.back().point.begin() + i - f_erase_count - 1, give_piece[n].point[k]);
 			}
 		}
 	}
+	//枠の隣り合う辺が重なっているか判定
+	for (int k = 0; k < give_piece.back().point.size(); k++){
+		for (int t = 0; t < give_piece.back().point.size(); t++) {
+			if (k == give_piece.back().point.size() - 1) {
+				Line line_m(give_piece.back().point[k].first, give_piece.back().point[k].second, give_piece.back().point.front().first, give_piece.back().point.front().second);
+				if (t == give_piece.back().point.size() - 1) {
+					Line line_k(give_piece.back().point[t].first, give_piece.back().point[t].second, give_piece.back().point.front().first, give_piece.back().point.front().second );
+					if (line_m.intersects(line_k)) {
+						line_cont = 1;
+						break;
+					}
+				}
+				else {
+					Line line_k( give_piece.back().point[t].first, give_piece.back().point[t].second, give_piece.back().point[t + 1].first, give_piece.back().point[t + 1].second );
+					if (line_m.intersects(line_k)) {
+						line_cont = 1;
+						break;
+					}
+				}
+			}
+			else {
+				Line line_m(give_piece.back().point[k].first, give_piece.back().point[k].second, give_piece.back().point[k + 1].first, give_piece.back().point[k + 1].second);
+				if (t == give_piece.back().point.size() - 1) {
+					Line line_k(give_piece.back().point[t].first, give_piece.back().point[t].second, give_piece.back().point.front().first, give_piece.back().point.front().second);
+					if (line_m.intersects(line_k)) {
+						line_cont = 1;
+						break;
+					}
+				}
+				else {
+					Line line_k(give_piece.back().point[t].first, give_piece.back().point[t].second, give_piece.back().point[t + 1].first, give_piece.back().point[t + 1].second);
+					if (line_m.intersects(line_k)) {
+						line_cont = 1;
+						break;
+					}
+				}
+			}
+		}
+		if (line_cont) {
+			break;
+		}
+	}
+	if (line_cont) {
+		false;
+	}
 	//更新した情報の共有
-	new_frame = give_piece.back().point;
-	give_piece = clone_piece;
-	give_piece.back().point.clear();
-	give_piece.back().point = new_frame;
-	give_piece.erase(give_piece.begin() + n);
+	if (1) {
+		new_frame = give_piece.back().point;
+		give_piece = clone_piece;
+		give_piece.back().point.clear();
+		give_piece.back().point = new_frame;
+		give_piece.erase(give_piece.begin() + n);
+	}
 	//枠の辺、角度の更新
 	sort_frame(give_piece);
-	//スクショの保存
+	//スクショの保存&&再帰
 	if (give_piece.back().point.size() == 0) {
 		Control cont;
 		cont.output_piece(ans_piece);
