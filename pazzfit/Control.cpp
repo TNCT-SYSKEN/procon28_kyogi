@@ -8,7 +8,7 @@ void Control::exe() {
 	//set_piece();
 	//形状情報格納
 	set_shape_data();
-	exec_argolithm();
+	//exec_argolithm();
 	//use_position();
 }
 
@@ -27,7 +27,7 @@ void read_qr() {
 		//cmdを起動してqrコード読み取り(ゴリ押し)
 		ostringstream oss;
 		//oss << "cd C:\\ & dir > hoge.txt";
-		oss << "cd C:\\Program Files (x86)\\ZBar && zbarvars.bat && zbarimg --raw C:\\Users\\syken-admin\\Desktop\\procon28_kyogi\\pazzfit\\qr_img\\qr_data00" << i << ".bmp > C:\\Users\\syken-admin\\Desktop\\procon28_kyogi\\pazzfit\\shape_data\\qr_data00" << i << ".txt";
+		oss << "cd C:\\Program Files (x86)\\ZBar && zbarvars.bat && zbarimg --raw C:\\Users\\sysken-admin\\Desktop\\procon28_kyogi\\pazzfit\\qr_img\\qr_data00" << i << ".bmp > C:\\Users\\sysken-admin\\Desktop\\procon28_kyogi\\pazzfit\\shape_data\\qr_data00" << i << ".txt";
 		system(oss.str().c_str());
 		//テキストが生成されてるかチェック
 		ostringstream check;

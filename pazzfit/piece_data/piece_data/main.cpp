@@ -30,6 +30,7 @@ void piece() {
 	//枠とピースであろう値を格納しとく
 	vector<Point> frame;
 	vector<vector<Point>> piece;
+	Mat po;
 	Mat test;
 	Mat gray_test;
 	Mat bin_test;
@@ -38,10 +39,11 @@ void piece() {
 		vector<vector<Point> > contours;
 		ostringstream oss;
 		oss << "img/test00" << j << ".bmp";
-		test = imread(oss.str(), 1);
-		if (test.data == NULL) {
+		po = imread(oss.str(), 1);
+		if (po.data == NULL) {
 			break;
 		}
+		test = imread(oss.str(), 1);
 		//グレースケールに変換
 		cvtColor(test, gray_test, CV_BGR2GRAY);
 		//2値化
@@ -109,20 +111,38 @@ void piece() {
 		}
 	}
 //-----------ここまでループ-----------//
+	//そろえたり値を形状情報にしたデータ
+	vector<vector<pair<double,double>>> clone_piece;
+	vector<vector<Point>> shape_piece;
+	vector<Point> shape_frame;
 	double max_x = 0, max_y = 0;
 	int x, y;
+	Point hoge;
+	//枠を左上にあわせる
 	for (int i = 0; i < frame.size(); i++) {
 		if (i == 0) {
 			x = frame[0].x;
 			y = frame[0].y;
-			frame[0].x = 0;
-			frame[0].y = 0;
+			hoge.x = 0;
+			hoge.y = 0;
+			shape_frame.push_back(hoge);
 		}
 		else {
-			frame[i].x -= x;
-			frame[i].y -= y;
+			hoge.x = frame[i].x - x;
+			hoge.y = frame[i].y - y;
+			shape_frame.push_back(hoge);
 		}
 	}
+	//clone_pieceにpieceのデータをコピー
+	for (int i = 0; i < piece.size(); i++) {
+		vector<pair<double, double>> hoge;
+		clone_piece.push_back(hoge);
+		for (int j = 0; j < piece[i].size(); j++) {
+			pair<double, double> fuga = { piece[i][j].x,piece[i][j].x };
+			clone_piece[i].push_back(fuga);
+		}
+	}
+
 	//一番大きいx,yの値を探す
 	for (int i = 0; i < frame.size(); i++) {
 		if (frame[i].x >= max_x) {
@@ -134,6 +154,81 @@ void piece() {
 	}
 	max_x /= 64;
 	max_y /= 100;
+
+	//ななめになっているピースをグリッドに乗せる
+	for (int i = 0; i < piece.size(); i++) {
+		int x;
+		int y;
+		//左上に図形を動かす
+		for (int j = 0; j < clone_piece[i].size(); j++) {
+			if (j == 0) {
+				x = clone_piece[i][0].first;
+				y = clone_piece[i][0].second;
+				clone_piece[i][0].first = 0;
+				clone_piece[i][0].second = 0;
+			}
+			else {
+				clone_piece[i][j].first -= x;
+				clone_piece[i][j].second -= y;
+			}
+		}
+		int error = 100, angle;
+		for (int j = 1; j <= 360; j++) {
+			double error_test = 0;
+			//j度だけ図形を回転させる
+			//回転行列を掛け合わせる
+			for (int k = 0; k < clone_piece[i].size(); k++) {
+				clone_piece[i][k].first = clone_piece[i][k].first * cos(j) - clone_piece[i][k].second * sin(j);
+				clone_piece[i][k].second = clone_piece[i][k].first * sin(j) + clone_piece[i][k].second * cos(j);
+				error_test += abs(fmod(clone_piece[i][k].first,max_x) + fmod(clone_piece[i][k].second, max_y));
+			}
+			//値を元に戻す
+			for (int k = 0; k < clone_piece[i].size(); k++) {
+				clone_piece[i][k].first = piece[i][k].x;
+				clone_piece[i][k].second = piece[i][k].y;
+			}
+			//左上に図形を動かす
+			for (int k = 0; k < clone_piece[i].size(); k++) {
+				if (k == 0) {
+					x = clone_piece[i][0].first;
+					y = clone_piece[i][0].second;
+					clone_piece[i][0].first = 0;
+					clone_piece[i][0].second = 0;
+				}
+				else {
+					clone_piece[i][k].first -= x;
+					clone_piece[i][k].second -= y;
+				}
+			}
+			//誤差がもっとも小さかった角度を保存しておく
+			if (error > error_test / clone_piece[i].size()) {
+				angle = j;
+			}
+		}
+		//もっとも小さかった角度に移動させる
+		for (int k = 0; k < clone_piece[i].size(); k++) {
+			clone_piece[i][k].first = clone_piece[i][k].first * cos(angle) - clone_piece[i][k].second * sin(angle);
+			clone_piece[i][k].second = clone_piece[i][k].first * sin(angle) + clone_piece[i][k].second * cos(angle);
+		}
+		double minus_x = 0, minus_y = 0;
+		//最も大きい負の値を探す
+		for (int k = 0; k < clone_piece[i].size(); k++) {
+			if (clone_piece[i][k].first < minus_x) {
+				minus_x = clone_piece[i][k].first;
+			}
+			if (clone_piece[i][k].second < minus_y) {
+				minus_y = clone_piece[i][k].second;
+			}
+		}
+		//負の値があればずらす
+		if (minus_x != 0 || minus_y != 0) {
+			for (int k = 0; k < clone_piece[i].size(); k++) {
+				clone_piece[i][k].first += abs(minus_x);
+				clone_piece[i][k].second += abs(minus_y);
+			}
+		}
+	}
+	cout << clone_piece[0][0].first << endl;
 	for (int i = 0; i < frame.size();i++) {
 		frame[i].x /= max_x;
 		frame[i].y /= max_y;
@@ -155,5 +250,5 @@ void piece() {
 	imshow("fuga", gray_test);
 	imshow("piyo", bin_test);
 
-	waitKey(0);
+	//waitKey(0);
 }

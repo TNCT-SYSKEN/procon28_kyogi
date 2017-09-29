@@ -76,8 +76,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SIV3D_20160812)\Inc;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SIV3D_20160812)\Lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\sysken-admin\Desktop\Siv3DPackage(August2016v2)\Inc;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\sysken-admin\Desktop\Siv3DPackage(August2016v2)\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
