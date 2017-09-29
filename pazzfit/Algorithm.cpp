@@ -247,7 +247,7 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 		}
 	}
 	//左回りに頂点が等しい&その角度が等しい場合除外
-	/*while (1) {
+	while (1) {
 		if (i == 0&& piece_symbol == 0) {
 			if (give_piece.back().point.back().first == give_piece[n].point.back().first && give_piece.back().point.back().second == give_piece[n].point.back().second) {
 				if (give_piece.back().angle.back() == give_piece[n].angle.back()) {
@@ -342,7 +342,7 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 				break;
 			}
 		}
-	}*/
+	}
 	//基準になった頂点の削除
 	if (1) {
 		give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol - p_erase_count);
