@@ -157,6 +157,7 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 							f_erase_count += 1;
 						}
 					}
+
 					if (piece_symbol != 0) {
 						p_erase_count += 1;
 					}
