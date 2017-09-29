@@ -132,7 +132,7 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 	}
 	//右回りに頂点が等しい&その角度が等しい場合除外
 	while (1){
-		if (i + 1 == give_piece.back().point.size()&&piece_symbol + 1 == give_piece[n].point.size()) {
+		if (i - f_erase_count + 1 == give_piece.back().point.size()&&piece_symbol - p_erase_count + 1 == give_piece[n].point.size()) {
 			if (give_piece.back().point.front().first == give_piece[n].point.front().first && give_piece.back().point.front().second == give_piece[n].point.front().second) {
 				if (give_piece.back().angle.front() == give_piece[n].angle.front()) {
 					//頂点を削除
@@ -166,12 +166,34 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 				break;
 			}
 		}
-		else if (i + 1 == give_piece.back().point.size() && piece_symbol + 1 != give_piece[n].point.size()) {
-			if (give_piece.back().point.front().first == give_piece[n].point[piece_symbol - p_erase_count].first && give_piece.back().point.front().second == give_piece[n].point[piece_symbol - p_erase_count].second) {
-				if (give_piece.back().angle.front() == give_piece[n].angle[piece_symbol - p_erase_count]) {
+		else if (i - f_erase_count + 1 != give_piece.back().point.size() && piece_symbol - p_erase_count + 1 != give_piece[n].point.size()) {
+			if (give_piece.back().point[i - f_erase_count + 1].first == give_piece[n].point[piece_symbol - p_erase_count + 1].first && give_piece.back().point[i - f_erase_count + 1].second == give_piece[n].point[piece_symbol - p_erase_count + 1].second) {
+				if (give_piece.back().angle[i - f_erase_count + 1] == give_piece[n].angle[piece_symbol - p_erase_count + 1]) {
 					//頂点を削除
-					give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol - p_erase_count);
-					give_piece[n].angle.erase(give_piece[n].angle.begin() + piece_symbol - p_erase_count);
+					give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol - p_erase_count + 1);
+					give_piece[n].angle.erase(give_piece[n].angle.begin() + piece_symbol - p_erase_count + 1);
+					give_piece.back().point.erase(give_piece.back().point.begin() + i - f_erase_count + 1);
+					give_piece.back().angle.erase(give_piece.back().angle.begin() + i - f_erase_count + 1);
+				}
+				else {
+					give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol - p_erase_count + 1);
+					give_piece[n].angle.erase(give_piece[n].angle.begin() + piece_symbol - p_erase_count + 1);
+					if (fabs(180 - fabs(give_piece.back().angle[i - f_erase_count + 1] - give_piece[n].angle[piece_symbol - p_erase_count + 1])) <= 0.50) {
+						give_piece.back().point.erase(give_piece.back().point.begin() + i - f_erase_count + 1);
+						give_piece.back().angle.erase(give_piece.back().angle.begin() + i - f_erase_count);
+					}
+				}
+			}
+			else {
+				break;
+			}
+		}
+		else if (i - f_erase_count + 1 == give_piece.back().point.size() && piece_symbol - p_erase_count + 1 != give_piece[n].point.size()) {
+			if (give_piece.back().point.front().first == give_piece[n].point[piece_symbol - p_erase_count + 1].first && give_piece.back().point.front().second == give_piece[n].point[piece_symbol - p_erase_count + 1].second) {
+				if (give_piece.back().angle.front() == give_piece[n].angle[piece_symbol - p_erase_count + 1]) {
+					//頂点を削除
+					give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol - p_erase_count + 1);
+					give_piece[n].angle.erase(give_piece[n].angle.begin() + piece_symbol - p_erase_count + 1);
 					give_piece.back().point.erase(give_piece.back().point.begin());
 					give_piece.back().angle.erase(give_piece.back().angle.begin());
 					if (i != 0) {
@@ -179,9 +201,9 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 					}
 				}
 				else {
-					give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol - p_erase_count);
-					give_piece[n].angle.erase(give_piece[n].angle.begin() + piece_symbol - p_erase_count);
-					if (fabs(180 - fabs(give_piece.back().angle.front() - give_piece[n].angle[piece_symbol - p_erase_count])) <= 0.50) {
+					give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol - p_erase_count + 1);
+					give_piece[n].angle.erase(give_piece[n].angle.begin() + piece_symbol - p_erase_count + 1);
+					if (fabs(180 - fabs(give_piece.back().angle.front() - give_piece[n].angle[piece_symbol - p_erase_count + 1])) <= 0.50) {
 						give_piece.back().point.erase(give_piece.back().point.begin());
 						give_piece.back().angle.erase(give_piece.back().angle.begin());
 						if (i != 0) {
@@ -194,7 +216,7 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 				break;
 			}
 		}
-		else if (i + 1 != give_piece.back().point.size() && piece_symbol + 1 == give_piece[n].point.size()) {
+		else if (i - f_erase_count + 1 != give_piece.back().point.size() && piece_symbol - p_erase_count + 1 == give_piece[n].point.size()) {
 			if (give_piece.back().point[i - f_erase_count + 1].first == give_piece[n].point.front().first && give_piece.back().point[i - f_erase_count + 1].second == give_piece[n].point.front().second) {
 				if (give_piece.back().angle[i - f_erase_count + 1] == give_piece[n].angle.front()) {
 					//頂点を削除
@@ -212,8 +234,61 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 					if (fabs(180 - fabs(give_piece.back().angle[i - f_erase_count + 1] - give_piece[n].angle.front()) <= 0.50)) {
 						give_piece.back().point.erase(give_piece.back().point.begin() + i - f_erase_count + 1);
 						give_piece.back().angle.erase(give_piece.back().angle.begin() + 1 + 1);
-						if (piece_symbol != 0) {
-							p_erase_count += 1;
+					}
+					if (piece_symbol != 0) {
+						p_erase_count += 1;
+					}
+				}
+			}
+			else {
+				break;
+			}
+		}
+	}
+	//左回りに頂点が等しい&その角度が等しい場合除外
+	/*while (1) {
+		if (i == 0&& piece_symbol == 0) {
+			if (give_piece.back().point.back().first == give_piece[n].point.back().first && give_piece.back().point.back().second == give_piece[n].point.back().second) {
+				if (give_piece.back().angle.back() == give_piece[n].angle.back()) {
+					//頂点を削除
+					give_piece[n].point.erase(give_piece[n].point.end());
+					give_piece[n].angle.erase(give_piece[n].angle.end());
+					give_piece.back().point.erase(give_piece.back().point.end());
+					give_piece.back().angle.erase(give_piece.back().angle.end());
+				}
+				else {
+					give_piece[n].point.erase(give_piece[n].point.end());
+					give_piece[n].angle.erase(give_piece[n].angle.end());
+					if (fabs(180 - fabs(give_piece.back().angle.back() - give_piece[n].angle.back())) <= 0.50) {
+						give_piece.back().point.erase(give_piece.back().point.end());
+						give_piece.back().angle.erase(give_piece.back().angle.end());
+					}
+				}
+			}
+			else {
+				break;
+			}
+		}
+		else if (i == 0 && piece_symbol != 0) {
+			if (give_piece.back().point.back().first == give_piece[n].point[piece_symbol - p_erase_count - 1].first && give_piece.back().point.back().second == give_piece[n].point[piece_symbol - p_erase_count - 1].second) {
+				if (give_piece.back().angle.back() == give_piece[n].angle[piece_symbol - p_erase_count - 1]) {
+					//頂点を削除
+					give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol - p_erase_count - 1);
+					give_piece[n].angle.erase(give_piece[n].angle.begin() + piece_symbol - p_erase_count - 1);
+					give_piece.back().point.erase(give_piece.back().point.end());
+					give_piece.back().angle.erase(give_piece.back().angle.end());
+					if (i != 0) {
+						f_erase_count += 1;
+					}
+				}
+				else {
+					give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol - p_erase_count - 1);
+					give_piece[n].angle.erase(give_piece[n].angle.begin() + piece_symbol - p_erase_count - 1);
+					if (fabs(180 - fabs(give_piece.back().angle.back() - give_piece[n].angle[piece_symbol - p_erase_count - 1])) <= 0.50) {
+						give_piece.back().point.erase(give_piece.back().point.end());
+						give_piece.back().angle.erase(give_piece.back().angle.end());
+						if (i != 0) {
+							f_erase_count += 1;
 						}
 					}
 				}
@@ -222,20 +297,20 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 				break;
 			}
 		}
-		else if (i + 1 != give_piece.back().point.size() && piece_symbol + 1 != give_piece[n].point.size()) {
-			if (give_piece.back().point[i - f_erase_count + 1].first == give_piece[n].point[piece_symbol - p_erase_count].first && give_piece.back().point[i - f_erase_count + 1].second == give_piece[n].point[piece_symbol - p_erase_count].second) {
-				if (give_piece.back().angle[i - f_erase_count + 1] == give_piece[n].angle[piece_symbol - p_erase_count]) {
+		else if (i != 0 && piece_symbol == 0) {
+			if (give_piece.back().point[i - f_erase_count - 1].first == give_piece[n].point.back().first && give_piece.back().point[i - f_erase_count - 1].second == give_piece[n].point.back().second) {
+				if (give_piece.back().angle[i - f_erase_count - 1] == give_piece[n].angle.back()) {
 					//頂点を削除
-					give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol - p_erase_count);
-					give_piece[n].angle.erase(give_piece[n].angle.begin() + piece_symbol - p_erase_count);
-					give_piece.back().point.erase(give_piece.back().point.begin() + i - f_erase_count + 1);
-					give_piece.back().angle.erase(give_piece.back().angle.begin() + i - f_erase_count + 1);
+					give_piece[n].point.erase(give_piece[n].point.end());
+					give_piece[n].angle.erase(give_piece[n].angle.end());
+					give_piece.back().point.erase(give_piece.back().point.begin() + i - f_erase_count - 1);
+					give_piece.back().angle.erase(give_piece.back().angle.begin() + i - f_erase_count - 1);
 				}
 				else {
-					give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol - p_erase_count);
-					give_piece[n].angle.erase(give_piece[n].angle.begin() + piece_symbol - p_erase_count);
-					if (fabs(180 - fabs(give_piece.back().angle[i - f_erase_count + 1] - give_piece[n].angle[piece_symbol - p_erase_count])) <= 0.50) {
-						give_piece.back().point.erase(give_piece.back().point.begin() + i - f_erase_count + 1);
+					give_piece[n].point.erase(give_piece[n].point.end());
+					give_piece[n].angle.erase(give_piece[n].angle.end());
+					if (fabs(180 - fabs(give_piece.back().angle[i - f_erase_count - 1] - give_piece[n].angle.back())) <= 0.50) {
+						give_piece.back().point.erase(give_piece.back().point.begin() + i - f_erase_count - 1);
 						give_piece.back().angle.erase(give_piece.back().angle.begin() + i - f_erase_count);
 					}
 				}
@@ -244,72 +319,29 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 				break;
 			}
 		}
-	}
-	/*
-	for (int t = 1; t < give_piece[n].point.size(); t++) {
-		//例外防止
-		if (piece_symbol + t >= give_piece[n].point.size()) {
-			break;
-		}
-		if (i + t >= give_piece.back().point.size()) {
-			break;
-		}
-		if (give_piece.back().point[i + t].first == give_piece[n].point[piece_symbol + t].first && give_piece.back().point[i + t].second == give_piece[n].point[piece_symbol + t].second) {
-			if (give_piece.back().angle[i + t] == give_piece[n].angle[piece_symbol + t]) {
-				//頂点を削除
-				give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol + t);
-				give_piece[n].angle.erase(give_piece[n].angle.begin() + piece_symbol + t);
-				give_piece.back().point.erase(give_piece.back().point.begin() + i + t);
-				give_piece.back().angle.erase(give_piece.back().angle.begin() + i + t);
-			}
-			else {
-				give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol + t);
-				give_piece[n].angle.erase(give_piece[n].angle.begin() + piece_symbol + t);
-				if (fabs(180 - fabs(give_piece.back().angle[i + t] - give_piece[n].angle[piece_symbol + t])) <= 0.50) {
-					give_piece.back().point.erase(give_piece.back().point.begin() + i + t);
-					give_piece.back().angle.erase(give_piece.back().angle.begin() + i + t);
+		else if (i != 0 && piece_symbol != 0) {
+			if (give_piece.back().point[i - f_erase_count - 1].first == give_piece[n].point[piece_symbol - p_erase_count - 1].first && give_piece.back().point[i - f_erase_count - 1].second == give_piece[n].point[piece_symbol - p_erase_count - 1].second) {
+				if (give_piece.back().angle[i - f_erase_count - 1] == give_piece[n].angle[piece_symbol - p_erase_count - 1]) {
+					//頂点を削除
+					give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol - p_erase_count - 1);
+					give_piece[n].angle.erase(give_piece[n].angle.begin() + piece_symbol - p_erase_count - 1);
+					give_piece.back().point.erase(give_piece.back().point.begin() + i - f_erase_count - 1);
+					give_piece.back().angle.erase(give_piece.back().angle.begin() + i - f_erase_count - 1);
+				}
+				else {
+					give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol - p_erase_count - 1);
+					give_piece[n].angle.erase(give_piece[n].angle.begin() + piece_symbol - p_erase_count - 1);
+					if (fabs(180 - fabs(give_piece.back().angle[i - f_erase_count - 1] - give_piece[n].angle[piece_symbol - p_erase_count - 1])) <= 0.50) {
+						give_piece.back().point.erase(give_piece.back().point.begin() + i - f_erase_count - 1);
+						give_piece.back().angle.erase(give_piece.back().angle.begin() + i - f_erase_count);
+					}
 				}
 			}
-		}
-		else {
-			break;
+			else {
+				break;
+			}
 		}
 	}*/
-	//左回りに頂点が等しい&その角度が等しい場合除外
-	/*
-	for (int t = 1; t < give_piece.back().point.size(); t++) {
-		if (piece_symbol - t < 0) {
-			break;
-		}
-		if (i - t < 0) {
-			break;
-		}
-		if (give_piece.back().point[i - t].first == give_piece[n].point[piece_symbol - t].first && give_piece.back().point[i - t].second == give_piece[n].point[piece_symbol - t].second) {
-			if (give_piece.back().angle[i - t] == give_piece[n].angle[piece_symbol - t]) {
-				//頂点を削除
-				give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol - t);
-				give_piece[n].angle.erase(give_piece[n].angle.begin() + piece_symbol - t);
-				p_erase_count += 1;
-				give_piece.back().point.erase(give_piece.back().point.begin() + i - t);
-				give_piece.back().angle.erase(give_piece.back().angle.begin() + i - t);
-				f_erase_count += 1;
-			}
-			else {
-				give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol + t);
-				give_piece[n].angle.erase(give_piece[n].angle.begin() + piece_symbol - t);
-				p_erase_count += 1;
-				if (fabs(180 - fabs(give_piece.back().angle[i - t] - give_piece[n].angle[piece_symbol - t])) <= 0.50) {
-					give_piece.back().point.erase(give_piece.back().point.begin() + i - t);
-					give_piece.back().angle.erase(give_piece.back().angle.begin() + i - t);
-					f_erase_count += 1;
-				}
-			}
-		}
-		else {
-			break;
-		}
-	}
-	*/
 	//基準になった頂点の削除
 	if (1) {
 		give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol - p_erase_count);
