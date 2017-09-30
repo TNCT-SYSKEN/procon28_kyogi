@@ -5,6 +5,8 @@
 #include <opencv/cvaux.h>
 #include <iostream>
 #include <vector>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 using namespace std;
 using namespace cv;
@@ -133,12 +135,29 @@ void piece() {
 			shape_frame.push_back(hoge);
 		}
 	}
+
+	//明らかにおかしい頂点を取り除く
+	for (int i = 0; i < piece.size(); i++) {
+		for (int j = 0; j < piece[i].size(); j++) {
+			//うしろの頂点のx,y座標がそれぞれ+-20の間にある(めっちゃ近い)
+			if (piece[i][j].x <= piece[i][(j + 1) % piece[i].size()].x + 20 && piece[i][j].x >= piece[i][(j + 1) % piece[i].size()].x - 20) {
+				if (piece[i][j].y <= piece[i][(j + 1) % piece[i].size()].y + 20 && piece[i][j].y >= piece[i][(j + 1) % piece[i].size()].y - 20) {
+					//合体させる
+					piece[i][j].x = (piece[i][j].x + piece[i][(j + 1) % piece[i].size()].x) / 2;
+					piece[i][j].y = (piece[i][j].y + piece[i][(j + 1) % piece[i].size()].y) / 2;
+					piece[i].erase(piece[i].begin() + j);
+					//探索をはじめに戻す
+					j = -1;
+				}
+			}
+		}
+	}
 	//clone_pieceにpieceのデータをコピー
 	for (int i = 0; i < piece.size(); i++) {
 		vector<pair<double, double>> hoge;
 		clone_piece.push_back(hoge);
 		for (int j = 0; j < piece[i].size(); j++) {
-			pair<double, double> fuga = { piece[i][j].x,piece[i][j].x };
+			pair<double, double> fuga = { piece[i][j].x,piece[i][j].y };
 			clone_piece[i].push_back(fuga);
 		}
 	}
@@ -173,15 +192,30 @@ void piece() {
 			}
 		}
 		int error = 100, angle;
-		for (int j = 1; j <= 360; j++) {
+		for (double j = 1.0; j <= 360; j += 0.1) {
 			double error_test = 0;
 			//j度だけ図形を回転させる
 			//回転行列を掛け合わせる
 			for (int k = 0; k < clone_piece[i].size(); k++) {
-				clone_piece[i][k].first = clone_piece[i][k].first * cos(j) - clone_piece[i][k].second * sin(j);
-				clone_piece[i][k].second = clone_piece[i][k].first * sin(j) + clone_piece[i][k].second * cos(j);
+				double first = clone_piece[i][k].first;
+				double second = clone_piece[i][k].second;
+				clone_piece[i][k].first = first * cos(j * (M_PI/180)) + second * sin(j * (M_PI/180));
+				clone_piece[i][k].second = first * sin(j * (M_PI/180)) - second * cos(j * (M_PI/180));
 				error_test += abs(fmod(clone_piece[i][k].first,max_x) + fmod(clone_piece[i][k].second, max_y));
 			}
+			/*
+			Mat mamama(cv::Size(1000, 1000), CV_8UC3, cv::Scalar(0, 0, 0));
+			vector<Point> nanana;
+			for (int k = 0; k < clone_piece[i].size(); k++) {
+				Point ho;
+				ho.x = round(clone_piece[i][k].first + 500);
+				ho.y = round(clone_piece[i][k].second + 500);
+				nanana.push_back(ho);
+			}
+			cv::polylines(mamama, nanana, true, cv::Scalar(0, 0, 255), 3);
+			imshow("test", mamama);
+			waitKey();
+			*/
 			//値を元に戻す
 			for (int k = 0; k < clone_piece[i].size(); k++) {
 				clone_piece[i][k].first = piece[i][k].x;
@@ -207,8 +241,10 @@ void piece() {
 		}
 		//もっとも小さかった角度に移動させる
 		for (int k = 0; k < clone_piece[i].size(); k++) {
-			clone_piece[i][k].first = clone_piece[i][k].first * cos(angle) - clone_piece[i][k].second * sin(angle);
-			clone_piece[i][k].second = clone_piece[i][k].first * sin(angle) + clone_piece[i][k].second * cos(angle);
+			double first = clone_piece[i][k].first;
+			double second = clone_piece[i][k].second;
+			clone_piece[i][k].first = first * cos(angle * (M_PI / 180)) + second * sin(angle * (M_PI / 180));
+			clone_piece[i][k].second = first * sin(angle * (M_PI / 180)) - second * cos(angle * (M_PI / 180));
 		}
 		double minus_x = 0, minus_y = 0;
 		//最も大きい負の値を探す
@@ -228,7 +264,20 @@ void piece() {
 			}
 		}
 	}
-	cout << clone_piece[0][0].first << endl;
+
+	//値を近似して整数に戻す/pieceを置き換える
+	for (int i = 0; i < clone_piece.size(); i++) {
+		for (int j = 0; j < clone_piece[i].size(); j++) {
+			piece[i][j].x = round(clone_piece[i][j].first) + i % 5 * 600;
+			piece[i][j].y = round(clone_piece[i][j].second) + i / 5 * 600;
+		}
+	}
+	//にゃんぱす～を用意
+	Mat test_draw(cv::Size(4000, 6000), CV_8UC3, cv::Scalar(0, 0, 0));
+	for (int i = 0; i < piece.size(); i++) {
+		cv::polylines(test_draw, piece[i], true, cv::Scalar(0, 0, 255), 8);
+	}
+	cout << piece[0][0].x << endl;
 	for (int i = 0; i < frame.size();i++) {
 		frame[i].x /= max_x;
 		frame[i].y /= max_y;
@@ -243,9 +292,11 @@ void piece() {
 	cout << piece.size() << endl;
 
 	//縮小して表示
-	resize(test, test, Size(), 0.5, 0.5);
+	resize(test, test, Size(), 0.2, 0.2);
 	resize(gray_test, gray_test, Size(), 0.2, 0.2);
 	resize(bin_test, bin_test, Size(), 0.2, 0.2);
+	resize(test_draw, test_draw, Size(), 0.2, 0.2);
+	imshow("test", test_draw);
 	imshow("hoge", test);
 	imshow("fuga", gray_test);
 	imshow("piyo", bin_test);
