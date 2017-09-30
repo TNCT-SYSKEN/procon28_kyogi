@@ -69,6 +69,7 @@ artifacts/
 *.pidb
 *.svclog
 *.scc
+*.html
 
 # Chutzpah Test files
 _Chutzpah*
@@ -256,5 +257,11 @@ paket-files/
 .cr/
 
 # Python Tools for Visual Studio (PTVS)
-__pycache__/
+__pycache__/*.pyc
+
+# test images
+*.bmp
+=======
 *.pyc
+
+*.html
