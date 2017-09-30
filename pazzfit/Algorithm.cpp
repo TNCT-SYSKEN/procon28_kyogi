@@ -500,52 +500,6 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 			}
 		}
 	}
-	//枠の隣り合う辺が重なっているか判定
-	/*
-	for (int k = 0; k < give_piece.back().point.size(); k++){
-		for (int t = 0; t < give_piece.back().point.size(); t++) {
-			if (k == give_piece.back().point.size() - 1) {
-				Line line_m(give_piece.back().point[k].first, give_piece.back().point[k].second, give_piece.back().point.front().first, give_piece.back().point.front().second);
-				if (t == give_piece.back().point.size() - 1) {
-					Line line_k(give_piece.back().point[t].first, give_piece.back().point[t].second, give_piece.back().point.front().first, give_piece.back().point.front().second );
-					if (line_m.intersects(line_k)) {
-						line_cont = 1;
-						break;
-					}
-				}
-				else {
-					Line line_k( give_piece.back().point[t].first, give_piece.back().point[t].second, give_piece.back().point[t + 1].first, give_piece.back().point[t + 1].second );
-					if (line_m.intersects(line_k)) {
-						line_cont = 1;
-						break;
-					}
-				}
-			}
-			else {
-				Line line_m(give_piece.back().point[k].first, give_piece.back().point[k].second, give_piece.back().point[k + 1].first, give_piece.back().point[k + 1].second);
-				if (t == give_piece.back().point.size() - 1) {
-					Line line_k(give_piece.back().point[t].first, give_piece.back().point[t].second, give_piece.back().point.front().first, give_piece.back().point.front().second);
-					if (line_m.intersects(line_k)) {
-						line_cont = 1;
-						break;
-					}
-				}
-				else {
-					Line line_k(give_piece.back().point[t].first, give_piece.back().point[t].second, give_piece.back().point[t + 1].first, give_piece.back().point[t + 1].second);
-					if (line_m.intersects(line_k)) {
-						line_cont = 1;
-						break;
-					}
-				}
-			}
-		}
-		if (line_cont) {
-			break;
-		}
-	}
-	if (line_cont) {
-		false;
-	}*/
 	//更新した情報の共有
 	if (1) {
 		new_frame = give_piece.back().point;
