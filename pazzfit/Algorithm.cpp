@@ -74,10 +74,56 @@ void Algorithm::evaluation(int i,vector<Piece> &clone_piece) {
 	two_evalution.clear();
 }
 
-void Algorithm::union_piece() {
+void Algorithm::union_piece(vector<Piece> &clone_piece) {
 	//二つのピースの角度・辺を受け取る
 	//ピース同士の評価点を作成
+	int h, g,point;
+	for (int g = 0; g < clone_piece.size() - 1; g++) {
+		for (int h = 0; h < clone_piece[g].angle.size() - 1; h++) {
+			for (int i = 0; i < clone_piece.size() - 1; i++) {
+				for (int j = 0; j < clone_piece[i].angle.size() - 1; j++) {
+					if (g != i) {
+						//角の評価
+						if (clone_piece[g].angle[h] == clone_piece[i].angle[j]) {
+							point++;
+						}
+						//一つ目の辺の評価
+						if (h == 0 && j == 0) {
+							if (clone_piece[g].line[clone_piece[g].line.size() - 1] == clone_piece[i].line[clone_piece[i].line.size() - 1]) {
+								point++;
+							}
+						}
+						else if (h == 0 && j != 0) {
+							if (clone_piece[g].line[clone_piece[g].line.size() - 1] == clone_piece[i].line[j - 1]) {
+								point++;
+							}
+						}
+						else if (h != 0 && j == 0) {
+							if (clone_piece[g].line[h - 1] == clone_piece[i].line[clone_piece[i].line.size() - 1]) {
+								point++;
+							}
+						}
+						else if (h != 0 && j != 0) {
+							if (clone_piece[g].line[h - 1] == clone_piece[i].line[j - 1]) {
+								point++;
+							}
+						}
+						//二つ目の辺の評価
+						if (clone_piece[g].line[h] == clone_piece[i].line[j]) {
+							point++;
+						}
+					}
+				}
+			}
+		}
+	}
 	//評価点を元にピースを結合
+	if (point == 3) {
+		//結合するか候補に挙げておく
+	}
+	else {
+		point = 0;
+	}
 }
 
 bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {

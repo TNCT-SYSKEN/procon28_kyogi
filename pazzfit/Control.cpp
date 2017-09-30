@@ -383,5 +383,4 @@ void Control::make_point_position() {
 						}
 				}
 		}
-		cout << piece[0].point[1].first << endl;
 }
