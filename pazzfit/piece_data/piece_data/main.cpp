@@ -5,6 +5,7 @@
 #include <opencv/cvaux.h>
 #include <iostream>
 #include <vector>
+#include <fstream>
 #define _USE_MATH_DEFINES
 #include <math.h>
 
@@ -118,6 +119,7 @@ void piece() {
 	vector<vector<Point>> shape_piece;
 	vector<Point> shape_frame;
 	double max_x = 0, max_y = 0;
+	double min_x = 10000,min_y = 10000;
 	int x, y;
 	Point hoge;
 	//枠を左上にあわせる
@@ -125,23 +127,21 @@ void piece() {
 		if (i == 0) {
 			x = frame[0].x;
 			y = frame[0].y;
-			hoge.x = 0;
-			hoge.y = 0;
-			shape_frame.push_back(hoge);
+			frame[0].x = 0;
+			frame[0].y = 0;
 		}
 		else {
-			hoge.x = frame[i].x - x;
-			hoge.y = frame[i].y - y;
-			shape_frame.push_back(hoge);
+			frame[i].x -= x;
+			frame[i].y -= y;
 		}
 	}
 
 	//明らかにおかしい頂点を取り除く
 	for (int i = 0; i < piece.size(); i++) {
 		for (int j = 0; j < piece[i].size(); j++) {
-			//うしろの頂点のx,y座標がそれぞれ+-20の間にある(めっちゃ近い)
-			if (piece[i][j].x <= piece[i][(j + 1) % piece[i].size()].x + 20 && piece[i][j].x >= piece[i][(j + 1) % piece[i].size()].x - 20) {
-				if (piece[i][j].y <= piece[i][(j + 1) % piece[i].size()].y + 20 && piece[i][j].y >= piece[i][(j + 1) % piece[i].size()].y - 20) {
+			//うしろの頂点のx,y座標がそれぞれ+-30の間にある(めっちゃ近い)
+			if (piece[i][j].x <= piece[i][(j + 1) % piece[i].size()].x + 30 && piece[i][j].x >= piece[i][(j + 1) % piece[i].size()].x - 30) {
+				if (piece[i][j].y <= piece[i][(j + 1) % piece[i].size()].y + 30 && piece[i][j].y >= piece[i][(j + 1) % piece[i].size()].y - 30) {
 					//合体させる
 					piece[i][j].x = (piece[i][j].x + piece[i][(j + 1) % piece[i].size()].x) / 2;
 					piece[i][j].y = (piece[i][j].y + piece[i][(j + 1) % piece[i].size()].y) / 2;
@@ -170,9 +170,15 @@ void piece() {
 		if (frame[i].y >= max_y) {
 			max_y = frame[i].y;
 		}
+		if (frame[i].x <= min_x) {
+			min_x = frame[i].x;
+		}
+		if (frame[i].y <= min_y) {
+			min_y = frame[i].y;
+		}
 	}
-	max_x /= 64;
-	max_y /= 100;
+	max_x = (max_x - min_x) / 64;
+	max_y = (max_y - min_y) / 100;
 
 	//ななめになっているピースをグリッドに乗せる
 	for (int i = 0; i < piece.size(); i++) {
@@ -288,6 +294,35 @@ void piece() {
 			piece[i][j].y /= max_y;
 		}
 	}
+
+	//テキストにピースデータを書き起こす
+	ofstream output("image_shape.txt");
+	if (!output) {
+		cout << "data error" << endl;
+	}
+	output << piece.size() + 1 << ":";
+	for (int i = 0; i < piece.size(); i++) {
+		output << piece[i].size() << " ";
+		for (int j = 0; j < piece[i].size(); j++) {
+			output << piece[i][j].x << " ";
+			output << piece[i][j].y;
+			if (j == piece[i].size() - 1) {
+				output << ":";
+			}
+			else {
+				output << " ";
+			}
+		}
+	}
+	output << frame.size() << " ";
+	for (int i = 0; i < frame.size(); i++) {
+		output << frame[i].x << " ";
+		output << frame[i].y;
+		if (i != frame.size() - 1) {
+			output << " ";
+		}
+	}
+	output.close();
 	cout << frame.size() << endl;
 	cout << piece.size() << endl;
 
