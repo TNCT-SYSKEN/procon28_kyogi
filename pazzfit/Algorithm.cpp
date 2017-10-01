@@ -77,7 +77,7 @@ void Algorithm::evaluation(int i,vector<Piece> &clone_piece) {
 void Algorithm::union_piece(vector<Piece> &clone_piece) {
 	//二つのピースの角度・辺を受け取る
 	//ピース同士の評価点を作成
-	int h, g,point;
+	int point;
 	pair<int, int> unionpoint;
 	vector<vector<vector<pair<int, int>>>> vec_union;
 	vector<vector<pair<int, int>>> vec_line;
@@ -134,6 +134,7 @@ void Algorithm::union_piece(vector<Piece> &clone_piece) {
 		for (int j = 0; i < clone_piece[i].angle.size(); i++) {
 			if (vec_union[i][j].size() == 1) {
 				//結合処理
+				clone_piece[i].union_flag = true;
 			}
 		}
 	}
