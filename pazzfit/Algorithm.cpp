@@ -78,13 +78,18 @@ void Algorithm::union_piece(vector<Piece> &clone_piece) {
 	//二つのピースの角度・辺を受け取る
 	//ピース同士の評価点を作成
 	int h, g,point;
+	pair<int, int> unionpoint;
+	vector<vector<vector<pair<int, int>>>> vec_union;
+	vector<vector<pair<int, int>>> vec_line;
+	vector<pair<int, int>> vec_point;
+
 	for (int g = 0; g < clone_piece.size() - 1; g++) {
 		for (int h = 0; h < clone_piece[g].angle.size() - 1; h++) {
 			for (int i = 0; i < clone_piece.size() - 1; i++) {
 				for (int j = 0; j < clone_piece[i].angle.size() - 1; j++) {
 					if (g != i) {
 						//角の評価
-						if (clone_piece[g].angle[h] == clone_piece[i].angle[j]) {
+						if (clone_piece[g].angle[h] + clone_piece[i].angle[j] == 360) {
 							point++;
 						}
 						//一つ目の辺の評価
@@ -112,17 +117,25 @@ void Algorithm::union_piece(vector<Piece> &clone_piece) {
 						if (clone_piece[g].line[h] == clone_piece[i].line[j]) {
 							point++;
 						}
+						if (point == 3) {
+							unionpoint.first = i;
+							unionpoint.second = j;
+							vec_point.push_back(unionpoint);
+						}
 					}
 				}
 			}
+			vec_line.push_back(vec_point);
 		}
+		vec_union.push_back(vec_line);
 	}
-	//評価点を元にピースを結合
-	if (point == 3) {
-		//結合するか候補に挙げておく
-	}
-	else {
-		point = 0;
+	
+	for (int i = 0; i < clone_piece.size(); i++) {
+		for (int j = 0; i < clone_piece[i].angle.size(); i++) {
+			if (vec_union[i][j].size() == 1) {
+				//結合処理
+			}
+		}
 	}
 }
 

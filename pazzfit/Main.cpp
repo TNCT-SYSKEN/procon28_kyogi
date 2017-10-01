@@ -23,10 +23,8 @@ void Main(){
 				a = 3;
 			}
 		}
-
 		if (a == 1) {
 			control.exe();
 		}
-
 	}
 }
