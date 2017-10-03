@@ -16,6 +16,7 @@ void Algorithm::fit_piece(vector<Piece> clone_piece) {
 		piece = clone_piece;
 		ans_piece = clone_piece;
 	}
+	
 	//ピース嵌めるアルゴリズムをまとめる
 	//枠の基準となる頂点を決定
 	for (int sele = 3; sele > 0; sele--) {
