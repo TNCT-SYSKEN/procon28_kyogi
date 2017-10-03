@@ -33,4 +33,5 @@ private:
 	vector<vector<vector<int>>> three_evalution;
 	vector<vector<int>> two_evalution;
 	vector<int> one_evalution;
+	vector<vector<vector<pair<int, int>>>> clone_union;
 };

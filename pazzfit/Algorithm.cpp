@@ -129,6 +129,8 @@ void Algorithm::union_piece(vector<Piece> &clone_piece) {
 		}
 		vec_union.push_back(vec_line);
 	}
+
+	clone_union = vec_union;
 	
 	for (int i = 0; i < clone_piece.size(); i++) {
 		for (int j = 0; i < clone_piece[i].angle.size(); i++) {
