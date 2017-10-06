@@ -1124,16 +1124,106 @@ bool Algorithm::collision_checker(int n,int i,int q,vector<Piece> &clone_piece) 
 				spin270_piece(n, clone_piece);
 				collision = check_collision(n, clone_piece);
 		}
+
 		if (collision == true) {
 				clone_piece[n] = base;
 				collision_no = 0;
 				return false;
 		}
+
 		if (collision == false) {
-				collision_no = 0;
+			collision_no = 0;
+			if (three_evalution[flag][n][q] == 3) {
+				if (q != 0 && i != 0) {
+					if (clone_piece[n].line[q - 1] == clone_piece.back().line[i - 1]) {
+						if (clone_piece[n].line[q] == clone_piece.back().line[i]) {
+							return true;
+						}
+						else
+						{
+							return false;
+						}
+					}
+				}
+				else if (q == 0 && i != 0) {
+					if (clone_piece[n].line.back() == clone_piece.back().line[i - 1]) {
+						if (clone_piece[n].line[q] == clone_piece.back().line[i]) {
+							return true;
+						}
+						else
+						{
+							return false;
+						}
+					}
+				}
+
+				else if (q != 0 && i == 0) {
+					if (clone_piece[n].line[q - 1] == clone_piece.back().line.back()) {
+						if (clone_piece[n].line[q] == clone_piece.back().line[i]) {
+							return true;
+						}
+						else
+						{
+							return false;
+						}
+					}
+				}
+
+				else {
+					if (clone_piece[n].line.back() == clone_piece.back().line.back()) {
+						if (clone_piece[n].line[q] == clone_piece.back().line[i]) {
+							return true;
+						}
+						else {
+							return false;
+						}
+					}
+				}
+			}
+
+			if (three_evalution[flag][n][q] == 2) {
+				if (q != 0 && i != 0) {
+					if (clone_piece[n].line[q - 1] == clone_piece.back().line[i - 1] || clone_piece[n].line[q] == clone_piece.back().line[i]) {
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+				else if (q == 0 && i != 0) {
+					if (clone_piece[n].line.back() == clone_piece.back().line[i - 1] || clone_piece[n].line[q] == clone_piece.back().line[i]) {
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+				else if (q != 0 && i == 0) {
+					if (clone_piece[n].line[q - 1] == clone_piece.back().line.back() || clone_piece[n].line[q] == clone_piece.back().line[i]) {
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+				else if (q == 0 && i == 0) {
+					if (clone_piece[n].line.back() == clone_piece.back().line.back() || clone_piece[n].line[q] == clone_piece.back().line[i]) {
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+			}
+
+			if (three_evalution[flag][n][q] == 0 || three_evalution[flag][n][q] == 1) {
 				return true;
+			}
 		}
-		return true;
 }
 
 bool Algorithm::closs_line(int ax, int ay, int bx,int by,int cx,int cy,int dx,int dy) {
