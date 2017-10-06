@@ -306,7 +306,8 @@ void Control::make_angle() {
 }
 
 void Control::output_piece(vector<Piece> &rec_piece) {
-		for (int i = 0; i < rec_piece.size(); i++) {
+		Graphics::SetBackground(Palette::White);
+		for (int i = 0; i < rec_piece.size() - 1; i++) {
 				for (int j = 0; j < rec_piece[i].ans_point.size(); j++) {
 					if (rec_piece[i].ans_point.size() == 0) {
 						break;
@@ -319,6 +320,7 @@ void Control::output_piece(vector<Piece> &rec_piece) {
 						}
 				}
 		}
+		System::Update();
 		ScreenCapture::Save();
 }
 
