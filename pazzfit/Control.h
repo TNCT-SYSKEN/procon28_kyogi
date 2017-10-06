@@ -28,4 +28,3 @@ private:
 	//ƒs[ƒX‚Ìî•ñ
 	vector<Piece> piece;
 };
-
