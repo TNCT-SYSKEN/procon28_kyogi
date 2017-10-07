@@ -445,13 +445,13 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 	if (1) {
 		int ho_piece = piece_symbol - p_erase_count;
 		int ho_frame = i - f_erase_count;
-		give_piece[n].point.erase(give_piece[n].point.begin() + piece_symbol - p_erase_count);
-		give_piece[n].angle.erase(give_piece[n].angle.begin() + piece_symbol - p_erase_count);
+		give_piece[n].point.erase(give_piece[n].point.begin() + ho_piece);
+		give_piece[n].angle.erase(give_piece[n].angle.begin() + ho_piece);
 		if (ho_piece != 0){
 			p_erase_count += 1;
 		}
-		give_piece.back().point.erase(give_piece.back().point.begin() + i - f_erase_count);
-		give_piece.back().angle.erase(give_piece.back().angle.begin() + i - f_erase_count);
+		give_piece.back().point.erase(give_piece.back().point.begin() + ho_frame);
+		give_piece.back().angle.erase(give_piece.back().angle.begin() + ho_frame);
 		if (ho_frame != 0) {
 			f_erase_count += 1;
 		}
@@ -493,8 +493,8 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 				else {*/
 					if (se_count == 0) {
 						int pos = i - f_erase_count;
-						give_piece.back().point.insert(give_piece.back().point.begin() + 1 + pos, give_piece[n].point[t]);
-						give_piece[n].point.erase(give_piece[n].point.begin() + t);
+						give_piece.back().point.insert(give_piece.back().point.begin() + 1 + pos, give_piece[n].point[t - hoge]);
+						give_piece[n].point.erase(give_piece[n].point.begin() + t - hoge);
 						se_count += 1;
 						incert_count = 1;
 						hoge = 1;
@@ -629,7 +629,6 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 		return false;
 		}
 	}
-
 	//スクショの保存&&再帰
 	if (give_piece.back().point.size() ==  0 && give_piece.size() == 1) {
 		Control cont;
@@ -1197,7 +1196,7 @@ bool Algorithm::check_origin_frame(vector<Piece> &give_piece,vector<pair<int,int
 		for (int k = 0; k < line_piece.size(); k++) {
 			LineInt p_line(line_piece[k].first, line_piece[k].second, line_piece[(k + 1 + line_piece.size()) % line_piece.size()].first, line_piece[(k + 1 + line_piece.size()) % line_piece.size()].second);
 			Circle p_circle(((give_piece.back().point[n].first + give_piece.back().point[(n + 1 + give_piece.back().point.size()) % give_piece.back().point.size()].first) / 2.0,
-				(give_piece.back().point[n].second + give_piece.back().point[(n + 1 + give_piece.back().point.size()) % give_piece.back().point.size()].second) / 2.0),0.25);
+				(give_piece.back().point[n].second + give_piece.back().point[(n + 1 + give_piece.back().point.size()) % give_piece.back().point.size()].second) / 2.0),0.50);
 			if (!(p_circle.intersects(p_line))) {
 				Polygon shape; shape.scaled(10).draw();
 				switch (line_piece.size()) {
