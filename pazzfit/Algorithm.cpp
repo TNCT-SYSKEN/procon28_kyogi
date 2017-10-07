@@ -119,6 +119,7 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 	}
 	System::Update();
 	//基準を求める
+	int fuga = 1;
 	for (int k = 0; k < give_piece[n].point.size(); k++) {
 		if (give_piece.back().point[i].first == give_piece[n].point[k].first && give_piece.back().point[i].second == give_piece[n].point[k].second) {
 			piece_symbol = k;
@@ -516,35 +517,46 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 		}
 	}
 	//ピースの残りの頂点を反対向きに挿入していく
-	if (incert_count == 1) {
-		if (i - f_erase_count == 0) {
-			if (se_count == 1) {
-				for (int k = give_piece[n].point.size() - 1; k >= 0; k--) {
-					give_piece.back().point.insert(give_piece.back().point.end() - 1, give_piece[n].point[k]);
-				}
-				if (check_origin_frame(give_piece, line_piece)||check_overlapping(give_piece)) {
-					for (int k = 0; k < give_piece[n].point.size(); k++) {
-						give_piece.back().point.erase(give_piece.back().point.end() - 1);
+	if (1) {
+		int pos = i - f_erase_count;
+		int hos = piece_symbol - p_erase_count;
+		if (incert_count == 1) {
+			/*if (i - f_erase_count == 0) {
+				if (se_count == 1) {
+					for (int k = give_piece[n].point.size() - 1; k >= 0; k--) {
+						give_piece.back().point.insert(give_piece.back().point.end() - 1, give_piece[n].point[k]);
 					}
-					for (int k = 0; k < give_piece[n].point.size(); k++) {
-						give_piece.back().point.insert(give_piece.back().point.begin(),give_piece[n].point[k]);
+					if (check_origin_frame(give_piece, line_piece)||check_overlapping(give_piece)) {
+						for (int k = 0; k < give_piece[n].point.size(); k++) {
+							give_piece.back().point.erase(give_piece.back().point.end() - 1);
+						}
+						for (int k = 0; k < give_piece[n].point.size(); k++) {
+							give_piece.back().point.insert(give_piece.back().point.begin(),give_piece[n].point[k]);
+						}
+					}
+				}
+				else if (se_count == 2) {
+					for (int k = give_piece[n].point.size() - 1; k >= 0; k--) {
+						give_piece.back().point.insert(give_piece.back().point.end() - 1, give_piece[n].point[k]);
 					}
 				}
 			}
-			else if (se_count == 2) {
-				for (int k = give_piece[n].point.size() - 1; k >= 0; k--) {
-					give_piece.back().point.insert(give_piece.back().point.end() - 1, give_piece[n].point[k]);
-				}
-			}
-		}
-		else {
+			else {*/
 			if (se_count == 1) {
-				int pos = i - f_erase_count;
 				for (int k = 0; k < give_piece[n].point.size(); k++) {
-					give_piece.back().point.insert(give_piece.back().point.begin() + pos + 1, give_piece[n].point[k]);
+					give_piece.back().point.insert(give_piece.back().point.begin() + pos + 1, give_piece[n].point[(hos - k + give_piece[n].point.size()) % give_piece[n].point.size()]);
 				}
-				if (check_origin_frame(give_piece,line_piece)||check_overlapping(give_piece)) {
- 					for (int k = 0; k < give_piece[n].point.size(); k++) {
+				if (check_overlapping(give_piece)) {
+					for (int k = 0; k < give_piece[n].point.size(); k++) {
+						give_piece.back().point.erase(give_piece.back().point.begin() + pos + 1);
+					}
+					for (int k = 0; k < give_piece[n].point.size(); k++) {
+						give_piece.back().point.insert(give_piece.back().point.begin() + pos + 1, give_piece[n].point[(hos + k + give_piece[n].point.size()) % give_piece[n].point.size()]);
+					}
+				}
+				if (check_origin_frame(give_piece, line_piece) || check_overlapping(give_piece)) {
+					//代入したものの削除
+					for (int k = 0; k < give_piece[n].point.size(); k++) {
 						give_piece.back().point.erase(give_piece.back().point.begin() + pos + 1);
 					}
 					/*if (i - f_erase_count + 2 == give_piece.back().point.size()) {
@@ -554,7 +566,15 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 					}
 					else {*/
 					for (int k = 0; k < give_piece[n].point.size(); k++) {
-						give_piece.back().point.insert(give_piece.back().point.begin() + pos + 2, give_piece[n].point[k]);
+						give_piece.back().point.insert(give_piece.back().point.begin() + pos + 2, give_piece[n].point[(hos - k + give_piece[n].point.size()) % give_piece[n].point.size()]);
+					}
+					if (check_origin_frame(give_piece, line_piece) || check_overlapping(give_piece)) {
+						for (int k = 0; k < give_piece[n].point.size(); k++) {
+							give_piece.back().point.erase(give_piece.back().point.begin() + pos + 2);
+						}
+						for (int k = 0; k < give_piece[n].point.size(); k++) {
+							give_piece.back().point.insert(give_piece.back().point.begin() + pos + 2, give_piece[n].point[(hos + k + give_piece[n].point.size()) % give_piece[n].point.size()]);
+						}
 					}
 				}
 			}
@@ -566,25 +586,42 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 					}
 				}
 				else {*/
+				for (int k = 0; k < give_piece[n].point.size(); k++) {
+					give_piece.back().point.insert(give_piece.back().point.begin() + pos + 2, give_piece[n].point[(hos - k + give_piece[n].point.size()) % give_piece[n].point.size()]);
+				}
+				if (check_origin_frame(give_piece, line_piece) || check_overlapping(give_piece)) {
 					for (int k = 0; k < give_piece[n].point.size(); k++) {
-						give_piece.back().point.insert(give_piece.back().point.begin() + pos + 2, give_piece[n].point[k]);
+						give_piece.back().point.erase(give_piece.back().point.begin() + pos + 2);
 					}
+					for (int k = 0; k < give_piece[n].point.size(); k++) {
+						give_piece.back().point.insert(give_piece.back().point.begin() + pos + 2, give_piece[n].point[(hos + k + give_piece[n].point.size()) % give_piece[n].point.size()]);
+					}
+				}
 				//}
 			}
 		}
-	}
-	else if (incert_count == 0) {
-		/*if (i - f_erase_count == 0) {
-			for (int k = give_piece[n].point.size() - 1; k >= 0; k--) {
-				give_piece.back().point.insert(give_piece.back().point.end() - 1, give_piece[n].point[k]);
+		else if (incert_count == 0) {
+			/*if (i - f_erase_count == 0) {
+				for (int k = give_piece[n].point.size() - 1; k >= 0; k--) {
+					give_piece.back().point.insert(give_piece.back().point.end() - 1, give_piece[n].point[k]);
+				}
+			}
+			else {*/
+			for (int k = 0; k < give_piece[n].point.size(); k++) {
+				give_piece.back().point.insert(give_piece.back().point.begin() + pos + 1, give_piece[n].point[(hos - k + give_piece[n].point.size()) % give_piece[n].point.size()]);
+			}
+			if (check_overlapping(give_piece)) {
+				for (int k = 0; k < give_piece[n].point.size(); k++) {
+					give_piece.back().point.erase(give_piece.back().point.begin() + pos + 1);
+				}
+				for (int k = 0; k < give_piece[n].point.size(); k++) {
+					give_piece.back().point.insert(give_piece.back().point.begin() + pos + 1, give_piece[n].point[(hos + k + give_piece[n].point.size()) % give_piece[n].point.size()]);
+				}
+			}
+			if (check_origin_frame(give_piece, line_piece) || check_overlapping(give_piece)) {
+				//}
 			}
 		}
-		else {*/
-			int pos = i - f_erase_count;
-			for (int k = 0; k <  give_piece[n].point.size(); k++) {
-				give_piece.back().point.insert(give_piece.back().point.begin() + pos + 1, give_piece[n].point[k]);
-			}
-		//}
 	}
 	//描写
 	for (int j = 0; j < give_piece.back().point.size(); j++) {
@@ -597,12 +634,20 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 	}
 	System::Update();
 	//枠の最終チェック
+	for (int k = 0; k < give_piece.back().point.size(); k++) {
+		for (int n = 0; n < give_piece.back().point.size();n++) {
+			if (give_piece.back().point[k].first == give_piece.back().point[(k + 1 + give_piece.back().point.size()) % give_piece.back().point.size()].first) {
+				if (give_piece.back().point[k].second == give_piece.back().point[(k + 1 + give_piece.back().point.size())%give_piece.back().point.size()].second) {
+					return false;
+				}
+			}
+		}
+	}
 	if (check_overlapping(give_piece)||check_origin_frame(give_piece,line_piece)) {
 		return false;
 	}
 	if (give_piece.back().point.size() == 3) {
-		int hoge;
-		hoge = 1;
+		//kkkk
 	}
 	//更新した情報の共有
 	if (1) {
@@ -663,7 +708,6 @@ void Algorithm::select_piece(int i, vector<Piece> &clone_piece,int sele) {
 bool Algorithm::check_collision(int n,vector<Piece> &clone_piece) {
 	//ピースが枠から出てるならTrue
 	int count_x, count_y;
-	int count;
 	//頂点が外に出ているピースの判定
 	for (int j = 0; j < clone_piece[n].point.size(); j++) {
 		count_x = 0;
@@ -1010,7 +1054,7 @@ bool Algorithm::equal_angle(double first_angle, double second_angle) {
 	枠とピースの角度の情報を受け取る
 	もし誤差の範囲内で等しいならばTrue
 	*/
-	if (fabs(first_angle - second_angle) <= 0.5) {
+	if (fabs(first_angle - second_angle) <= 1.0) {
 		return true;
 	}
 	else {
@@ -1195,10 +1239,22 @@ bool Algorithm::check_origin_frame(vector<Piece> &give_piece,vector<pair<int,int
 	for (int n = 0; n < give_piece.back().point.size(); n++) {
 		for (int k = 0; k < line_piece.size(); k++) {
 			LineInt p_line(line_piece[k].first, line_piece[k].second, line_piece[(k + 1 + line_piece.size()) % line_piece.size()].first, line_piece[(k + 1 + line_piece.size()) % line_piece.size()].second);
-			Circle p_circle(((give_piece.back().point[n].first + give_piece.back().point[(n + 1 + give_piece.back().point.size()) % give_piece.back().point.size()].first) / 2.0,
-				(give_piece.back().point[n].second + give_piece.back().point[(n + 1 + give_piece.back().point.size()) % give_piece.back().point.size()].second) / 2.0),0.50);
-			if (!(p_circle.intersects(p_line))) {
-				Polygon shape; shape.scaled(10).draw();
+			Circle circle(((give_piece.back().point[n].first + give_piece.back().point[(n + 1 + give_piece.back().point.size()) % give_piece.back().point.size()].first) / 2.0),
+							((give_piece.back().point[n].second + give_piece.back().point[(n + 1 + give_piece.back().point.size()) % give_piece.back().point.size()].second) / 2.0),1);
+			/*circle.draw(Palette::Red);
+			p_line.draw(Palette::Blue);
+			//描写
+			for (int j = 0; j < give_piece.back().point.size(); j++) {
+				if (j == give_piece.back().point.size() - 1) {
+					LineInt(give_piece.back().point[j].first * 5, give_piece.back().point[j].second * 5, give_piece.back().point[0].first * 5, give_piece.back().point[0].second * 5).draw(Palette::Black);
+				}
+				else {
+					LineInt(give_piece.back().point[j].first * 5, give_piece.back().point[j].second * 5, give_piece.back().point[j + 1].first * 5, give_piece.back().point[j + 1].second * 5).draw(Palette::Black);
+				}
+			}
+			System::Update();*/
+			if (!(circle.intersects(p_line))) {
+				Polygon shape; 
 				switch (line_piece.size()) {
 				case 3:
 				{
@@ -1331,7 +1387,7 @@ bool Algorithm::check_origin_frame(vector<Piece> &give_piece,vector<pair<int,int
 					break;
 				}
 				}
-				if (p_circle.intersects(shape)) {
+				if (circle.contains(shape)) {
 					return true;
 				}
 			}
