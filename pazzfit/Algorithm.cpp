@@ -95,7 +95,7 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 	int f_erase_count = 0;
 	int se_count = 0;
 	int incert_count = 0;
-	int frame_zero = 0;
+	int point_iter = 0;
 
 	//回転チェック
 	if (!(collision_checker(n, i, q, give_piece))) {
@@ -110,7 +110,7 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 	//ans_pointへの代入;
 	ans_piece[flag].ans_point = give_piece[n].point;
 	line_piece = give_piece[n].point;
-	for (int j = 0; j < give_piece[n].point.size(); j++) {
+	/*for (int j = 0; j < give_piece[n].point.size(); j++) {
 		if (j == give_piece[n].point.size() - 1) {
 			LineInt(give_piece[n].point[j].first * 5, give_piece[n].point[j].second * 5, give_piece[n].point[0].first * 5, give_piece[n].point[0].second * 5).draw(Palette::Black);
 		}
@@ -118,7 +118,7 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 			LineInt(give_piece[n].point[j].first * 5, give_piece[n].point[j].second * 5, give_piece[n].point[j + 1].first * 5, give_piece[n].point[j + 1].second * 5).draw(Palette::Black);
 		}
 	}
-	System::Update();
+	System::Update();*/
 	//基準を求める
 	int fuga = 1;
 	/*for (int k = 0; k < give_piece[n].point.size(); k++) {
@@ -496,13 +496,17 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 					if (se_count == 0) {
 						int pos = i - f_erase_count;
 						//if (pos != 0) {
+						point_iter = ((pos + 1 + give_piece.back().point.size()) % give_piece.back().point.size());
 							give_piece.back().point.insert(give_piece.back().point.begin() + ((pos + 1 + give_piece.back().point.size()) % give_piece.back().point.size()), give_piece[n].point[t - hoge]);
-							give_piece[n].point.erase(give_piece[n].point.begin() + t - hoge);
+							if (pos >= ((pos + give_piece.back().point.size()) % give_piece.back().point.size() - 1)) {
+								f_erase_count += 1;
+							}
 							if (piece_symbol - p_erase_count >= t - hoge) {
 								p_erase_count += 1;
 							}
 							se_count += 1;
 							incert_count = 1;
+							give_piece[n].point.erase(give_piece[n].point.begin() + (t - hoge));
 							hoge = 1;
 							break;
 						/*}
@@ -517,17 +521,31 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 					}
 					else if(se_count == 1) {
 						int pos = i - f_erase_count;
-						if (pos != 0) {
-							give_piece.back().point.insert(give_piece.back().point.begin() + ((pos + 1 + give_piece.back().point.size()) % give_piece.back().point.size()), give_piece[n].point[t - hoge]);
+						//if (pos != 0) {
+							give_piece.back().point.insert(give_piece.back().point.begin() + point_iter, give_piece[n].point[t - hoge]);
 							if (check_overlapping(give_piece)) {
-								give_piece.back().point.erase(give_piece.back().point.begin() + pos + 1);
-								give_piece.back().point.insert(give_piece.back().point.begin() + pos + 2, give_piece[n].point[t - hoge]);
+								give_piece.back().point.erase(give_piece.back().point.begin() + ((pos + 1 + give_piece.back().point.size()) % give_piece.back().point.size()));
+								give_piece.back().point.insert(give_piece.back().point.begin() + ((pos + 2 + give_piece.back().point.size()) % give_piece.back().point.size()), give_piece[n].point[t - hoge]);
+								if (pos >= (pos + 1 + give_piece.back().point.size()) % give_piece.back().point.size() - 1) {
+									f_erase_count += 1;
+								}
+								if (piece_symbol - p_erase_count >= t - hoge) {
+									p_erase_count += 1;
+								}
+								se_count += 1;
+								give_piece[n].point.erase(give_piece[n].point.begin() + (t - hoge));
+								break;
+							}
+							if (pos >= (pos + 1 + give_piece.back().point.size()) % give_piece.back().point.size()) {
+								f_erase_count += 1;
+							}
+							if (piece_symbol - p_erase_count >= t - hoge) {
+								p_erase_count += 1;
 							}
 							se_count += 1;
-							p_erase_count += 1;
-							give_piece[n].point.erase(give_piece[n].point.begin() + t - hoge);
+							give_piece[n].point.erase(give_piece[n].point.begin() + (t - hoge));
 							break;
-						}
+						/*}
 						else {
 							give_piece.back().point.insert(give_piece.back().point.end() - 1, give_piece[n].point[t - hoge]);
 							if (check_overlapping(give_piece)) {
@@ -537,7 +555,7 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 							se_count += 1;
 							give_piece[n].point.erase(give_piece[n].point.begin() + t - hoge);
 							break;
-						}
+						}*/
 					}
 			//	}
 			}
@@ -545,8 +563,6 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 	}
 	//ピースの残りの頂点を反対向きに挿入していく
 	if (1) {
-		int pos = i - f_erase_count;
-		int hos = piece_symbol - p_erase_count;
 		if (incert_count == 1) {
 			/*if (i - f_erase_count == 0) {
 				if (se_count == 1) {
@@ -570,109 +586,120 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 			}
 			else {*/
 			if (se_count == 1) {
-				if (i - f_erase_count == 0) {
+				int pos = i - f_erase_count;
+				int hos = piece_symbol - p_erase_count;
+				for (int k = 0; k < give_piece[n].point.size(); k++) {
+						give_piece.back().point.insert(give_piece.back().point.begin() + point_iter, give_piece[n].point[k]);
+					}
+				if (check_overlapping(give_piece)) {
+						for (int k = 0; k < give_piece[n].point.size(); k++) {
+							give_piece.back().point.erase(give_piece.back().point.begin() + point_iter);
+						}
+						for (int k = 0; k < give_piece[n].point.size(); k++) {
+							give_piece.back().point.insert(give_piece.back().point.begin() + (point_iter + 1), give_piece[n].point[k]);
+						}
+					}
+				if (check_overlapping(give_piece)) {
+						for (int k = 0; k < give_piece[n].point.size(); k++) {
+							give_piece.back().point.erase(give_piece.back().point.begin() + (point_iter + 1));
+						}
+						for (int k = 0; k < give_piece[n].point.size(); k++) {
+							give_piece.back().point.insert(give_piece.back().point.begin() + point_iter, give_piece[n].point[(hos - k + give_piece[n].point.size()) % give_piece[n].point.size()]);
+						}
+					}
+				if (check_overlapping(give_piece)) {
+						for (int k = 0; k < give_piece[n].point.size(); k++) {
+							give_piece.back().point.erase(give_piece.back().point.begin() + point_iter);
+						}
+						for (int k = 0; k < give_piece[n].point.size(); k++) {
+							give_piece.back().point.insert(give_piece.back().point.begin() + point_iter, give_piece[n].point[(hos + k + give_piece[n].point.size()) % give_piece[n].point.size()]);
+						}
+					}
+				if (check_overlapping(give_piece)) {
+						for (int k = 0; k < give_piece[n].point.size(); k++) {
+							give_piece.back().point.erase(give_piece.back().point.begin() + point_iter);
+						}
+						for (int k = 0; k < give_piece[n].point.size(); k++) {
+							give_piece.back().point.insert(give_piece.back().point.begin() + (point_iter + 1), give_piece[n].point[(hos - k + give_piece[n].point.size()) % give_piece[n].point.size()]);
+						}
+					}
+				if (check_overlapping(give_piece)) {
 					for (int k = 0; k < give_piece[n].point.size(); k++) {
-						give_piece.back().point.insert(give_piece.back().point.end() - 1, give_piece[n].point[(hos - k + give_piece[n].point.size()) % give_piece[n].point.size()]);
+						give_piece.back().point.erase(give_piece.back().point.begin() + (point_iter + 1));
 					}
-					if (check_overlapping(give_piece)) {
-						for (int k = 0; k < give_piece[n].point.size(); k++) {
-							give_piece.back().point.erase(give_piece.back().point.end() - 1);
-						}
-						for (int k = 0; k < give_piece[n].point.size(); k++) {
-							give_piece.back().point.insert(give_piece.back().point.end() - 1, give_piece[n].point[(hos + k + give_piece[n].point.size()) % give_piece[n].point.size()]);
-						}
-					}
-				}
-				else {
 					for (int k = 0; k < give_piece[n].point.size(); k++) {
-						give_piece.back().point.insert(give_piece.back().point.begin() + pos + 1, give_piece[n].point[(hos - k + give_piece[n].point.size()) % give_piece[n].point.size()]);
-					}
-					if (check_overlapping(give_piece)) {
-						for (int k = 0; k < give_piece[n].point.size(); k++) {
-							give_piece.back().point.erase(give_piece.back().point.begin() + pos + 1);
-						}
-						for (int k = 0; k < give_piece[n].point.size(); k++) {
-							give_piece.back().point.insert(give_piece.back().point.begin() + pos + 1, give_piece[n].point[(hos + k + give_piece[n].point.size()) % give_piece[n].point.size()]);
-						}
-					}
-					if (check_origin_frame(give_piece, line_piece) || check_overlapping(give_piece)) {
-						//代入したものの削除
-						for (int k = 0; k < give_piece[n].point.size(); k++) {
-							give_piece.back().point.erase(give_piece.back().point.begin() + pos + 1);
-						}
-						/*if (i - f_erase_count + 2 == give_piece.back().point.size()) {
-							for (int k = 0; k < give_piece[n].point.size(); k++) {
-								give_piece.back().point.insert(give_piece.back().point.begin(), give_piece[n].point[k]);
-							}
-						}
-						else {*/
-						for (int k = 0; k < give_piece[n].point.size(); k++) {
-							give_piece.back().point.insert(give_piece.back().point.begin() + pos + 2, give_piece[n].point[(hos - k + give_piece[n].point.size()) % give_piece[n].point.size()]);
-						}
-						if (check_origin_frame(give_piece, line_piece) || check_overlapping(give_piece)) {
-							for (int k = 0; k < give_piece[n].point.size(); k++) {
-								give_piece.back().point.erase(give_piece.back().point.begin() + pos + 2);
-							}
-							for (int k = 0; k < give_piece[n].point.size(); k++) {
-								give_piece.back().point.insert(give_piece.back().point.begin() + pos + 2, give_piece[n].point[(hos + k + give_piece[n].point.size()) % give_piece[n].point.size()]);
-							}
-						}
+						give_piece.back().point.insert(give_piece.back().point.begin() + (point_iter + 1), give_piece[n].point[(hos + k + give_piece[n].point.size()) % give_piece[n].point.size()]);
 					}
 				}
 			}
 			else if (se_count == 2) {
 				int pos = i - f_erase_count;
-				/*if (i - f_erase_count + 1 == give_piece.back().point.size()) {
+				int hos = piece_symbol - p_erase_count;
+				for (int k = 0; k < give_piece[n].point.size(); k++) {
+					give_piece.back().point.insert(give_piece.back().point.begin() + point_iter,give_piece[n].point[k]);
+				}
+				if (check_overlapping(give_piece)) {
 					for (int k = 0; k < give_piece[n].point.size(); k++) {
-						give_piece.back().point.insert(give_piece.back().point.begin(), give_piece[n].point[k]);
+						give_piece.back().point.erase(give_piece.back().point.begin() + point_iter);
+					}
+					for (int k = 0; k < give_piece[n].point.size(); k++) {
+						give_piece.back().point.insert(give_piece.back().point.begin() + (point_iter + 1), give_piece[n].point[k]);
 					}
 				}
-				else {*/
-				if(pos == 0) {
+				if (check_overlapping(give_piece)) {
 					for (int k = 0; k < give_piece[n].point.size(); k++) {
-						give_piece.back().point.insert(give_piece.back().point.end() - 1, give_piece[n].point[(hos - k + give_piece[n].point.size()) % give_piece[n].point.size()]);
+						give_piece.back().point.erase(give_piece.back().point.begin() +( point_iter + 1));
 					}
-					if (check_origin_frame(give_piece, line_piece) || check_overlapping(give_piece)) {
-						for (int k = 0; k < give_piece[n].point.size(); k++) {
-							give_piece.back().point.erase(give_piece.back().point.end() - 1);
-						}
-						for (int k = 0; k < give_piece[n].point.size(); k++) {
-							give_piece.back().point.insert(give_piece.back().point.end() - 1, give_piece[n].point[(hos + k + give_piece[n].point.size()) % give_piece[n].point.size()]);
-						}
+					for (int k = 0; k < give_piece[n].point.size(); k++) {
+						give_piece.back().point.insert(give_piece.back().point.begin() + point_iter, give_piece[n].point[(hos - k + give_piece[n].point.size()) % give_piece[n].point.size()]);
 					}
 				}
-				else {
+				if (check_overlapping(give_piece)) {
 					for (int k = 0; k < give_piece[n].point.size(); k++) {
-						give_piece.back().point.insert(give_piece.back().point.begin() + pos + 1, give_piece[n].point[(hos - k + give_piece[n].point.size()) % give_piece[n].point.size()]);
+						give_piece.back().point.erase(give_piece.back().point.begin() + point_iter);
 					}
-					if (check_origin_frame(give_piece, line_piece) || check_overlapping(give_piece)) {
-						for (int k = 0; k < give_piece[n].point.size(); k++) {
-							give_piece.back().point.erase(give_piece.back().point.begin() + pos + 1);
-						}
-						for (int k = 0; k < give_piece[n].point.size(); k++) {
-							give_piece.back().point.insert(give_piece.back().point.begin() + pos + 1, give_piece[n].point[(hos + k + give_piece[n].point.size()) % give_piece[n].point.size()]);
-						}
+					for (int k = 0; k < give_piece[n].point.size(); k++) {
+						give_piece.back().point.insert(give_piece.back().point.begin() + (point_iter + 1), give_piece[n].point[(hos + k + give_piece[n].point.size()) % give_piece[n].point.size()]);
 					}
 				}
-				//}
+				if (check_overlapping(give_piece)) {
+					for (int k = 0; k < give_piece[n].point.size(); k++) {
+						give_piece.back().point.erase(give_piece.back().point.begin() + (point_iter + 1));
+					}
+					for (int k = 0; k < give_piece[n].point.size(); k++) {
+						give_piece.back().point.insert(give_piece.back().point.begin() + (point_iter + 1), give_piece[n].point[(hos + k + give_piece[n].point.size()) % give_piece[n].point.size()]);
+					}
+				}
+				if (check_overlapping(give_piece)) {
+					for (int k = 0; k < give_piece[n].point.size(); k++) {
+						give_piece.back().point.erase(give_piece.back().point.begin() + (point_iter + 1));
+					}
+					for (int k = 0; k < give_piece[n].point.size(); k++) {
+						give_piece.back().point.insert(give_piece.back().point.begin() + (point_iter + 1), give_piece[n].point[(hos - k + give_piece[n].point.size()) % give_piece[n].point.size()]);
+					}
+				}
 			}
 		}
 		else if (incert_count == 0) {
-			/*if (i - f_erase_count == 0) {
-				for (int k = give_piece[n].point.size() - 1; k >= 0; k--) {
-					give_piece.back().point.insert(give_piece.back().point.end() - 1, give_piece[n].point[k]);
-				}
-			}
-			else {*/
+			int pos = i - f_erase_count;
+			int hos = piece_symbol - p_erase_count;
 			for (int k = 0; k < give_piece[n].point.size(); k++) {
-				give_piece.back().point.insert(give_piece.back().point.begin() + pos + 1, give_piece[n].point[(hos - k + give_piece[n].point.size()) % give_piece[n].point.size()]);
+				give_piece.back().point.insert(give_piece.back().point.begin() + ((pos + 1 + give_piece.back().point.size()) % give_piece.back().point.size()), give_piece[n].point[k]);
 			}
 			if (check_overlapping(give_piece)) {
 				for (int k = 0; k < give_piece[n].point.size(); k++) {
-					give_piece.back().point.erase(give_piece.back().point.begin() + pos + 1);
+					give_piece.back().point.erase(give_piece.back().point.begin() + ((pos + 1 + give_piece.back().point.size()) % give_piece.back().point.size()));
 				}
 				for (int k = 0; k < give_piece[n].point.size(); k++) {
-					give_piece.back().point.insert(give_piece.back().point.begin() + pos + 1, give_piece[n].point[(hos + k + give_piece[n].point.size()) % give_piece[n].point.size()]);
+					give_piece.back().point.insert(give_piece.back().point.begin() + ((pos + 1 + give_piece.back().point.size()) % give_piece.back().point.size()), give_piece[n].point[(hos - k + give_piece[n].point.size()) % give_piece[n].point.size()]);
+				}
+			}
+			if (check_overlapping(give_piece) || check_origin_frame(give_piece, line_piece)) {
+				for (int k = 0; k < give_piece[n].point.size(); k++) {
+					give_piece.back().point.erase(give_piece.back().point.begin() + ((pos + 1 + give_piece.back().point.size()) % give_piece.back().point.size()));
+				}
+				for (int k = 0; k < give_piece[n].point.size(); k++) {
+					give_piece.back().point.insert(give_piece.back().point.begin() + ((pos + 1 + give_piece.back().point.size()) % give_piece.back().point.size()), give_piece[n].point[(hos + k + give_piece[n].point.size()) % give_piece[n].point.size()]);
 				}
 			}
 		}
@@ -687,7 +714,7 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 		}
 	}
 	System::Update();
-	//枠の最終チェック
+	//わくが分離するのを防ぐ
 	for (int k = 0; k < give_piece.back().point.size(); k++) {
 		for (int n = 0; n < give_piece.back().point.size();n++) {
 			if (give_piece.back().point[k].first == give_piece.back().point[(k + 1 + give_piece.back().point.size()) % give_piece.back().point.size()].first) {
@@ -697,12 +724,14 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 			}
 		}
 	}
+	//多角形が成立するかどうかを判定
 	if (check_overlapping(give_piece)) {
 		return false;
 	}
-	if (give_piece.back().point.size() == 3) {
-		//kkkk
-	}
+	//三角形になった場合を判定
+	/*if (give_piece.back().point.size() == 3) {
+		return false;
+	}*/
 	//更新した情報の共有
 	if (1) {
 		new_frame = give_piece.back().point;
@@ -729,7 +758,7 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 		}
 	}
 	//スクショの保存&&再帰
-	if (give_piece.back().point.size() ==  0 && give_piece.size() == 1) {
+	if (give_piece.back().point.size() == 0 && give_piece.size() == 1) {
 		Control cont;
 		cont.output_piece(ans_piece);
 		system_end = 1;
@@ -1108,7 +1137,7 @@ bool Algorithm::equal_angle(double first_angle, double second_angle) {
 	枠とピースの角度の情報を受け取る
 	もし誤差の範囲内で等しいならばTrue
 	*/
-	if (fabs(first_angle - second_angle) <= 1.0) {
+	if (fabs(first_angle - second_angle) <= 2.0) {
 		return true;
 	}
 	else {
