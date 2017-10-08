@@ -319,6 +319,7 @@ void Control::output_piece(vector<Piece> &rec_piece) {
 						}
 				}
 		}
+		System::Update();
 		ScreenCapture::Save();
 }
 

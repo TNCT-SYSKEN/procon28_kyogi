@@ -25,6 +25,9 @@ public :
 	bool equal_line(double, double);
 	bool equal_point(int, int);
 	bool collision_checker(int,int,int,vector<Piece> &clone_piece);
+
+	bool closs_line(double,double,double,double,double,double,double,double);
+	bool check_origin_frame(vector<Piece> &give_piece,vector<pair<int,int> >&line_piece);
 private:
 	int system_end;
 	int flag;
