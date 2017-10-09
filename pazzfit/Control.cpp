@@ -121,8 +121,8 @@ void Control::make_line() {
 }
 
 void Control::make_angle() {
-	int x_point[8] = { 0,1,1,1,0,-1,-1,-1 };
-	int y_point[8] = { 1,1,0,-1,-1,-1,0,1 };
+	double x_point[8] = { -0.20,0.20,0.50,0.50,0.20,-0.20,-0.50,-0.50 };
+	double y_point[8] = { -0.50,-0.50,-0.20,0.20,0.50,0.50,0.20,-0.20 };
 	for (int i = 0; i < piece.size(); i++) {
 		for (int j = 0; j < piece[i].no_piece; j++) {
 			Polygon shape; shape.scaled(10).draw();
