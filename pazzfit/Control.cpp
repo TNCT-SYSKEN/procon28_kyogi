@@ -18,10 +18,39 @@ void Control::exec_argolithm() {
 	algo.fit_piece(piece);
 }
 
+void read_qr() {
+	int count;
+	for (count = 1;; count++) {
+		ostringstream oss;
+		oss << "qr_img\\qr_data00" << count << ".bmp";
+		Image img(Widen(oss.str().c_str()));
+		if (!img) {
+			break;
+		}
+	}
+	//QRコードを読み取る関数
+	for (int i = 1; i < count; i++) {
+		//cmdを起動してqrコード読み取り(ゴリ押し)
+		ostringstream oss;
+		//oss << "cd C:\\ & dir > hoge.txt";
+		oss << "cd C:\\Program Files (x86)\\ZBar && zbarvars.bat && zbarimg --raw C:\\Users\\amata\\Desktop\\procon28_kyogi\\pazzfit\\qr_img\\qr_data00" << i << ".bmp > C:\\Users\\amata\\Desktop\\procon28_kyogi\\pazzfit\\shape_data\\qr_data00" << i << ".txt";
+		system(oss.str().c_str());
+		//テキストが生成されてるかチェック
+		ostringstream check;
+		check << "shape_data\\qr_data00" << i << ".txt";
+		ifstream qr(check.str());
+		//されてなければループ終わり
+		if (qr.fail()) {
+			break;
+		}
+	}
+}
+
 void Control::set_shape_data() {
 	static bool flag = false;
 
 	if (!flag) {
+		read_qr();
 		make_point();
 		make_line();
 		make_angle();
@@ -121,8 +150,8 @@ void Control::make_line() {
 }
 
 void Control::make_angle() {
-	double x_point[8] = { -0.20,0.20,0.50,0.50,0.20,-0.20,-0.50,-0.50 };
-	double y_point[8] = { -0.50,-0.50,-0.20,0.20,0.50,0.50,0.20,-0.20 };
+	double x_point[16] = { -0.20, 0.20, 0.40, 0.50, 0.50,0.50,0.50,0.40,0.20,-0.20,-0.40,-0.50,-0.50,-0.50,-0.50,-0.40 };
+	double y_point[16] = { -0.50,-0.50,-0.50,-0.40,-0.20,0.20,0.40,0.50,0.50, 0.50, 0.50, 0.40, 0.20,-0.20,-0.40,-0.50 };
 	for (int i = 0; i < piece.size(); i++) {
 		for (int j = 0; j < piece[i].no_piece; j++) {
 			Polygon shape; shape.scaled(10).draw();
@@ -259,13 +288,13 @@ void Control::make_angle() {
 			}
 			}
 			int angle = 0;
-			for (int k = 0; k < 8; k++) {
+			for (int k = 0; k < 16; k++) {
 				if (bool hoge = Point(piece[i].point[j].first + x_point[k], piece[i].point[j].second + y_point[k]).intersects(shape)) {
 					angle++;
 				}
 			}
 			//凹角である
-			if (angle >= 5) {
+			if (angle >= 9) {
 				double a1, a2, b1, b2;
 				double a, b, c, d;
 				double kaku;

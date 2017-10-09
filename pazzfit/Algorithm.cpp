@@ -110,7 +110,7 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 	//ans_pointへの代入;
 	ans_piece[flag].ans_point = give_piece[n].point;
 	line_piece = give_piece[n].point;
-	/*for (int j = 0; j < give_piece[n].point.size(); j++) {
+	for (int j = 0; j < give_piece[n].point.size(); j++) {
 		if (j == give_piece[n].point.size() - 1) {
 			LineInt(give_piece[n].point[j].first * 5, give_piece[n].point[j].second * 5, give_piece[n].point[0].first * 5, give_piece[n].point[0].second * 5).draw(Palette::Black);
 		}
@@ -118,7 +118,7 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 			LineInt(give_piece[n].point[j].first * 5, give_piece[n].point[j].second * 5, give_piece[n].point[j + 1].first * 5, give_piece[n].point[j + 1].second * 5).draw(Palette::Black);
 		}
 	}
-	System::Update();*/
+	System::Update();
 	//基準を求める
 	int fuga = 1;
 	/*for (int k = 0; k < give_piece[n].point.size(); k++) {
@@ -740,20 +740,18 @@ bool Algorithm::update_frame(int n ,int i, int q, vector<Piece> &clone_piece) {
 		give_piece.back().point = new_frame;
 		give_piece.erase(give_piece.begin() + n);
 	}
-	//枠の辺、角度の更新
-	sort_frame(give_piece);
 	//小さい角を除外
 	for (int i = 0; i < give_piece.back().angle.size(); i++) {
-		if (give_piece.back().angle[i] < 10) {
+		if (give_piece.back().angle[i] < 3) {
 			return false;
 		}
-		if (give_piece.back().angle[i] > 350) {
+		if (give_piece.back().angle[i] > 357) {
 			return false;
 		}
 	}
 	//小さい辺を除外
 	for (int i = 0; i < give_piece.back().line.size(); i++) {
-		if (give_piece.back().line[i] < 3) {
+		if (give_piece.back().line[i] < 1) {
 		return false;
 		}
 	}
@@ -956,16 +954,14 @@ void Algorithm::algo_make_angle(vector<Piece> &give_piece) {
 	//元の角度の削除
 	give_piece.back().angle.clear();
 	//16方を参照するための配列
-	//double x_point[16] = { 0,0.25,0.5,0.5,0.5,0.5,0.5,0.25,0,-0.25,-0.5,-0.5,-0.5,-0.5,-0.5,-0.25 };
-	//double y_point[16] = { -0.5,-0.5,-0.5,-0.25,0,0.25,0.5,0.5,0.5,0.5,0.5,0.25,0,-0.25,-0.5,-0.5 };
-	double x_point[8] = {-0.20,0.20,0.50,0.50,0.20,-0.20,-0.50,-0.50 };
-	double y_point[8] = {-0.50,-0.50,-0.20,0.20,0.50,0.50,0.20,-0.20 };
+	double x_point[16] = { -0.20, 0.20, 0.40, 0.50, 0.50,0.50,0.50,0.40,0.20,-0.20,-0.40,-0.50,-0.50,-0.50,-0.50,-0.40 };
+	double y_point[16] = { -0.50,-0.50,-0.50,-0.40,-0.20,0.20,0.40,0.50,0.50, 0.50, 0.50, 0.40, 0.20,-0.20,-0.40,-0.50 };
 	//交わった辺をカウントするための変数
 	int count_x, count_y;
 
 	for (int j = 0; j < give_piece.back().point.size(); j++) {
 		int check_angle = 0;
-		for (int k = 0; k < 8; k++) {
+		for (int k = 0; k < 16; k++) {
 			count_x = 0;
 			count_y = 0;
 			//y軸へ延長した線分
@@ -1030,7 +1026,7 @@ void Algorithm::algo_make_angle(vector<Piece> &give_piece) {
 		angle = acos(angle);
 		angle = angle * 180 / Pi;
 		//凹角である
-		if (check_angle >= 5) {
+		if (check_angle >= 9) {
 			angle = 360 - angle;
 			give_piece.back().angle.push_back(angle);
 		}
